@@ -1,4 +1,4 @@
-import { PERMISSION_MATRIX, type PermissionAction } from "../domain/permission-action";
+import { resolvePermissions, type PermissionAction } from "../domain/permission-action";
 import { useAppSelector } from "../store/hooks";
 
 /// Espelha Agent-Api/src/application/authorization/authorization-service.ts —
@@ -12,6 +12,8 @@ export function useCan() {
     if (!user) return false;
     if (user.isPlatformAdmin) return true;
     if (!activeCompany?.memberRole) return false;
-    return PERMISSION_MATRIX[activeCompany.memberRole].includes(action);
+    // memberPermissions pode faltar no cache persistido de versões antigas —
+    // resolvePermissions cai no padrão do papel nesse caso.
+    return resolvePermissions(activeCompany.memberRole, activeCompany.memberPermissions).includes(action);
   };
 }

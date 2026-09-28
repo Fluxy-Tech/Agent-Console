@@ -1,10 +1,12 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { MemberRole } from "../../domain/permission-action";
+import type { MemberRole, PermissionAction } from "../../domain/permission-action";
 
 export interface ActiveCompany {
   id: string;
   name: string;
   memberRole: MemberRole | null;
+  /// Telas personalizadas na tela de Acessos (null = padrão do papel).
+  memberPermissions?: PermissionAction[] | null;
 }
 
 const initialState: ActiveCompany | null = null;

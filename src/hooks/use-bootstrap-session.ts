@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import type { PermissionAction } from "../domain/permission-action";
 import { api } from "../lib/api";
 import { authClient } from "../lib/auth-client";
 import type { AppDispatch } from "../store/store";
@@ -15,6 +16,7 @@ interface Member {
   id: string;
   userId: string;
   role: "GERENTE" | "SUPERVISOR" | "ATENDENTE";
+  permissions: PermissionAction[] | null;
 }
 
 /// Núcleo de sincronização store↔sessão real do Better Auth (cookie) — extraído
@@ -64,6 +66,7 @@ export async function refreshSessionState(dispatch: AppDispatch): Promise<void> 
         id: company.id,
         name: company.name,
         memberRole: membership?.role ?? null,
+        memberPermissions: membership?.permissions ?? null,
       }),
     );
   } catch {

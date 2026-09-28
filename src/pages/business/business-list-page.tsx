@@ -80,7 +80,14 @@ export function BusinessListPage() {
       await api.post("/api/session/active-company", { companyId: company.id });
       const members = await api.get<Member[]>(`/api/companies/${company.id}/members`);
       const membership = members.find((m) => m.userId === user?.id);
-      dispatch(setActiveCompany({ id: company.id, name: company.name, memberRole: membership?.role ?? null }));
+      dispatch(
+        setActiveCompany({
+          id: company.id,
+          name: company.name,
+          memberRole: membership?.role ?? null,
+          memberPermissions: membership?.permissions ?? null,
+        }),
+      );
       navigate("/targets", { replace: true });
     } finally {
       setActivating(null);

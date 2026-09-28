@@ -1,4 +1,4 @@
-import type { MemberRole } from "../domain/permission-action";
+import type { MemberRole, PermissionAction } from "../domain/permission-action";
 
 export interface Company {
   id: string;
@@ -27,6 +27,8 @@ export interface Member {
   userId: string;
   role: MemberRole;
   blocked: boolean;
+  /// Telas liberadas por checkbox na tela de Acessos; null = padrão do papel.
+  permissions: PermissionAction[] | null;
   createdAt: string;
   user: { id: string; name: string; email: string; image: string | null };
 }

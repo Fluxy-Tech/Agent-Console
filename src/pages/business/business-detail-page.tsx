@@ -1,7 +1,7 @@
 import { type FormEvent, useState } from "react";
 import { useParams } from "react-router-dom";
 import useSWR from "swr";
-import { Check, Copy, Eye, EyeOff, KeyRound, Lock, Ticket, Unlock, UserX, Users } from "lucide-react";
+import { Check, Copy, Eye, EyeOff, KeyRound, ListChecks, Lock, Ticket, Trash2, Unlock, UserX, Users } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -35,6 +35,8 @@ import { useCan } from "@/hooks/use-can";
 import { PermissionAction, ROLE_LABELS, type MemberRole } from "@/domain/permission-action";
 import { useAppSelector } from "@/store/hooks";
 import type { Company, InvitationMember, Member } from "@/types/domain";
+import { MemberPermissionsDialog } from "./member-permissions-dialog";
+import { RolePermissionsCard } from "./role-permissions-card";
 
 const ROLE_OPTIONS: MemberRole[] = ["GERENTE", "SUPERVISOR", "ATENDENTE"];
 
@@ -55,6 +57,8 @@ export function BusinessDetailPage() {
   const [savingId, setSavingId] = useState<string | null>(null);
   const [blockingId, setBlockingId] = useState<string | null>(null);
   const [removingId, setRemovingId] = useState<string | null>(null);
+  const [deletingInviteId, setDeletingInviteId] = useState<string | null>(null);
+  const [permissionsMember, setPermissionsMember] = useState<Member | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -187,6 +191,19 @@ export function BusinessDetailPage() {
     }
   }
 
+  async function handleDeleteInvite(invitation: InvitationMember) {
+    setDeletingInviteId(invitation.id);
+    try {
+      await api.delete(`/api/companies/${id}/invite-codes/${invitation.id}`);
+      toast.success("Convite excluído.");
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "Não foi possível excluir o convite.");
+    } finally {
+      setDeletingInviteId(null);
+      await mutateInviteCodes();
+    }
+  }
+
   async function handleCopyCode(code: string) {
     await navigator.clipboard.writeText(code);
     setCodeCopied(true);
@@ -217,8 +234,8 @@ export function BusinessDetailPage() {
               <div>
                 <CardTitle className="text-base">Acessos</CardTitle>
                 <p className="text-muted-foreground mt-1 text-sm">
-                  Gerencie quem tem acesso a esta empresa, o papel de cada pessoa, e bloqueie ou remova acessos
-                  quando necessário.
+                  Gerencie quem tem acesso a esta empresa, o papel e as telas liberadas de cada pessoa, e bloqueie
+                  ou remova acessos quando necessário.
                 </p>
               </div>
             </div>
@@ -235,7 +252,7 @@ export function BusinessDetailPage() {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="text-left">Usuário</TableHead>
-                      <TableHead>Papel</TableHead>
+                      <TableHead className="text-center">Papel</TableHead>
                       <TableHead>Ações</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -259,32 +276,48 @@ export function BusinessDetailPage() {
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell>
-                            {canWrite ? (
-                              <Select
-                                value={member.role}
-                                disabled={savingId === member.id}
-                                onValueChange={(value) => handleRoleChange(member.id, value as MemberRole)}
-                              >
-                                <SelectTrigger size="sm">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {ROLE_OPTIONS.map((role) => (
-                                    <SelectItem key={role} value={role}>
-                                      {ROLE_LABELS[role]}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            ) : (
-                              <Badge variant="outline">{ROLE_LABELS[member.role]}</Badge>
-                            )}
+                          <TableCell className="text-center">
+                            <div className="flex justify-center">
+                              {canWrite ? (
+                                <Select
+                                  value={member.role}
+                                  disabled={savingId === member.id}
+                                  onValueChange={(value) => handleRoleChange(member.id, value as MemberRole)}
+                                >
+                                  <SelectTrigger size="sm">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {ROLE_OPTIONS.map((role) => (
+                                      <SelectItem key={role} value={role}>
+                                        {ROLE_LABELS[role]}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              ) : (
+                                <Badge variant="outline">{ROLE_LABELS[member.role]}</Badge>
+                              )}
+                            </div>
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center justify-center gap-2">
                               {canWrite && !isSelf ? (
                                 <>
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => setPermissionsMember(member)}
+                                    title={
+                                      member.permissions
+                                        ? "Permissões de telas (personalizadas)"
+                                        : "Permissões de telas (padrão do papel)"
+                                    }
+                                    className={member.permissions ? "border-primary text-primary" : undefined}
+                                  >
+                                    <ListChecks className="size-4" />
+                                  </Button>
                                   <Button
                                     type="button"
                                     variant="outline"
@@ -356,6 +389,8 @@ export function BusinessDetailPage() {
             />
           )}
         </Card>
+
+        <RolePermissionsCard />
 
         {canWrite && (
           <Card className="shadow-xl">
@@ -431,14 +466,49 @@ export function BusinessDetailPage() {
                           {invitation.finish ? "Ativo" : "Usado"}
                         </Badge>
                         {invitation.finish && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleCopyCode(invitation.code)}
-                          >
-                            <Copy className="size-4" />
-                          </Button>
+                          <>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              title="Copiar código"
+                              onClick={() => handleCopyCode(invitation.code)}
+                            >
+                              <Copy className="size-4" />
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  disabled={deletingInviteId === invitation.id}
+                                  className="text-destructive hover:text-destructive"
+                                  title="Excluir convite"
+                                >
+                                  <Trash2 className="size-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Excluir o convite {invitation.code}?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    O código enviado para {invitation.email} deixa de funcionar imediatamente. Se
+                                    precisar, gere um novo convite depois. Esta ação não pode ser desfeita.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    variant="destructive"
+                                    onClick={() => handleDeleteInvite(invitation)}
+                                  >
+                                    Excluir
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </>
                         )}
                       </div>
                     </div>
@@ -540,6 +610,15 @@ export function BusinessDetailPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {id && (
+        <MemberPermissionsDialog
+          companyId={id}
+          member={permissionsMember}
+          onOpenChange={(open) => !open && setPermissionsMember(null)}
+          onSaved={() => void mutate()}
+        />
+      )}
     </div>
   );
 }
