@@ -35,7 +35,7 @@ export function AuthLayout({ children, hideMobileLogo, backgroundImage }: AuthLa
       >
         {backgroundImage ? (
           // Escurece a foto pra manter o texto branco legível.
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70 backdrop-blur-[1px]" />
         ) : (
           <>
             <div className="pointer-events-none absolute -top-24 -left-24 size-96 rounded-full bg-white/10 blur-3xl" />

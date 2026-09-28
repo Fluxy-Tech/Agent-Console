@@ -50,7 +50,7 @@ export function AppShell() {
           collapsed ? "w-16" : "w-64",
         )}
       >
-        <Link to="/" className={cn("flex h-14 items-center gap-2 px-4", collapsed ? "justify-center" : "justify-start")}>
+        <Link to="/targets" className={cn("flex h-14 items-center gap-2 px-4", collapsed ? "justify-center" : "justify-start")}>
           <img src={sturnusIcon} alt="Sturnus Flow" className="h-8 w-8 shrink-0 object-contain" />
           {!collapsed && <span className="font-display text-lg font-semibold">Sturnus Flow</span>}
         </Link>

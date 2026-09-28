@@ -12,7 +12,6 @@ import { AgentsListPage } from "@/pages/agents/agents-list-page";
 import { CampaignDetailPage } from "@/pages/campaigns/campaign-detail-page";
 import { CampaignsPage } from "@/pages/campaigns/campaigns-page";
 import { CookieConsentBanner } from "@/components/cookie-consent-banner";
-import { HomePage } from "@/pages/home/home-page";
 import { PrivacyPolicyPage } from "@/pages/legal/privacy-policy-page";
 import { ReportsPage } from "@/pages/reports/reports-page";
 import { ServiceIslandDetailPage } from "@/pages/service-islands/service-island-detail-page";
@@ -63,7 +62,8 @@ export function App() {
           }
         />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/" element={<HomePage />} />
+        {/* Sem tela de apresentação: a raiz é o login (logado → /targets via RedirectIfBootstrapped). */}
+        <Route path="/" element={<Navigate to="/signin" replace />} />
         <Route path="/politica-de-privacidade" element={<PrivacyPolicyPage />} />
 
         <Route element={<RequireAuth />}>
@@ -91,7 +91,7 @@ export function App() {
           </Route>
         </Route>
 
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/signin" replace />} />
       </Routes>
     </>
   );

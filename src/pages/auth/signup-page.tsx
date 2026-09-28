@@ -65,7 +65,7 @@ export function SignUpPage() {
       <Card className="w-3/4 max-w-2xl shadow-xl">
         <CardHeader>
           <div className="mb-1 flex items-center justify-center">
-            <Link to="/" aria-label="Ir para a página inicial">
+            <Link to="/signin" aria-label="Ir para o login">
               <img src={sturnusWordmark} alt="Sturnus Flow" className="h-16 w-auto" />
             </Link>
           </div>

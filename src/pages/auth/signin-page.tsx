@@ -43,9 +43,7 @@ export function SignInPage() {
       <Card className="w-3/4 max-w-2xl shadow-xl">
         <CardHeader>
           <div className="mb-1 flex items-center justify-center">
-            <Link to="/" aria-label="Ir para a página inicial">
-              <img src={sturnusWordmark} alt="Sturnus Flow" className="h-16 w-auto" />
-            </Link>
+            <img src={sturnusWordmark} alt="Sturnus Flow" className="h-16 w-auto" />
           </div>
           <CardTitle className="text-xl">Bem-vindo de volta</CardTitle>
           <CardDescription>Acesse o painel de gestão de agentes de IA.</CardDescription>
