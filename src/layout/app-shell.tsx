@@ -67,7 +67,9 @@ export function AppShell() {
                 )}
                 <div className="flex flex-col gap-1">
                   {items.map((item) => {
-                    const isActive = location.pathname === item.to || location.pathname.startsWith(`${item.to}/`);
+                    const isActive =
+                      !item.external &&
+                      (location.pathname === item.to || location.pathname.startsWith(`${item.to}/`));
                     // NavLink.className aceita uma função, mas quando este link
                     // vira o asChild de um Radix Slot (TooltipTrigger, abaixo), o
                     // Slot faz `[a, b].filter(Boolean).join(" ")` para mesclar
@@ -76,19 +78,27 @@ export function AppShell() {
                     // dela virando classes CSS "de verdade" (ex.: sobra
                     // "text-primary-foreground" limpa no meio do texto). Por
                     // isso calculamos isActive manualmente e passamos string.
-                    const link = (
-                      <NavLink
-                        to={item.to}
-                        className={cn(
-                          "flex items-center gap-2 rounded-md px-2 py-2 text-base transition-colors",
-                          collapsed ? "justify-center" : "justify-start",
-                          isActive
-                            ? "bg-primary text-primary-foreground font-medium"
-                            : "text-foreground/80 hover:bg-accent hover:text-accent-foreground",
-                        )}
-                      >
+                    const linkClass = cn(
+                      "flex items-center gap-2 rounded-md px-2 py-2 text-base transition-colors",
+                      collapsed ? "justify-center" : "justify-start",
+                      isActive
+                        ? "bg-primary text-primary-foreground font-medium"
+                        : "text-foreground/80 hover:bg-accent hover:text-accent-foreground",
+                    );
+                    const content = (
+                      <>
                         <item.icon className="size-5 shrink-0" />
                         {!collapsed && item.label}
+                      </>
+                    );
+                    // Links externos (ex.: Fluxy Desk) abrem em nova aba.
+                    const link = item.external ? (
+                      <a href={item.to} target="_blank" rel="noreferrer" className={linkClass}>
+                        {content}
+                      </a>
+                    ) : (
+                      <NavLink to={item.to} className={linkClass}>
+                        {content}
                       </NavLink>
                     );
 

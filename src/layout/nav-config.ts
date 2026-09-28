@@ -1,4 +1,4 @@
-import { BarChart3, Bot, KeyRound, LandPlot, Megaphone, MessageSquareText, Users, Waypoints } from "lucide-react";
+import { BarChart3, Bot, Headset, KeyRound, LandPlot, Megaphone, MessageSquareText, Users, Waypoints } from "lucide-react";
 import { PermissionAction } from "@/domain/permission-action";
 
 export interface NavItem {
@@ -6,6 +6,8 @@ export interface NavItem {
   to: string;
   icon: typeof Bot;
   action: PermissionAction;
+  /// Link pra fora do console (abre em nova aba), ex.: o Fluxy Desk.
+  external?: boolean;
 }
 
 export interface NavGroup {
@@ -29,6 +31,18 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "Agentes de IA", to: "/agents", icon: Bot, action: PermissionAction.AGENTS_VIEW },
       { label: "Redes Sociais", to: "/channels", icon: MessageSquareText, action: PermissionAction.WABAS_VIEW },
       { label: "Ilhas de Atendimento", to: "/service-island", icon: Waypoints, action: PermissionAction.SERVICE_ISLANDS_VIEW },
+    ],
+  },
+  {
+    label: "Links externos",
+    items: [
+      {
+        label: "Acessar o desk",
+        to: "https://desk.sturnusflow.com.br",
+        icon: Headset,
+        action: PermissionAction.SERVICE_ISLANDS_VIEW,
+        external: true,
+      },
     ],
   },
   {
