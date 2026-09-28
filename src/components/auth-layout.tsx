@@ -28,14 +28,15 @@ export function AuthLayout({ children, hideMobileLogo, backgroundImage }: AuthLa
     <div className="flex min-h-screen">
       <div
         className={cn(
-          "relative hidden overflow-hidden lg:flex lg:w-1/2 lg:flex-col lg:justify-between lg:p-12",
-          backgroundImage ? "bg-cover bg-center" : "from-primary via-primary to-primary/70 bg-gradient-to-br",
+          "relative hidden overflow-hidden lg:flex lg:w-1/2 lg:flex-col lg:p-12",
+          backgroundImage ? "bg-cover bg-center lg:justify-end" : "lg:justify-between",
+          !backgroundImage && "from-primary via-primary to-primary/70 bg-gradient-to-br",
         )}
         style={backgroundImage ? { backgroundImage: `url(${backgroundImage})` } : undefined}
       >
         {backgroundImage ? (
-          // Escurece a foto pra manter o texto branco legível.
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70 backdrop-blur-[1px]" />
+          // Escurece e desfoca a foto (e mantém o copyright branco legível).
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70 backdrop-blur-[2px]" />
         ) : (
           <>
             <div className="pointer-events-none absolute -top-24 -left-24 size-96 rounded-full bg-white/10 blur-3xl" />
@@ -44,21 +45,24 @@ export function AuthLayout({ children, hideMobileLogo, backgroundImage }: AuthLa
           </>
         )}
 
-        <div className="relative flex flex-col gap-8">
-          <h1 className="font-[family-name:var(--font-display)] max-w-md text-4xl leading-tight font-semibold text-white">
-            Atendimento no WhatsApp, potencializado por IA.
-          </h1>
-          <ul className="flex flex-col gap-4">
-            {FEATURES.map(({ icon: Icon, text }) => (
-              <li key={text} className="flex items-start gap-3">
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/15 text-white">
-                  <Icon className="size-4" />
-                </span>
-                <span className="mt-1 text-sm text-white/90">{text}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {/* Com foto (login/cadastro) o painel fica só com a imagem e o copyright. */}
+        {!backgroundImage && (
+          <div className="relative flex flex-col gap-8">
+            <h1 className="font-[family-name:var(--font-display)] max-w-md text-4xl leading-tight font-semibold text-white">
+              Atendimento no WhatsApp, potencializado por IA.
+            </h1>
+            <ul className="flex flex-col gap-4">
+              {FEATURES.map(({ icon: Icon, text }) => (
+                <li key={text} className="flex items-start gap-3">
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/15 text-white">
+                    <Icon className="size-4" />
+                  </span>
+                  <span className="mt-1 text-sm text-white/90">{text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <p className="relative text-xs text-white/60">© {new Date().getFullYear()} Sturnus Flow</p>
       </div>
