@@ -35,8 +35,8 @@ export function AuthLayout({ children, hideMobileLogo, backgroundImage }: AuthLa
         style={backgroundImage ? { backgroundImage: `url(${backgroundImage})` } : undefined}
       >
         {backgroundImage ? (
-          // Escurece e desfoca a foto (e mantém o copyright branco legível).
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70 backdrop-blur-[2px]" />
+          // Escurece a foto (e mantém o copyright branco legível).
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70" />
         ) : (
           <>
             <div className="pointer-events-none absolute -top-24 -left-24 size-96 rounded-full bg-white/10 blur-3xl" />
