@@ -298,6 +298,13 @@ export function CrmCardDetailDrawer({ cardId, onOpenChange }: CrmCardDetailDrawe
                 </div>
               </div>
 
+              {card.description && (
+                <div>
+                  <h3 className="mb-2 text-sm font-semibold">Descrição</h3>
+                  <p className="text-muted-foreground text-sm whitespace-pre-wrap">{card.description}</p>
+                </div>
+              )}
+
               <div>
                 <h3 className="mb-2 text-sm font-semibold">Metadados</h3>
                 <MetadataEditor metadata={target.metadata} saving={saving} onSave={handleSaveMetadata} />

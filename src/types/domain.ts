@@ -310,6 +310,8 @@ export interface CrmCardDetail {
   id: string;
   stagesCrmId: string | null;
   statusPriority: CardPriority;
+  /// Resumo do lead escrito pelo agente de IA (null em card criado manualmente).
+  description: string | null;
   target: Target;
   stages: { id: string; nameStage: string; position: number }[];
   comments: CrmCardComment[];
