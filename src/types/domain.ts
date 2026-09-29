@@ -64,6 +64,19 @@ export interface Agent {
   updatedAt: string;
 }
 
+/// Dado que o agente deve coletar do contato — nameToAgent é gerado pela API
+/// a partir de name e é a chave gravada em Target.metadata.
+export interface AgentMetadataField {
+  id: string;
+  agentId: string;
+  name: string;
+  nameToAgent: string;
+  rule: string;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export type RagDocumentStatus = "PROCESSING" | "READY" | "FAILED";
 
 export interface RagDocument {

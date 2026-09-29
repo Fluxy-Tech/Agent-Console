@@ -213,6 +213,8 @@ export function AgentDetailPage() {
             form={form}
             set={set}
             disabled={disabled}
+            agentId={id}
+            canWrite={canWrite}
             openaiToken={openaiToken}
             onChangeOpenaiToken={setOpenaiToken}
             openaiTokenPreview={agent?.openaiTokenPreview ?? null}

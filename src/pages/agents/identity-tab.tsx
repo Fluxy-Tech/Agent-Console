@@ -7,8 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import geminiLogo from "@/assets/LogoGermini.png";
 import openaiLogo from "@/assets/LogoOpenAi.png";
 import type { AgentFormTabProps } from "./agent-form-types";
+import { MetadataFieldsCard } from "./metadata-fields-card";
 
 interface IdentityTabProps extends AgentFormTabProps {
+  agentId: string | undefined;
+  canWrite: boolean;
   openaiToken: string;
   onChangeOpenaiToken: (value: string) => void;
   openaiTokenPreview: string | null;
@@ -21,6 +24,8 @@ export function IdentityTab({
   form,
   set,
   disabled,
+  agentId,
+  canWrite,
   openaiToken,
   onChangeOpenaiToken,
   openaiTokenPreview,
@@ -94,6 +99,8 @@ export function IdentityTab({
           </div>
         </CardContent>
       </Card>
+
+      <MetadataFieldsCard agentId={agentId} canWrite={canWrite} />
 
       <Card className="shadow-xl">
         <CardHeader>
