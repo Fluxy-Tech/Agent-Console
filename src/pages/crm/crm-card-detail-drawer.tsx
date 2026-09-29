@@ -106,6 +106,7 @@ export function CrmCardDetailDrawer({ cardId, onOpenChange }: CrmCardDetailDrawe
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState("");
   const [savingCommentId, setSavingCommentId] = useState<string | null>(null);
+  const [deletingCard, setDeletingCard] = useState(false);
 
   const target = card?.target;
 
@@ -206,6 +207,21 @@ export function CrmCardDetailDrawer({ cardId, onOpenChange }: CrmCardDetailDrawe
       toast.error(err instanceof ApiError ? err.message : "Não foi possível apagar o comentário.");
     } finally {
       setSavingCommentId(null);
+    }
+  }
+
+  async function handleDeleteCard() {
+    if (!card) return;
+    setDeletingCard(true);
+    try {
+      await api.delete(`/api/crm/cards/${card.id}`);
+      toast.success("Card apagado.");
+      onOpenChange(false);
+      await mutateGlobal("/api/crm");
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "Não foi possível apagar o card.");
+    } finally {
+      setDeletingCard(false);
     }
   }
 
@@ -531,6 +547,32 @@ export function CrmCardDetailDrawer({ cardId, onOpenChange }: CrmCardDetailDrawe
               >
                 <ExternalLink className="size-4" /> Ver histórico completo do contato
               </Link>
+
+              {canWrite && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button type="button" variant="outline" className="text-destructive" disabled={deletingCard}>
+                      {deletingCard ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
+                      Apagar card
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Apagar o card deste lead?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        O card sai do Kanban junto com os comentários e anexos. O contato continua cadastrado. Esta
+                        ação não pode ser desfeita.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction variant="destructive" onClick={() => void handleDeleteCard()}>
+                        Apagar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
             </div>
           </>
         )}
