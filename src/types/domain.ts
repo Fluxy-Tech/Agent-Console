@@ -52,6 +52,7 @@ export interface Agent {
   personality: string | null;
   ragEnabled: boolean;
   ragChunkSize: number | null;
+  handoffAfterFunctions: boolean;
   /// 6 primeiros chars do token decifrado, só pra confirmação visual — nunca
   /// o token completo. null quando nenhum token está configurado.
   openaiTokenPreview: string | null;
@@ -85,6 +86,18 @@ export interface AgentFunction {
   type: AgentFunctionType;
   runAtStart: boolean;
   runAfterMetadata: boolean;
+  /// Só KANBAN_CARD: estágio em que o card do lead nasce (null = "Início").
+  crmStageId: string | null;
+}
+
+/// GET /api/agents/:id/crm-stages — estágios do Kanban da empresa do agente
+/// (opções do seletor de estágio da função KANBAN_CARD).
+export type CrmStageOption = Omit<CrmStage, "cards">;
+
+/// GET/PUT /api/agents/:id/function-settings — o que o agente faz ao terminar
+/// a coleta e as funções: true = atendimento humano, false = finaliza.
+export interface AgentFunctionSettings {
+  handoffAfterFunctions: boolean;
 }
 
 export type RagDocumentStatus = "PROCESSING" | "READY" | "FAILED";
