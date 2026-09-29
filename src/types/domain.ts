@@ -671,3 +671,12 @@ export interface CampaignListResult {
   page: number;
   pageSize: number;
 }
+
+/// Aba "Configurações" do Kanban Board (GET/PUT /api/crm/settings).
+export interface CrmSettings {
+  calendar: { userIds: string[]; visibleToAgent: boolean };
+  /// maxCardsPerUser null = sem limite.
+  kanban: { userIds: string[]; maxCardsPerUser: number | null; visibleToAgent: boolean };
+  /// Membros ativos da empresa, pra montar as listas de seleção.
+  users: { userId: string; name: string; email: string; role: string }[];
+}

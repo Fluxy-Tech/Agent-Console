@@ -11,7 +11,19 @@ import {
   type DragEndEvent,
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-import { CalendarDays, Check, Funnel, MessageSquare, Paperclip, Pencil, Plus, SquareKanban, Trash2, X } from "lucide-react";
+import {
+  CalendarDays,
+  Check,
+  Funnel,
+  MessageSquare,
+  Paperclip,
+  Pencil,
+  Plus,
+  Settings,
+  SquareKanban,
+  Trash2,
+  X,
+} from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,6 +48,7 @@ import { CARD_PRIORITY_LABELS, type CrmCard, type CrmStage } from "@/types/domai
 import { CARD_PRIORITY_DOT_CLASSES } from "./card-priority";
 import { CrmCardDetailDrawer } from "./crm-card-detail-drawer";
 import { CrmCalendarTab } from "./crm-calendar-tab";
+import { CrmSettingsTab } from "./crm-settings-tab";
 import { CrmFunnelTab } from "./crm-funnel-tab";
 import { CrmStageFormDialog } from "./crm-stage-form-dialog";
 
@@ -306,6 +319,9 @@ export function CrmPage() {
           <TabsTrigger value="funnel">
             <Funnel /> Funil de conversões
           </TabsTrigger>
+          <TabsTrigger value="settings">
+            <Settings /> Configurações
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="kanban">
@@ -332,6 +348,10 @@ export function CrmPage() {
 
         <TabsContent value="calendar">
           <CrmCalendarTab />
+        </TabsContent>
+
+        <TabsContent value="settings">
+          <CrmSettingsTab />
         </TabsContent>
       </Tabs>
 
