@@ -158,44 +158,6 @@ export function CrmSettingsTab() {
         <CardHeader>
           <div className="flex items-start gap-3">
             <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
-              <CalendarDays className="size-5" />
-            </div>
-            <div>
-              <CardTitle>Usuários do calendário</CardTitle>
-              <p className="text-muted-foreground mt-1 text-sm">
-                Escolha quais usuários desta empresa podem ser inseridos nos eventos do calendário.
-              </p>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-6">
-          <div className="flex flex-col gap-1.5">
-            <Label className="font-bold">Usuários permitidos</Label>
-            <p className="text-muted-foreground text-xs">
-              Só os usuários marcados poderão ser inseridos em um evento.
-            </p>
-            <UserChecklist
-              idPrefix="calendar-user"
-              users={data.users}
-              selected={calendarUserIds}
-              onChange={setCalendarUserIds}
-              disabled={disabled}
-            />
-          </div>
-
-          <AgentVisibilitySwitch
-            checked={calendarVisibleToAgent}
-            onChange={setCalendarVisibleToAgent}
-            disabled={disabled}
-            description="O agente de IA pode ver esses usuários ao trabalhar com eventos do calendário."
-          />
-        </CardContent>
-      </Card>
-
-      <Card className="shadow-xl">
-        <CardHeader>
-          <div className="flex items-start gap-3">
-            <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
               <SquareKanban className="size-5" />
             </div>
             <div>
@@ -243,6 +205,44 @@ export function CrmSettingsTab() {
             onChange={setKanbanVisibleToAgent}
             disabled={disabled}
             description="O agente de IA pode ver esses usuários ao trabalhar com os cards do Kanban."
+          />
+        </CardContent>
+      </Card>
+
+      <Card className="shadow-xl">
+        <CardHeader>
+          <div className="flex items-start gap-3">
+            <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
+              <CalendarDays className="size-5" />
+            </div>
+            <div>
+              <CardTitle>Usuários do calendário</CardTitle>
+              <p className="text-muted-foreground mt-1 text-sm">
+                Escolha quais usuários desta empresa podem ser inseridos nos eventos do calendário.
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-6">
+          <div className="flex flex-col gap-1.5">
+            <Label className="font-bold">Usuários permitidos</Label>
+            <p className="text-muted-foreground text-xs">
+              Só os usuários marcados poderão ser inseridos em um evento.
+            </p>
+            <UserChecklist
+              idPrefix="calendar-user"
+              users={data.users}
+              selected={calendarUserIds}
+              onChange={setCalendarUserIds}
+              disabled={disabled}
+            />
+          </div>
+
+          <AgentVisibilitySwitch
+            checked={calendarVisibleToAgent}
+            onChange={setCalendarVisibleToAgent}
+            disabled={disabled}
+            description="O agente de IA pode ver esses usuários ao trabalhar com eventos do calendário."
           />
         </CardContent>
       </Card>

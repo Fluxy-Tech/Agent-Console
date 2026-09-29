@@ -420,14 +420,15 @@ export function CrmCardDetailDrawer({ cardId, onOpenChange }: CrmCardDetailDrawe
                 ) : (
                   <ul className="flex flex-col gap-3">
                     {card.comments.map((item) => {
-                      const isOwner = item.user.id === currentUserId;
+                      // Comentário do agente de IA (user null) não tem dono na tela.
+                      const isOwner = !!item.user && item.user.id === currentUserId;
                       const isEditing = editingCommentId === item.id;
                       const busy = savingCommentId === item.id;
 
                       return (
                         <li key={item.id} className="bg-muted/40 flex flex-col gap-1 rounded-md border p-3">
                           <div className="flex items-center justify-between gap-2 text-xs">
-                            <span className="font-medium">{item.user.name}</span>
+                            <span className="font-medium">{item.user?.name ?? "Agente de IA"}</span>
                             <div className="flex items-center gap-0.5">
                               <span className="text-muted-foreground mr-1">
                                 {new Date(item.createdAt).toLocaleString("pt-BR")}

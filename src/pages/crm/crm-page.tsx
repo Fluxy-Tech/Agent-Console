@@ -310,11 +310,11 @@ export function CrmPage() {
 
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList>
-          <TabsTrigger value="calendar">
-            <CalendarDays /> Calendário
-          </TabsTrigger>
           <TabsTrigger value="kanban">
             <SquareKanban /> Kanban
+          </TabsTrigger>
+          <TabsTrigger value="calendar">
+            <CalendarDays /> Calendário
           </TabsTrigger>
           <TabsTrigger value="funnel">
             <Funnel /> Funil de conversões

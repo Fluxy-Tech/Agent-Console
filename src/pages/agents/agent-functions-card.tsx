@@ -1,0 +1,134 @@
+import { useState } from "react";
+import useSWR from "swr";
+import { toast } from "sonner";
+import { CalendarClock, SquareKanban, Workflow } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { api, ApiError } from "@/lib/api";
+import type { AgentFunction, AgentFunctionType } from "@/types/domain";
+
+/// Texto de cada função fixa — o comportamento em si fica no AI-Worker/piloto.
+const FUNCTION_INFO: Record<AgentFunctionType, { title: string; description: string; icon: typeof CalendarClock }> = {
+  CALENDAR_EVENT: {
+    title: "Agendamento de evento",
+    description:
+      "Pergunta ao contato o dia e o horário, confere se algum usuário liberado no calendário (Kanban › Configurações) está livre e sem outro evento nesse horário, e agenda o evento.",
+    icon: CalendarClock,
+  },
+  KANBAN_CARD: {
+    title: "Card no Kanban",
+    description:
+      "Cria o card do contato no Kanban e registra nele um comentário do agente com a mensagem do contato e os dados coletados.",
+    icon: SquareKanban,
+  },
+};
+
+interface AgentFunctionsCardProps {
+  /// undefined no modo criação — as funções pertencem a um agente já salvo.
+  agentId: string | undefined;
+  canWrite: boolean;
+}
+
+/// Funções fixas que o agente executa. Cada switch salva na hora (não
+/// depende do botão "Salvar alterações" do agente).
+export function AgentFunctionsCard({ agentId, canWrite }: AgentFunctionsCardProps) {
+  const { data: functions, mutate } = useSWR<AgentFunction[]>(agentId ? `/api/agents/${agentId}/functions` : null);
+  const [busyType, setBusyType] = useState<AgentFunctionType | null>(null);
+
+  async function handleToggle(fn: AgentFunction, key: "runAtStart" | "runAfterMetadata", value: boolean) {
+    const next = { runAtStart: fn.runAtStart, runAfterMetadata: fn.runAfterMetadata, [key]: value };
+    setBusyType(fn.type);
+    try {
+      await mutate(
+        async (current) => {
+          const saved = await api.put<AgentFunction>(`/api/agents/${agentId}/functions/${fn.type}`, next);
+          return current?.map((f) => (f.type === saved.type ? saved : f));
+        },
+        { optimisticData: (current) => current?.map((f) => (f.type === fn.type ? { ...f, ...next } : f)) ?? [], rollbackOnError: true },
+      );
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "Não foi possível atualizar a função.");
+    } finally {
+      setBusyType(null);
+    }
+  }
+
+  return (
+    <Card className="shadow-xl">
+      <CardHeader>
+        <div className="flex items-start gap-3">
+          <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
+            <Workflow className="size-5" />
+          </div>
+          <div>
+            <CardTitle>Funções</CardTitle>
+            <p className="text-muted-foreground mt-1 text-sm">
+              Ative as funções que o agente executa na conversa e escolha em que momento cada uma roda: no início da
+              conversa, depois que todos os metadados forem coletados, ou nos dois.
+            </p>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
+        {!agentId ? (
+          <p className="text-muted-foreground text-sm">Crie o agente primeiro para configurar as funções.</p>
+        ) : !functions ? (
+          <p className="text-muted-foreground text-sm">Carregando…</p>
+        ) : (
+          functions.map((fn) => {
+            const info = FUNCTION_INFO[fn.type];
+            const Icon = info.icon;
+            const disabled = !canWrite || busyType === fn.type;
+
+            return (
+              <div key={fn.type} className="border-border flex flex-col gap-4 rounded-lg border p-4">
+                <div className="flex items-start gap-3">
+                  <Icon className="text-primary mt-0.5 size-4 shrink-0" />
+                  <div>
+                    <p className="text-sm font-semibold">{info.title}</p>
+                    <p className="text-muted-foreground text-xs">{info.description}</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3 sm:flex-row sm:gap-8">
+                  <div className="flex items-center gap-3">
+                    <Switch
+                      id={`fn-${fn.type}-start`}
+                      checked={fn.runAtStart}
+                      onCheckedChange={(v) => handleToggle(fn, "runAtStart", v)}
+                      disabled={disabled}
+                      className="data-[state=checked]:bg-[#25D366]"
+                    />
+                    <div>
+                      <Label htmlFor={`fn-${fn.type}-start`} className="font-bold">
+                        No início da conversa
+                      </Label>
+                      <p className="text-muted-foreground text-xs">Executa logo nas primeiras mensagens.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <Switch
+                      id={`fn-${fn.type}-after`}
+                      checked={fn.runAfterMetadata}
+                      onCheckedChange={(v) => handleToggle(fn, "runAfterMetadata", v)}
+                      disabled={disabled}
+                      className="data-[state=checked]:bg-[#25D366]"
+                    />
+                    <div>
+                      <Label htmlFor={`fn-${fn.type}-after`} className="font-bold">
+                        Após coletar os metadados
+                      </Label>
+                      <p className="text-muted-foreground text-xs">Executa quando todos os dados forem coletados.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </CardContent>
+    </Card>
+  );
+}

@@ -200,6 +200,7 @@ export function CrmCalendarEventDrawer({ eventId, onOpenChange, onChanged }: Crm
                 </DrawerTitle>
                 <DrawerDescription>
                   {new Date(event.dateEvent).toLocaleString("pt-BR", { dateStyle: "full", timeStyle: "short" })}
+                  {event.user && <> · Responsável: {event.user.name}</>}
                 </DrawerDescription>
               </DrawerHeader>
 

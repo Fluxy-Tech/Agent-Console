@@ -77,6 +77,16 @@ export interface AgentMetadataField {
   updatedAt: string;
 }
 
+export type AgentFunctionType = "CALENDAR_EVENT" | "KANBAN_CARD";
+
+/// Função fixa do agente (GET /api/agents/:id/functions) — sempre vêm todas,
+/// com os dois momentos desligados quando nunca foram configuradas.
+export interface AgentFunction {
+  type: AgentFunctionType;
+  runAtStart: boolean;
+  runAfterMetadata: boolean;
+}
+
 export type RagDocumentStatus = "PROCESSING" | "READY" | "FAILED";
 
 export interface RagDocument {
@@ -308,7 +318,8 @@ export interface CrmCardComment {
   comment: string;
   createdAt: string;
   updatedAt: string;
-  user: { id: string; name: string };
+  /// null = comentário do agente de IA (função "Card no Kanban").
+  user: { id: string; name: string } | null;
 }
 
 export interface CrmCardAttachment {
@@ -402,6 +413,8 @@ export interface CalendarEventAnnotation {
 export interface CalendarEventDetail extends CalendarEventSummary {
   description: string | null;
   targetId: string;
+  /// Responsável escolhido pelo agente de IA (função "Agendamento de evento").
+  user: { id: string; name: string } | null;
   createdAt: string;
   updatedAt: string;
   annotations: CalendarEventAnnotation[];
