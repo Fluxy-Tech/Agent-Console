@@ -22,6 +22,7 @@ import { TargetsListPage } from "@/pages/targets/targets-list-page";
 import { ChannelDetailPage } from "@/pages/channels/channel-detail-page";
 import { ChannelsListPage } from "@/pages/channels/channels-list-page";
 import { CrmPage } from "@/pages/crm/crm-page";
+import { SettingsPage } from "@/pages/settings/settings-page";
 import { SupportDashboardPage } from "@/pages/support/support-dashboard-page";
 import { SupportEmptyState, SupportTicketsLayout } from "@/pages/support/support-tickets-layout";
 import { SupportTeamPage } from "@/pages/support/support-team-page";
@@ -96,7 +97,9 @@ export function App() {
               <Route path="/service-island" element={<ServiceIslandsListPage />} />
               <Route path="/service-island/:id" element={<ServiceIslandDetailPage />} />
               <Route path="/service-island/:islandId/queue/:queueId" element={<ServiceIslandQueueDetailPage />} />
-              <Route path="/access" element={<BusinessDetailPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              {/* Antiga tela "Acessos" — virou aba de Configurações. */}
+              <Route path="/access" element={<Navigate to="/settings?tab=access" replace />} />
               {/* Suporte técnico em duas áreas separadas, ambas no estilo
                   do Desk (lista à esquerda + conversa no <Outlet/>):
                   /support = time de suporte (quem atende);

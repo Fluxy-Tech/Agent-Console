@@ -281,7 +281,7 @@ export function TargetDetailPage() {
                         key={filter.value}
                         onClick={() => setMessageType(filter.value)}
                         className={cn(
-                          "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                          "rounded-sm border px-3 py-1 text-xs font-medium transition-colors",
                           messageType === filter.value
                             ? "border-primary bg-primary text-primary-foreground"
                             : "border-input bg-background",

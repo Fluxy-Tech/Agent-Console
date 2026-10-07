@@ -276,7 +276,7 @@ export function ReportsPage() {
                         <TableRow key={channel.channelId}>
                           <TableCell className="text-left">
                             <div className="flex items-center justify-start gap-2">
-                              <div className="bg-primary/15 text-primary flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-medium">
+                              <div className="bg-primary/15 text-primary flex size-7 shrink-0 items-center justify-center rounded-sm text-xs font-medium">
                                 {index + 1}
                               </div>
                               <Radio className="text-muted-foreground size-3.5 shrink-0" />
@@ -292,7 +292,7 @@ export function ReportsPage() {
                           </TableCell>
                           <TableCell>
                             <span className="inline-flex items-center justify-center gap-1.5">
-                              <span className={cn("size-1.5 rounded-full", growthDotClassName(channel.growthPercent))} />
+                              <span className={cn("size-1.5 rounded-sm", growthDotClassName(channel.growthPercent))} />
                               {formatGrowth(channel.growthPercent)}
                             </span>
                           </TableCell>
@@ -341,7 +341,7 @@ export function ReportsPage() {
                     <TableRow key={attendant.userId}>
                       <TableCell className="text-left">
                         <div className="flex items-center justify-start gap-2">
-                          <div className="bg-primary/15 text-primary flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-medium">
+                          <div className="bg-primary/15 text-primary flex size-7 shrink-0 items-center justify-center rounded-sm text-xs font-medium">
                             {index + 1}
                           </div>
                           <div className="min-w-0">

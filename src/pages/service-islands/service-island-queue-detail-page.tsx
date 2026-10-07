@@ -208,7 +208,7 @@ export function ServiceIslandQueueDetailPage() {
                         disabled={!canWrite}
                         onClick={() => toggleDay(day)}
                         className={cn(
-                          "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                          "rounded-sm border px-3 py-1 text-xs font-medium transition-colors",
                           businessDays.includes(day)
                             ? "border-primary bg-primary text-primary-foreground"
                             : "border-input bg-background",
@@ -260,7 +260,7 @@ export function ServiceIslandQueueDetailPage() {
                     )}
                   >
                     <div className="flex min-w-0 items-center gap-3">
-                      <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-medium">
+                      <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-sm text-sm font-medium">
                         {member.user.name.charAt(0).toUpperCase()}
                       </div>
                       <div className="min-w-0">

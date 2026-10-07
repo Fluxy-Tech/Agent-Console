@@ -177,8 +177,8 @@ const STATUS_FIELD_META: Record<string, { label: string; icon: LucideIcon }> = {
 function StatusTile({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) {
   const severity = statusSeverity(value);
   return (
-    <div className="border-border bg-card flex items-center gap-3 rounded-xl border p-4 shadow-xl">
-      <div className={cn("flex size-11 shrink-0 items-center justify-center rounded-full", SEVERITY_ICON_CLASS[severity])}>
+    <div className="bg-card flex items-center gap-3 rounded-xl p-4 shadow-xl">
+      <div className={cn("flex size-11 shrink-0 items-center justify-center rounded-sm", SEVERITY_ICON_CLASS[severity])}>
         <Icon className="size-5" />
       </div>
       <div className="min-w-0">
@@ -194,7 +194,7 @@ function StatusTile({ icon: Icon, label, value }: { icon: LucideIcon; label: str
 function WhatsappUsageTile({ icon: Icon, value }: { icon: LucideIcon; value: number }) {
   return (
     <div className="bg-primary/5 border-border flex items-start gap-3 rounded-xl border p-4 shadow-xl">
-      <div className="bg-primary/15 text-primary flex size-9 shrink-0 items-center justify-center rounded-full">
+      <div className="bg-primary/15 text-primary flex size-9 shrink-0 items-center justify-center rounded-sm">
         <Icon className="size-4" />
       </div>
       <div className="flex flex-col gap-1">
@@ -208,7 +208,7 @@ function WhatsappUsageTile({ icon: Icon, value }: { icon: LucideIcon; value: num
 function CampaignCountRow({ icon: Icon, label, count }: { icon: LucideIcon; label: string; count: number }) {
   return (
     <div className="border-border flex items-center gap-3 rounded-xl border p-3 shadow-xl">
-      <div className="bg-primary/15 text-primary flex size-9 shrink-0 items-center justify-center rounded-full">
+      <div className="bg-primary/15 text-primary flex size-9 shrink-0 items-center justify-center rounded-sm">
         <Icon className="size-4" />
       </div>
       <div className="min-w-0">
@@ -224,7 +224,7 @@ function CategoryConsumption({ byCategory }: { byCategory: ChannelCampaignReport
   return (
     <div className="border-border rounded-xl border p-4">
       <div className="mb-3 flex items-center gap-2">
-        <div className="bg-primary/15 text-primary flex size-9 shrink-0 items-center justify-center rounded-full">
+        <div className="bg-primary/15 text-primary flex size-9 shrink-0 items-center justify-center rounded-sm">
           <TrendingUp className="size-4" />
         </div>
         <p className="text-sm font-medium">Consumo por categoria</p>
@@ -235,8 +235,8 @@ function CategoryConsumption({ byCategory }: { byCategory: ChannelCampaignReport
           return (
             <div key={row.category ?? "none"} className="flex items-center gap-3 text-sm">
               <span className="text-muted-foreground w-28 shrink-0 truncate">{categoryLabel(row.category)}</span>
-              <div className="bg-muted h-2 flex-1 overflow-hidden rounded-full">
-                <div className="bg-primary h-full rounded-full" style={{ width: `${pct}%` }} />
+              <div className="bg-muted h-2 flex-1 overflow-hidden rounded-sm">
+                <div className="bg-primary h-full rounded-sm" style={{ width: `${pct}%` }} />
               </div>
               <span className="w-10 shrink-0 text-right font-medium">{pct}%</span>
             </div>

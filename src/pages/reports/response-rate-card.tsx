@@ -38,7 +38,7 @@ export function ResponseRateCard({ metrics }: ResponseRateCardProps) {
             <span className="text-2xl font-semibold">{formatNumber(reachedContacts)}</span>
             <span className="text-muted-foreground text-sm">de {formatNumber(totalContacts)} contatos</span>
           </div>
-          <div className="bg-muted mt-2 h-1.5 w-full overflow-hidden rounded-full">
+          <div className="bg-muted mt-2 h-1.5 w-full overflow-hidden rounded-sm">
             <div className="bg-success h-full" style={{ width: `${Math.min(reachPct, 100)}%` }} />
           </div>
           <p className="text-muted-foreground mt-2 text-xs">

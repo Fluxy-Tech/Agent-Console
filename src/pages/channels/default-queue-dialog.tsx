@@ -79,7 +79,7 @@ export function DefaultQueueDialog({ channel, open, onOpenChange, onSaved }: Def
                   isSelected ? "bg-primary/5 border-primary/30" : "hover:bg-accent",
                 )}
               >
-                <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-full">
+                <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-sm">
                   <ListChecks className="size-4" />
                 </div>
                 <div className="min-w-0 flex-1">

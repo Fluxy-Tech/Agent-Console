@@ -122,7 +122,7 @@ export function IdentityTab({
         <CardContent className="flex flex-col gap-3">
           <div className="border-border bg-primary/5 flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
-              <img src={openaiLogo} alt="OpenAI" className="size-10 shrink-0 rounded-full object-cover" />
+              <img src={openaiLogo} alt="OpenAI" className="size-10 shrink-0 rounded-sm object-cover" />
               <div>
                 <p className="text-sm font-semibold">OpenAI · RAG</p>
                 <p className="text-muted-foreground text-xs">Modelo principal para geração de respostas.</p>
@@ -146,7 +146,7 @@ export function IdentityTab({
 
           <div className="border-border bg-primary/5 flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
-              <img src={geminiLogo} alt="Gemini" className="size-10 shrink-0 rounded-full object-cover" />
+              <img src={geminiLogo} alt="Gemini" className="size-10 shrink-0 rounded-sm object-cover" />
               <div>
                 <p className="text-sm font-semibold">Gemini · ADK</p>
                 <p className="text-muted-foreground text-xs">Utilizado para operações de busca e ações.</p>

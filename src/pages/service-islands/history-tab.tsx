@@ -320,7 +320,7 @@ export function HistoryTab({ island }: { island: ServiceIsland }) {
                     <TableCell className="text-left">#{ticket.ticketNumber}</TableCell>
                     <TableCell className="text-left">
                       <div className="flex items-center gap-2">
-                        <div className="bg-primary/15 text-primary flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-medium">
+                        <div className="bg-primary/15 text-primary flex size-7 shrink-0 items-center justify-center rounded-sm text-xs font-medium">
                           {(ticket.target.name || ticket.target.waId || "?").charAt(0).toUpperCase()}
                         </div>
                         <span className="truncate font-medium">{ticket.target.name || ticket.target.waId || "—"}</span>

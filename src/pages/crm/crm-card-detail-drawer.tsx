@@ -79,9 +79,9 @@ function StageProgress({ card }: { card: CrmCardDetail }) {
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(percent)}
-        className="bg-muted h-2 w-full overflow-hidden rounded-full"
+        className="bg-muted h-2 w-full overflow-hidden rounded-sm"
       >
-        <div className="bg-primary h-full rounded-full transition-all" style={{ width: `${percent}%` }} />
+        <div className="bg-primary h-full rounded-sm transition-all" style={{ width: `${percent}%` }} />
       </div>
     </div>
   );

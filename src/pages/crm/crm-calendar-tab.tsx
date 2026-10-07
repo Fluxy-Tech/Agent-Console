@@ -115,7 +115,7 @@ function EventChip({
       }}
       title={`${event.name} · ${event.target.name || event.target.waId || "Contato"} · ${CALENDAR_STATUS_LABELS[key]}`}
       className={cn(
-        "flex w-full items-center gap-1 truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium transition-opacity hover:opacity-80",
+        "flex w-full items-center gap-1 truncate rounded-sm px-1.5 py-0.5 text-left text-[11px] font-medium transition-opacity hover:opacity-80",
         CALENDAR_STATUS_CHIP_CLASSES[key],
         className,
       )}
@@ -147,7 +147,7 @@ function MonthView({
   const today = new Date();
 
   return (
-    <div className="bg-card border-border overflow-hidden rounded-xl border">
+    <div className="bg-card overflow-hidden rounded-xl">
       <div className="border-border grid grid-cols-7 border-b">
         {WEEKDAY_LABELS.map((label) => (
           <div key={label} className="text-muted-foreground py-2 text-center text-xs font-medium uppercase">
@@ -184,7 +184,7 @@ function MonthView({
             >
               <span
                 className={cn(
-                  "flex size-6 items-center justify-center self-center rounded-full text-xs",
+                  "flex size-6 items-center justify-center self-center rounded-sm text-xs",
                   sameDay(day, today)
                     ? "bg-primary text-primary-foreground font-semibold"
                     : inMonth
@@ -283,7 +283,7 @@ function TimeGridView({
   }, []);
 
   return (
-    <div className="bg-card border-border overflow-hidden rounded-xl border">
+    <div className="bg-card overflow-hidden rounded-xl">
       <div className="border-border grid border-b" style={gridTemplate}>
         <div />
         {days.map((day) => {
@@ -295,7 +295,7 @@ function TimeGridView({
               </span>
               <span
                 className={cn(
-                  "flex size-8 items-center justify-center rounded-full text-base",
+                  "flex size-8 items-center justify-center rounded-sm text-base",
                   isToday && "bg-primary text-primary-foreground font-semibold",
                 )}
               >
@@ -371,7 +371,7 @@ function TimeGridView({
 
                 {isToday && (
                   <div className="pointer-events-none absolute inset-x-0 z-10" style={{ top: nowTop }}>
-                    <div className="bg-destructive absolute -top-1 -left-1 size-2 rounded-full" />
+                    <div className="bg-destructive absolute -top-1 -left-1 size-2 rounded-sm" />
                     <div className="bg-destructive h-0.5 w-full" />
                   </div>
                 )}

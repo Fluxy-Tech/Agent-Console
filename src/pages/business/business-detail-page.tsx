@@ -15,7 +15,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
-import { PageBreadcrumb } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -40,11 +39,13 @@ import { RolePermissionsCard } from "./role-permissions-card";
 
 const ROLE_OPTIONS: MemberRole[] = ["GERENTE", "SUPERVISOR", "ATENDENTE"];
 
-export function BusinessDetailPage() {
+/// `embedded`: aba "Acessos" da tela Configurações — sem o padding, a trilha e
+/// o cabeçalho com o nome da empresa, que a própria Configurações já tem.
+export function BusinessDetailPage({ embedded = false }: { embedded?: boolean } = {}) {
   const { id: paramId } = useParams<{ id: string }>();
   const can = useCan();
   const currentUserId = useAppSelector((s) => s.auth.user?.id);
-  // Sem :id na rota (tela "Acessos" do menu lateral, /access) = gerencia a
+  // Sem :id na rota (aba "Acessos" de Configurações) = gerencia a
   // empresa ativa. Com :id (vindo da lista de empresas) = gerencia a empresa
   // informada, mesmo que não seja a ativa (ex: administrador navegando).
   const activeCompanyId = useAppSelector((s) => s.activeCompany?.id);
@@ -211,19 +212,18 @@ export function BusinessDetailPage() {
   }
 
   return (
-    <div className="p-6">
+    <div className={embedded ? undefined : "p-6"}>
       <div className="flex flex-col gap-6">
-        {/* Sem :id (rota /access, vinda do menu lateral) = trilha fixa "Acessos".
-            Com :id (vindo da lista de empresas em /business) essa página não
+        {/* Com :id (vindo da lista de empresas em /business) essa página não
             faz parte do fluxo com sidebar, então não mostramos breadcrumb. */}
-        {!paramId && <PageBreadcrumb items={[{ label: "Acessos" }]} />}
-
-        <div>
-          <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">
-            {company?.name ?? "Empresa"}
-          </h1>
-          <p className="text-muted-foreground mt-1 text-sm">CNPJ {company?.cnpj}</p>
-        </div>
+        {!embedded && (
+          <div>
+            <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">
+              {company?.name ?? "Empresa"}
+            </h1>
+            <p className="text-muted-foreground mt-1 text-sm">CNPJ {company?.cnpj}</p>
+          </div>
+        )}
 
         <Card className="shadow-xl">
           <CardHeader>
@@ -263,7 +263,7 @@ export function BusinessDetailPage() {
                         <TableRow key={member.id}>
                           <TableCell className="text-left">
                             <div className="flex items-center justify-start gap-2">
-                              <div className="bg-primary/15 text-primary flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-medium">
+                              <div className="bg-primary/15 text-primary flex size-7 shrink-0 items-center justify-center rounded-sm text-xs font-medium">
                                 {member.user.name.trim().charAt(0).toUpperCase()}
                               </div>
                               <div className="min-w-0">

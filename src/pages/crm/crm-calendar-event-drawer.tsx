@@ -277,7 +277,7 @@ export function CrmCalendarEventDrawer({ eventId, onOpenChange, onChanged }: Crm
                       <SelectContent>
                         {CALENDAR_STATUS_OPTIONS.map((key) => (
                           <SelectItem key={key} value={key}>
-                            <span className={cn("size-2 rounded-full", CALENDAR_STATUS_DOT_CLASSES[key])} />
+                            <span className={cn("size-2 rounded-sm", CALENDAR_STATUS_DOT_CLASSES[key])} />
                             {CALENDAR_STATUS_LABELS[key]}
                           </SelectItem>
                         ))}

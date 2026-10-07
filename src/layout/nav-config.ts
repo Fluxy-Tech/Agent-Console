@@ -1,11 +1,13 @@
-import { BarChart3, Bot, Headset, KeyRound, LandPlot, LayoutDashboard, LifeBuoy, Ticket, UsersRound, Megaphone, MessageSquareText, Users, Waypoints } from "lucide-react";
+import { BarChart3, Bot, Headset, LandPlot, LayoutDashboard, LifeBuoy, Ticket, UsersRound, Megaphone, MessageSquareText, Settings, Users, Waypoints } from "lucide-react";
 import { PermissionAction } from "@/domain/permission-action";
 
 export interface NavItem {
   label: string;
   to: string;
   icon: typeof Bot;
-  action: PermissionAction;
+  /// Omitir = todo usuário com empresa ativa vê (ex.: Configurações, onde
+  /// cada um edita ao menos o próprio perfil).
+  action?: PermissionAction;
   /// Link pra fora do console (abre em nova aba), ex.: o Fluxy Desk.
   external?: boolean;
   /// Contador ao lado do item — "support" = chamados com mensagem não lida.
@@ -40,21 +42,10 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: "Links externos",
-    items: [
-      {
-        label: "Acessar o desk",
-        to: "https://desk.sturnusflow.com.br",
-        icon: Headset,
-        action: PermissionAction.SERVICE_ISLANDS_VIEW,
-        external: true,
-      },
-    ],
-  },
-  {
     label: "Configurações",
     items: [
-      { label: "Acessos", to: "/access", icon: KeyRound, action: PermissionAction.ACCESS_VIEW },
+      // Meu perfil (todos) + Empresa e Acessos (Gerente/Administrador).
+      { label: "Configurações", to: "/settings", icon: Settings },
       // Área das empresas (abrir e acompanhar tickets). Quem atende usa o
       // grupo "Suporte técnico" abaixo, com telas próprias.
       {
@@ -64,6 +55,18 @@ export const NAV_GROUPS: NavGroup[] = [
         action: PermissionAction.SUPPORT_VIEW,
         audience: "customer",
         badge: "support",
+      },
+    ],
+  },
+  {
+    label: "Links externos",
+    items: [
+      {
+        label: "Acessar o desk",
+        to: "https://desk.sturnusflow.com.br",
+        icon: Headset,
+        action: PermissionAction.SERVICE_ISLANDS_VIEW,
+        external: true,
       },
     ],
   },

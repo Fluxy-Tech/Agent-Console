@@ -100,7 +100,7 @@ export function BlockAgentsDialog({ targetId, targetName, blockedAgentIds, disab
                 className="border-border flex cursor-pointer items-center justify-between gap-3 rounded-lg border p-3"
               >
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-medium">
+                  <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-sm text-sm font-medium">
                     {agent.name.charAt(0).toUpperCase()}
                   </div>
                   <p className="truncate text-sm font-medium">{agent.name}</p>

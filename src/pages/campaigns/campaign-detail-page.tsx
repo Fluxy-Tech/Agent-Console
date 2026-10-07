@@ -361,8 +361,8 @@ export function CampaignDetailPage() {
             { label: "Canal", value: campaign.whatsappChannelDisplayNumber, icon: Phone },
             { label: "Agente", value: campaign.agentName, icon: Bot },
           ].map((field) => (
-            <div key={field.label} className="border-border bg-card flex items-center gap-3 rounded-lg border p-3 shadow-xl">
-              <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-full">
+            <div key={field.label} className="bg-card flex items-center gap-3 rounded-lg p-3 shadow-xl">
+              <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-sm">
                 <field.icon className="size-4" />
               </div>
               <div className="min-w-0">

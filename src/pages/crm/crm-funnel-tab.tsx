@@ -115,7 +115,7 @@ export function CrmFunnelTab() {
       {!data ? (
         <p className="text-muted-foreground text-sm">Carregando…</p>
       ) : (
-        <div className="bg-card border-border flex flex-col gap-1 rounded-xl border p-6">
+        <div className="bg-card flex flex-col gap-1 rounded-xl p-6">
           <div className="grid grid-cols-[1fr_4.5rem] items-center gap-3">
             <FunnelSegment
               width={widths[0]}

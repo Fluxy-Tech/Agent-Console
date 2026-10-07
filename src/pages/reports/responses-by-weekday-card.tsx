@@ -82,7 +82,7 @@ export function ResponsesByWeekdayCard({ metrics }: ResponsesByWeekdayCardProps)
             <span className="text-muted-foreground">Clientes que responderam as campanhas</span>
           </span>
           <span className="flex items-center gap-1.5 text-xs">
-            <span className="bg-muted border-border size-3 shrink-0 rounded-full border" />
+            <span className="bg-muted border-border size-3 shrink-0 rounded-sm border" />
             <span className="text-muted-foreground">Não houve disparos nesse dia</span>
           </span>
         </div>

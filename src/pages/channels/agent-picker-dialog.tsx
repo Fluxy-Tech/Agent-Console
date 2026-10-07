@@ -134,7 +134,7 @@ export function AgentPicker({ channel, disabled, onSaved }: AgentPickerProps) {
                 isCurrent ? "bg-primary/5 border-primary/30" : "hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50",
               )}
             >
-              <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-full">
+              <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-sm">
                 <Bot className="size-4" />
               </div>
               <div className="min-w-0 flex-1">

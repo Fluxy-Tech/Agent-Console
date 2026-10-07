@@ -44,7 +44,7 @@ function SwitchToSupportHub() {
   return (
     <div className="flex flex-1 items-center justify-center p-6">
       <Card className="flex max-w-md flex-col items-center gap-4 p-8 text-center shadow-xl">
-        <div className="bg-primary/10 text-primary flex size-12 items-center justify-center rounded-full">
+        <div className="bg-primary/10 text-primary flex size-12 items-center justify-center rounded-sm">
           <LifeBuoy className="size-6" />
         </div>
         <div className="flex flex-col gap-1">

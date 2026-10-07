@@ -111,7 +111,7 @@ export function PendingFileChips({
           <span className="text-muted-foreground shrink-0">{formatFileSize(file.size)}</span>
           <button
             type="button"
-            className="hover:bg-background rounded p-0.5"
+            className="hover:bg-background rounded-sm p-0.5"
             aria-label={`Remover ${file.name}`}
             disabled={disabled}
             onClick={() => onChange(files.filter((_, i) => i !== index))}

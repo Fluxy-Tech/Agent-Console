@@ -647,7 +647,7 @@ export function CampaignNewTab() {
                     {Array.from({ length: totalVars }).map((_, i) => (
                       <div key={i} className="border-border rounded-lg border p-3">
                         <div className="mb-1.5 flex items-center gap-2">
-                          <span className="bg-primary/10 text-primary flex size-5 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
+                          <span className="bg-primary/10 text-primary flex size-5 shrink-0 items-center justify-center rounded-sm text-xs font-semibold">
                             {i + 1}
                           </span>
                           <Label htmlFor={`preview-var-${i}`} className="text-xs font-normal">
@@ -701,7 +701,7 @@ export function CampaignNewTab() {
                 type="button"
                 onClick={() => setMode("CSV")}
                 className={cn(
-                  "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                  "rounded-sm border px-3 py-1 text-xs font-medium transition-colors",
                   mode === "CSV" ? "border-primary bg-primary text-primary-foreground" : "border-input bg-background",
                 )}
               >
@@ -711,7 +711,7 @@ export function CampaignNewTab() {
                 type="button"
                 onClick={() => setMode("MANUAL")}
                 className={cn(
-                  "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                  "rounded-sm border px-3 py-1 text-xs font-medium transition-colors",
                   mode === "MANUAL" ? "border-primary bg-primary text-primary-foreground" : "border-input bg-background",
                 )}
               >

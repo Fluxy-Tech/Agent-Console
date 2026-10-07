@@ -138,7 +138,7 @@ export function QueueFormDialog({ serviceIslandId, queue, members, onSaved, trig
                       type="button"
                       onClick={() => toggleDay(day)}
                       className={cn(
-                        "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                        "rounded-sm border px-3 py-1 text-xs font-medium transition-colors",
                         businessDays.includes(day)
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-input bg-background",

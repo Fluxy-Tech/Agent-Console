@@ -96,7 +96,7 @@ export function SupportTicketsLayout() {
                 type="button"
                 onClick={() => setFilter(key)}
                 className={cn(
-                  "rounded-full border px-2.5 py-1 text-xs transition-colors",
+                  "rounded-sm border px-2.5 py-1 text-xs transition-colors",
                   filter === key
                     ? "bg-primary text-primary-foreground border-primary"
                     : "border-border text-muted-foreground hover:bg-accent",
@@ -134,7 +134,7 @@ export function SupportTicketsLayout() {
                   >
                     <span className="flex w-full items-center justify-between gap-2">
                       <span className="flex min-w-0 items-center gap-1.5">
-                        {isUnread && <span className="bg-primary size-2 shrink-0 rounded-full" aria-label="Não lido" />}
+                        {isUnread && <span className="bg-primary size-2 shrink-0 rounded-sm" aria-label="Não lido" />}
                         <span className={cn("truncate text-sm", isUnread ? "font-semibold" : "font-medium")}>
                           {ticket.organization.name}
                         </span>
@@ -157,7 +157,7 @@ export function SupportTicketsLayout() {
                       </Badge>
                       <span className="text-muted-foreground truncate">{STATUS_INFO[ticket.status].label}</span>
                       {ticket.unreadCount > 0 ? (
-                        <span className="bg-primary text-primary-foreground ml-auto min-w-5 rounded-full px-1.5 text-center text-[10px] leading-5 font-semibold">
+                        <span className="bg-primary text-primary-foreground ml-auto min-w-5 rounded-sm px-1.5 text-center text-[10px] leading-5 font-semibold">
                           {ticket.unreadCount}
                         </span>
                       ) : (
@@ -187,7 +187,7 @@ export function SupportTicketsLayout() {
 export function SupportEmptyState() {
   return (
     <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-3 p-6 text-center">
-      <div className="bg-primary/10 text-primary flex size-14 items-center justify-center rounded-full">
+      <div className="bg-primary/10 text-primary flex size-14 items-center justify-center rounded-sm">
         <Ticket className="size-7" />
       </div>
       <p className="text-foreground text-sm font-medium">Selecione um ticket</p>

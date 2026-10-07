@@ -304,7 +304,7 @@ export function CampaignHistoryTab() {
                             <span className="text-xs">
                               {formatNumber(c.totalContacts)} / {formatNumber(c.expectedContacts)}
                             </span>
-                            <div className="bg-muted h-1.5 w-28 overflow-hidden rounded-full">
+                            <div className="bg-muted h-1.5 w-28 overflow-hidden rounded-sm">
                               <div
                                 className={progressPct >= 100 ? "bg-success h-full" : "bg-primary h-full"}
                                 style={{ width: `${Math.min(progressPct, 100)}%` }}

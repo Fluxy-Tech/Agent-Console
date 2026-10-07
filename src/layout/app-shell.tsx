@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
-import { ChevronsLeft, ChevronsRight, LogOut } from "lucide-react";
+import useSWR from "swr";
+import { ChevronsLeft, ChevronsRight, LogOut, Settings } from "lucide-react";
 import sturnusIcon from "@/assets/IconeAzulSemFundo.png";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -14,6 +15,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { clearAuth } from "@/store/slices/auth-slice";
 import { homePathFor, setActiveCompany } from "@/store/slices/active-company-slice";
 import { PermissionAction, ROLE_LABELS } from "@/domain/permission-action";
+import type { UserProfile } from "@/types/domain";
 
 export function AppShell() {
   const [collapsed, setCollapsed] = useState(false);
@@ -24,6 +26,8 @@ export function AppShell() {
   const activeCompany = useAppSelector((s) => s.activeCompany);
   const actingAsSupport = useIsSupportTeam();
   const { data: supportUnread } = useSupportUnread();
+  // Só pela foto do perfil (URL presignada); o nome continua vindo da store.
+  const { data: profile } = useSWR<UserProfile>(user ? "/api/me" : null);
   const badgeCounts = { support: supportUnread?.tickets ?? 0 };
 
   async function handleSignOut() {
@@ -52,7 +56,7 @@ export function AppShell() {
       <SupportNotifier />
       <aside
         className={cn(
-          "bg-sidebar-gradient border-border flex flex-col border-r transition-[width] duration-200",
+          "bg-card border-border flex flex-col border-r transition-[width] duration-200",
           collapsed ? "w-16" : "w-64",
         )}
       >
@@ -67,7 +71,7 @@ export function AppShell() {
             // outras telas não têm o que mostrar nessa empresa.
             const items = group.items.filter(
               (item) =>
-                can(item.action) &&
+                (!item.action || can(item.action)) &&
                 // Telas de quem atende só existem dentro da central Suporte
                 // Sturnus; em qualquer outra empresa vale o menu da empresa.
                 (item.audience !== "platformAdmin" || (!!user?.isPlatformAdmin && actingAsSupport)) &&
@@ -82,7 +86,7 @@ export function AppShell() {
                 {!collapsed && (
                   <p className="text-muted-foreground px-2 py-1 text-xs font-medium uppercase">{group.label}</p>
                 )}
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-2">
                   {items.map((item) => {
                     // Um item filho mais específico no menu (ex: /support/team
                     // dentro de /support) ganha o destaque sozinho.
@@ -108,8 +112,8 @@ export function AppShell() {
                       "flex items-center gap-2 rounded-md px-2 py-2 text-base transition-colors",
                       collapsed ? "justify-center" : "justify-start",
                       isActive
-                        ? "bg-primary text-primary-foreground font-medium"
-                        : "text-foreground/80 hover:bg-accent hover:text-accent-foreground",
+                        ? "bg-sidebar-active text-sidebar-active-foreground font-medium"
+                        : "text-sidebar-item-foreground hover:bg-sidebar-hover hover:text-sidebar-hover-foreground",
                     );
                     const badgeCount = item.badge ? badgeCounts[item.badge] : 0;
                     const badgeLabel = badgeCount > 99 ? "99+" : String(badgeCount);
@@ -119,13 +123,13 @@ export function AppShell() {
                           <item.icon className="size-5" />
                           {/* Recolhido não cabe o número — vira só um ponto no ícone. */}
                           {collapsed && badgeCount > 0 && (
-                            <span className="bg-destructive ring-sidebar absolute -top-1 -right-1 size-2.5 rounded-full ring-2" />
+                            <span className="bg-destructive ring-sidebar absolute -top-1 -right-1 size-2.5 rounded-sm ring-2" />
                           )}
                         </span>
                         {!collapsed && item.label}
                         {!collapsed && badgeCount > 0 && (
                           <span
-                            className="bg-destructive ml-auto min-w-5 rounded-full px-1.5 text-center text-xs leading-5 font-semibold text-white"
+                            className="bg-destructive ml-auto min-w-5 rounded-sm px-1.5 text-center text-xs leading-5 font-semibold text-white"
                             aria-label={`${badgeCount} chamado(s) com mensagem nova`}
                           >
                             {badgeLabel}
@@ -194,8 +198,12 @@ export function AppShell() {
                   collapsed ? "justify-center" : "justify-start",
                 )}
               >
-                <div className="bg-primary text-primary-foreground flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-medium">
-                  {user?.name?.[0]?.toUpperCase() ?? "?"}
+                <div className="bg-primary text-primary-foreground flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-sm text-sm font-medium">
+                  {profile?.imageUrl ? (
+                    <img src={profile.imageUrl} alt="" className="size-full object-cover" />
+                  ) : (
+                    (user?.name?.[0]?.toUpperCase() ?? "?")
+                  )}
                 </div>
                 {!collapsed && (
                   <div className="min-w-0">
@@ -225,6 +233,11 @@ export function AppShell() {
             <DropdownMenuLabel>{activeCompany?.name ?? "Sem empresa ativa"}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
+              <Link to="/settings">
+                <Settings className="size-4" /> Configurações
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
               <Link to="/business">Trocar empresa</Link>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleSignOut}>
@@ -234,7 +247,7 @@ export function AppShell() {
         </DropdownMenu>
       </aside>
 
-      <main className="bg-sidebar-gradient flex-1 overflow-y-auto">
+      <main className="bg-page flex-1 overflow-y-auto">
         <Outlet />
       </main>
     </div>

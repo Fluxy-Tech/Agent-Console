@@ -50,7 +50,7 @@ function SeverityToggles({
             title={isLast ? "Ao menos uma classificação" : SEVERITY_INFO[key].summary}
             onClick={() => onChange?.(active ? value.filter((item) => item !== key) : [...value, key])}
             className={cn(
-              "rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors disabled:cursor-not-allowed",
+              "rounded-sm border px-2.5 py-0.5 text-xs font-medium transition-colors disabled:cursor-not-allowed",
               active
                 ? cn(SEVERITY_INFO[key].accentClassName, "text-foreground")
                 : "border-border text-muted-foreground hover:bg-accent",

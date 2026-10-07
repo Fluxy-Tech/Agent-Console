@@ -39,7 +39,7 @@ export function ForgotPasswordPage() {
       <Card className="w-full max-w-sm shadow-xl">
         {sent ? (
           <CardContent className="flex flex-col items-center gap-3 pt-6 text-center">
-            <div className="bg-success/15 text-success flex size-12 items-center justify-center rounded-full">
+            <div className="bg-success/15 text-success flex size-12 items-center justify-center rounded-sm">
               <MailCheck className="size-6" />
             </div>
             <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">Verifique seu e-mail</h2>

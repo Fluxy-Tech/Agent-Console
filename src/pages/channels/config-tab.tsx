@@ -16,7 +16,7 @@ interface ConfigTabProps {
 function InfoRow({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) {
   return (
     <div className="border-border flex items-center gap-3 rounded-lg border p-3 shadow-xl">
-      <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-full">
+      <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-sm">
         <Icon className="size-4" />
       </div>
       <div className="min-w-0">

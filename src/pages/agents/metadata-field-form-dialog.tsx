@@ -104,7 +104,7 @@ export function MetadataFieldFormDialog({ agentId, field, onSaved, trigger }: Me
             />
             <p className="text-muted-foreground text-xs">
               Chave usada pelo agente:{" "}
-              <code className="bg-muted rounded px-1 py-0.5 font-mono">{keyPreview || "—"}</code>
+              <code className="bg-muted rounded-sm px-1 py-0.5 font-mono">{keyPreview || "—"}</code>
             </p>
           </div>
 

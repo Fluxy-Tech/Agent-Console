@@ -9,6 +9,17 @@ export interface Company {
   /// Empresa fixa "Suporte Sturnus": porta de entrada do time de suporte
   /// (só Administradores a veem). Acessar leva direto pra /support.
   isSupportHub: boolean;
+  /// URL presignada (expira em 1h) do logo; null sem logo. Só vem no GET /:id.
+  logoUrl?: string | null;
+}
+
+/// Dados do próprio usuário logado (GET/PUT /api/me).
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  /// URL presignada (expira em 1h) da foto; null sem foto.
+  imageUrl: string | null;
 }
 
 export interface InvitationMember {

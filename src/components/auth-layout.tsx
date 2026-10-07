@@ -39,8 +39,8 @@ export function AuthLayout({ children, hideMobileLogo, backgroundImage }: AuthLa
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70" />
         ) : (
           <>
-            <div className="pointer-events-none absolute -top-24 -left-24 size-96 rounded-full bg-white/10 blur-3xl" />
-            <div className="pointer-events-none absolute -right-32 bottom-0 size-[28rem] rounded-full bg-white/10 blur-3xl" />
+            <div className="pointer-events-none absolute -top-24 -left-24 size-96 rounded-sm bg-white/10 blur-3xl" />
+            <div className="pointer-events-none absolute -right-32 bottom-0 size-[28rem] rounded-sm bg-white/10 blur-3xl" />
             <div className="bg-dot-grid pointer-events-none absolute inset-0 opacity-[0.07]" />
           </>
         )}

@@ -7,6 +7,7 @@
   --font-display: "Bricolage Grotesque", "Inter", ui-sans-serif, system-ui, sans-serif;
 
   --color-background: var(--background);
+  --color-page: var(--page);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
@@ -41,18 +42,31 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-active: var(--sidebar-active);
+  --color-sidebar-active-foreground: var(--sidebar-active-foreground);
+  --color-sidebar-hover: var(--sidebar-hover);
+  --color-sidebar-hover-foreground: var(--sidebar-hover-foreground);
+  --color-sidebar-item-foreground: var(--sidebar-item-foreground);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  /* Portal com cantos levemente arredondados: todos os tokens de raio
+     usam o mesmo valor pequeno (equivalente ao rounded-lg). */
+  --radius-xs: var(--radius);
+  --radius-sm: var(--radius);
+  --radius-md: var(--radius);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xl: var(--radius);
+  --radius-2xl: var(--radius);
+  --radius-3xl: var(--radius);
+  --radius-4xl: var(--radius);
 }
 
 :root {
-  --radius: 1rem;
+  --radius: 0.5rem;
 
   /* Identidade azul Fluxy (#1E56E9). */
   --background: oklch(0.99 0.003 264);
+  /* Fundo da área de conteúdo do portal: cinza neutro (neutral-100), sem tom azul. */
+  --page: oklch(0.97 0 0);
   --foreground: oklch(0.18 0.02 264);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.18 0.02 264);
@@ -91,10 +105,18 @@
   --sidebar-accent-foreground: oklch(0.24 0.03 264);
   --sidebar-border: oklch(0.9 0.01 264);
   --sidebar-ring: oklch(0.5185 0.2290 263.94);
+  /* Item do menu lateral: ativo azul claro com texto azul escuro; hover cinza claro com texto preto. */
+  --sidebar-active: oklch(0.89 0.065 264);
+  --sidebar-active-foreground: oklch(0.36 0.16 264);
+  --sidebar-hover: oklch(0.95 0 0);
+  --sidebar-hover-foreground: oklch(0 0 0);
+  /* Itens não selecionados: preto mais claro, sólido (vale para texto e ícone). */
+  --sidebar-item-foreground: oklch(0.45 0.015 264);
 }
 
 .dark {
   --background: oklch(0.16 0.015 264);
+  --page: oklch(0.16 0 0);
   --foreground: oklch(0.96 0.005 264);
   --card: oklch(0.2 0.018 264);
   --card-foreground: oklch(0.96 0.005 264);
@@ -126,6 +148,11 @@
   --sidebar-accent-foreground: oklch(0.96 0.005 264);
   --sidebar-border: oklch(0.3 0.02 264);
   --sidebar-ring: oklch(0.70 0.20 264);
+  --sidebar-active: oklch(0.30 0.08 264);
+  --sidebar-active-foreground: oklch(0.85 0.09 264);
+  --sidebar-hover: oklch(0.27 0.01 264);
+  --sidebar-hover-foreground: oklch(1 0 0);
+  --sidebar-item-foreground: oklch(0.75 0.01 264);
 }
 
 @layer base {

@@ -63,8 +63,8 @@ function lastCreatedTicket(tickets: IslandTicket[]): IslandTicket | null {
 
 function InfoTile({ icon: Icon, label, value }: { icon: typeof Ticket; label: string; value: string }) {
   return (
-    <div className="border-border bg-card flex items-center gap-3 rounded-lg border p-3 shadow-xl">
-      <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-full">
+    <div className="bg-card flex items-center gap-3 rounded-lg p-3 shadow-xl">
+      <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-sm">
         <Icon className="size-4" />
       </div>
       <div className="min-w-0">
@@ -107,7 +107,7 @@ function InProgressTicketsTable({ tickets, emptyLabel }: { tickets: IslandTicket
               <TableRow key={ticket.id}>
                 <TableCell className="text-left">
                   <div className="flex items-center justify-start gap-2">
-                    <div className="bg-primary/15 text-primary flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-medium">
+                    <div className="bg-primary/15 text-primary flex size-7 shrink-0 items-center justify-center rounded-sm text-xs font-medium">
                       {ticketInitial(ticket)}
                     </div>
                     <span className="truncate font-medium">{ticketDisplayName(ticket)}</span>
@@ -121,8 +121,8 @@ function InProgressTicketsTable({ tickets, emptyLabel }: { tickets: IslandTicket
                 <TableCell>
                   <span className="inline-flex items-center justify-center gap-1.5">
                     <span className="relative flex size-2">
-                      <span className="absolute inline-flex size-full animate-ping rounded-full bg-green-400 opacity-75" />
-                      <span className="relative inline-flex size-2 rounded-full bg-green-500" />
+                      <span className="absolute inline-flex size-full animate-ping rounded-sm bg-green-400 opacity-75" />
+                      <span className="relative inline-flex size-2 rounded-sm bg-green-500" />
                     </span>
                     Em atendimento
                   </span>
@@ -165,7 +165,7 @@ function WaitingTicketsTable({ tickets, emptyLabel }: { tickets: IslandTicket[];
               <TableRow key={ticket.id}>
                 <TableCell className="text-left">
                   <div className="flex items-center justify-start gap-2">
-                    <div className="bg-primary/15 text-primary flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-medium">
+                    <div className="bg-primary/15 text-primary flex size-7 shrink-0 items-center justify-center rounded-sm text-xs font-medium">
                       {ticketInitial(ticket)}
                     </div>
                     <span className="truncate font-medium">{ticketDisplayName(ticket)}</span>
@@ -176,7 +176,7 @@ function WaitingTicketsTable({ tickets, emptyLabel }: { tickets: IslandTicket[];
                 <TableCell className="text-muted-foreground">{formatDuration(elapsedMs)}</TableCell>
                 <TableCell>
                   <span className="inline-flex items-center justify-center gap-1.5">
-                    <span className="bg-warning size-1.5 rounded-full" />
+                    <span className="bg-warning size-1.5 rounded-sm" />
                     Aguardando
                   </span>
                 </TableCell>
@@ -252,31 +252,19 @@ export function MonitoringTab({ islandId }: { islandId: string }) {
   );
 
   return (
-    <div className="border-border bg-card overflow-hidden rounded-xl border">
+    <div className="bg-card overflow-hidden rounded-xl">
       <Tabs defaultValue="in-progress" className="gap-0">
-        <TabsList className="border-border h-auto w-full justify-start gap-1 rounded-none border-b bg-transparent p-2">
-          <TabsTrigger
-            value="in-progress"
-            className="flex-none px-3 py-1.5 data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
-          >
+        <TabsList className="border-border w-full justify-start rounded-none border-b">
+          <TabsTrigger value="in-progress">
             <Headphones /> Em andamento
           </TabsTrigger>
-          <TabsTrigger
-            value="waiting"
-            className="flex-none px-3 py-1.5 data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
-          >
+          <TabsTrigger value="waiting">
             <Hourglass /> Aguardando atendimento
           </TabsTrigger>
-          <TabsTrigger
-            value="attendants"
-            className="flex-none px-3 py-1.5 data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
-          >
+          <TabsTrigger value="attendants">
             <Activity /> Atendentes
           </TabsTrigger>
-          <TabsTrigger
-            value="queues"
-            className="flex-none px-3 py-1.5 data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none"
-          >
+          <TabsTrigger value="queues">
             <Send /> Filas
           </TabsTrigger>
         </TabsList>
@@ -370,7 +358,7 @@ export function MonitoringTab({ islandId }: { islandId: string }) {
         <CardContent className="flex flex-col gap-4">
           <div className="grid grid-cols-3 gap-3">
             <div className="bg-success/10 flex flex-col items-center gap-1 rounded-lg p-3 text-center">
-              <span className="bg-success size-1.5 rounded-full" />
+              <span className="bg-success size-1.5 rounded-sm" />
               <p className="text-success text-xl font-semibold">{data.attendants.online}</p>
               <p className="text-muted-foreground text-xs">Online</p>
               <p className="text-muted-foreground text-[11px]">
@@ -378,7 +366,7 @@ export function MonitoringTab({ islandId }: { islandId: string }) {
               </p>
             </div>
             <div className="bg-warning/10 flex flex-col items-center gap-1 rounded-lg p-3 text-center">
-              <span className="bg-warning size-1.5 rounded-full" />
+              <span className="bg-warning size-1.5 rounded-sm" />
               <p className="text-warning text-xl font-semibold">{data.attendants.paused}</p>
               <p className="text-muted-foreground text-xs">Em pausa</p>
               <p className="text-muted-foreground text-[11px]">
@@ -386,7 +374,7 @@ export function MonitoringTab({ islandId }: { islandId: string }) {
               </p>
             </div>
             <div className="bg-muted flex flex-col items-center gap-1 rounded-lg p-3 text-center">
-              <span className="bg-muted-foreground size-1.5 rounded-full" />
+              <span className="bg-muted-foreground size-1.5 rounded-sm" />
               <p className="text-xl font-semibold">{data.attendants.offline}</p>
               <p className="text-muted-foreground text-xs">Offline</p>
               <p className="text-muted-foreground text-[11px]">
@@ -397,7 +385,7 @@ export function MonitoringTab({ islandId }: { islandId: string }) {
 
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-3">
-              <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-full">
+              <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-sm">
                 <Users className="size-4" />
               </div>
               <div>
@@ -441,7 +429,7 @@ export function MonitoringTab({ islandId }: { islandId: string }) {
                     <TableRow key={a.userId}>
                       <TableCell className="text-left">
                         <div className="flex items-center justify-start gap-2">
-                          <div className="bg-primary/10 text-primary flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-medium">
+                          <div className="bg-primary/10 text-primary flex size-7 shrink-0 items-center justify-center rounded-sm text-xs font-medium">
                             {a.name.charAt(0).toUpperCase()}
                           </div>
                           <span className="truncate font-medium">{a.name}</span>
@@ -453,7 +441,7 @@ export function MonitoringTab({ islandId }: { islandId: string }) {
                       <TableCell className="text-muted-foreground">{a.ticketCount}</TableCell>
                       <TableCell>
                         <span className="inline-flex items-center justify-center gap-1.5">
-                          <span className={cn("size-1.5 rounded-full", STATUS_DOT[a.status])} />
+                          <span className={cn("size-1.5 rounded-sm", STATUS_DOT[a.status])} />
                           {STATUS_LABELS[a.status]}
                         </span>
                       </TableCell>

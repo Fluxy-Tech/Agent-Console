@@ -3,14 +3,15 @@ import useSWR from "swr";
 import { toast } from "sonner";
 import {
   DndContext,
+  DragOverlay,
   PointerSensor,
   useDraggable,
   useDroppable,
   useSensor,
   useSensors,
   type DragEndEvent,
+  type DragStartEvent,
 } from "@dnd-kit/core";
-import { CSS } from "@dnd-kit/utilities";
 import {
   CalendarDays,
   Check,
@@ -52,27 +53,13 @@ import { CrmSettingsTab } from "./crm-settings-tab";
 import { CrmFunnelTab } from "./crm-funnel-tab";
 import { CrmStageFormDialog } from "./crm-stage-form-dialog";
 
-function CrmCardItem({ card, canDrag, onOpen }: { card: CrmCard; canDrag: boolean; onOpen: () => void }) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
-    id: card.id,
-    disabled: !canDrag,
-  });
+const CARD_CLASSES = "bg-card flex w-full flex-col gap-1 rounded-lg p-3 text-left shadow-sm";
 
+function CrmCardBody({ card }: { card: CrmCard }) {
   return (
-    <button
-      ref={setNodeRef}
-      type="button"
-      onClick={onOpen}
-      style={transform ? { transform: CSS.Translate.toString(transform) } : undefined}
-      className={cn(
-        "bg-card border-border flex w-full flex-col gap-1 rounded-lg border p-3 text-left shadow-sm",
-        isDragging && "z-10 opacity-70",
-      )}
-      {...listeners}
-      {...attributes}
-    >
+    <>
       <div className="flex items-center gap-2.5">
-        <div className="bg-primary/15 text-primary flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-medium">
+        <div className="bg-primary/15 text-primary flex size-9 shrink-0 items-center justify-center rounded-sm text-sm font-medium">
           {(card.target.name || card.target.waId || "?").trim().charAt(0).toUpperCase()}
         </div>
         <div className="flex min-w-0 flex-col">
@@ -85,7 +72,7 @@ function CrmCardItem({ card, canDrag, onOpen }: { card: CrmCard; canDrag: boolea
       <div className="border-border mt-1 flex items-center justify-between gap-2 border-t pt-2">
         <div className="flex min-w-0 items-center gap-1.5">
           <Badge variant="outline" className="w-fit shrink-0 gap-1.5 text-[10px]">
-            <span className={cn("size-2 rounded-full", CARD_PRIORITY_DOT_CLASSES[card.statusPriority ?? "LOW"])} />
+            <span className={cn("size-2 rounded-sm", CARD_PRIORITY_DOT_CLASSES[card.statusPriority ?? "LOW"])} />
             {CARD_PRIORITY_LABELS[card.statusPriority ?? "LOW"]}
           </Badge>
           <span className="text-muted-foreground truncate text-[10px]">
@@ -101,6 +88,28 @@ function CrmCardItem({ card, canDrag, onOpen }: { card: CrmCard; canDrag: boolea
           </span>
         </div>
       </div>
+    </>
+  );
+}
+
+function CrmCardItem({ card, canDrag, onOpen }: { card: CrmCard; canDrag: boolean; onOpen: () => void }) {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: card.id,
+    disabled: !canDrag,
+  });
+
+  // O card arrastado é desenhado pelo DragOverlay (fora da coluna com rolagem,
+  // senão ficaria cortado); aqui fica só o "fantasma" no lugar de origem.
+  return (
+    <button
+      ref={setNodeRef}
+      type="button"
+      onClick={onOpen}
+      className={cn(CARD_CLASSES, isDragging && "opacity-40")}
+      {...listeners}
+      {...attributes}
+    >
+      <CrmCardBody card={card} />
     </button>
   );
 }
@@ -149,7 +158,7 @@ function StageColumn({
     <div
       ref={setNodeRef}
       className={cn(
-        "bg-muted/40 flex w-72 shrink-0 flex-col gap-3 rounded-xl border p-3 transition-colors",
+        "bg-muted/40 flex h-full w-72 shrink-0 flex-col gap-3 rounded-xl border p-3 transition-colors",
         isOver ? "border-primary" : "border-border",
       )}
     >
@@ -214,7 +223,8 @@ function StageColumn({
         )}
       </div>
 
-      <div className="flex min-h-16 flex-col gap-2">
+      {/* Só a lista de cards rola; a barra aparece quando os cards passam da altura da coluna. */}
+      <div className="-mx-1 flex min-h-16 flex-1 flex-col gap-2 overflow-y-auto px-1 pb-1">
         {stage.cards.map((card) => (
           <CrmCardItem key={card.id} card={card} canDrag={canDrag} onOpen={() => onOpenCard(card.id)} />
         ))}
@@ -230,9 +240,11 @@ export function CrmPage() {
   const { data, mutate } = useSWR<{ stages: CrmStage[] }>("/api/crm");
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [tab, setTab] = useState("kanban");
+  const [draggingCardId, setDraggingCardId] = useState<string | null>(null);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
 
   const stages = data?.stages ?? [];
+  const draggingCard = draggingCardId ? stages.flatMap((s) => s.cards).find((c) => c.id === draggingCardId) : undefined;
   const nextPosition = stages.length === 0 ? 1 : Math.max(...stages.map((s) => s.position)) + 1;
 
   async function handleRenameStage(stageId: string, nameStage: string) {
@@ -253,7 +265,12 @@ export function CrmPage() {
     }
   }
 
+  function handleDragStart(event: DragStartEvent) {
+    setDraggingCardId(String(event.active.id));
+  }
+
   async function handleDragEnd(event: DragEndEvent) {
+    setDraggingCardId(null);
     const cardId = String(event.active.id);
     const targetStageId = event.over ? String(event.over.id) : null;
     if (!targetStageId || !data) return;
@@ -269,14 +286,19 @@ export function CrmPage() {
         return { ...stage, cards: stage.cards.filter((c) => c.id !== cardId) };
       }
       if (stage.id === targetStageId) {
-        return { ...stage, cards: [...stage.cards, { ...card, stagesCrmId: targetStageId }] };
+        return {
+          ...stage,
+          cards: [...stage.cards, { ...card, stagesCrmId: targetStageId }],
+        };
       }
       return stage;
     });
     await mutate({ stages: optimisticStages }, { revalidate: false });
 
     try {
-      await api.patch(`/api/crm/cards/${cardId}/move`, { stagesCrmId: targetStageId });
+      await api.patch(`/api/crm/cards/${cardId}/move`, {
+        stagesCrmId: targetStageId,
+      });
       await mutate();
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : "Não foi possível mover o card.");
@@ -285,7 +307,9 @@ export function CrmPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    // No Kanban a página ocupa a altura da tela para o quadro esticar até embaixo;
+    // nas outras abas o conteúdo segue o fluxo normal e a página rola.
+    <div className={cn("flex flex-col gap-6 p-6", tab === "kanban" && "h-full")}>
       <PageBreadcrumb items={[{ label: "Kanban Board", to: "/crm" }, { label: "Início" }]} />
 
       <div className="flex items-center justify-between gap-3">
@@ -308,7 +332,7 @@ export function CrmPage() {
         )}
       </div>
 
-      <Tabs value={tab} onValueChange={setTab}>
+      <Tabs value={tab} onValueChange={setTab} className={cn(tab === "kanban" && "min-h-0 flex-1")}>
         <TabsList>
           <TabsTrigger value="kanban">
             <SquareKanban /> Kanban
@@ -324,9 +348,14 @@ export function CrmPage() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="kanban">
-          <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-            <div className="flex gap-4 overflow-x-auto pb-4">
+        <TabsContent value="kanban" className="min-h-0">
+          <DndContext
+            sensors={sensors}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            onDragCancel={() => setDraggingCardId(null)}
+          >
+            <div className="flex h-full gap-4 overflow-x-auto pb-4">
               {stages.map((stage) => (
                 <StageColumn
                   key={stage.id}
@@ -339,6 +368,13 @@ export function CrmPage() {
                 />
               ))}
             </div>
+            <DragOverlay>
+              {draggingCard && (
+                <div className={cn(CARD_CLASSES, "w-66 cursor-grabbing shadow-lg")}>
+                  <CrmCardBody card={draggingCard} />
+                </div>
+              )}
+            </DragOverlay>
           </DndContext>
         </TabsContent>
 

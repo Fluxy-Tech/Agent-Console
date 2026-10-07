@@ -307,7 +307,7 @@ export function TargetsListPage() {
                           onClick={() => window.open(`/targets/${target.id}`, "_blank")}
                         >
                           <div className="flex items-center justify-start gap-3">
-                            <div className="bg-primary/15 text-primary flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-medium">
+                            <div className="bg-primary/15 text-primary flex size-8 shrink-0 items-center justify-center rounded-sm text-sm font-medium">
                               {initial ?? <UserRound className="size-4" />}
                             </div>
                             <div>

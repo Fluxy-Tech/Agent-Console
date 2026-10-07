@@ -116,7 +116,7 @@ export function MetadataFieldsCard({ agentId, canWrite }: MetadataFieldsCardProp
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="font-medium">{field.name}</p>
-                      <code className="bg-muted text-muted-foreground rounded px-1 py-0.5 font-mono text-xs">
+                      <code className="bg-muted text-muted-foreground rounded-sm px-1 py-0.5 font-mono text-xs">
                         {field.nameToAgent}
                       </code>
                     </div>

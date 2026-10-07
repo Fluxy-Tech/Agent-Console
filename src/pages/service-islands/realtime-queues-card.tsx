@@ -54,7 +54,7 @@ export function RealtimeQueuesCard({ islandId }: { islandId: string }) {
           </div>
         </div>
         <span className="text-muted-foreground flex shrink-0 items-center gap-1.5 text-xs">
-          <span className="bg-success size-1.5 rounded-full" /> Atualizado agora
+          <span className="bg-success size-1.5 rounded-sm" /> Atualizado agora
         </span>
       </CardHeader>
       <CardContent>
