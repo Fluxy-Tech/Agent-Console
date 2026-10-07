@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
 import { refreshSessionState } from "@/hooks/use-bootstrap-session";
 import { signIn } from "@/lib/auth-client";
+import { homePathFor } from "@/store/slices/active-company-slice";
 import { useAppDispatch } from "@/store/hooks";
 
 export function SignInPage() {
@@ -33,9 +34,9 @@ export function SignInPage() {
       return;
     }
 
-    await refreshSessionState(dispatch);
+    const activeCompany = await refreshSessionState(dispatch);
     setLoading(false);
-    navigate("/targets", { replace: true });
+    navigate(homePathFor(activeCompany), { replace: true });
   }
 
   return (

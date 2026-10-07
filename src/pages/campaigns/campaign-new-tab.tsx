@@ -112,6 +112,14 @@ export function CampaignNewTab() {
   const [manualEmail, setManualEmail] = useState("");
   const [manualVariables, setManualVariables] = useState<string[]>([]);
 
+  // Disparo em massa (CSV) é escalonado: batchSize contatos a cada
+  // batchIntervalMinutes, enviados pelo scheduler do Campaign-Worker.
+  const [batchSize, setBatchSize] = useState("");
+  const [batchIntervalMinutes, setBatchIntervalMinutes] = useState("");
+  const [scheduleEnabled, setScheduleEnabled] = useState(false);
+  // Valor cru do <input type="datetime-local"> (horário local, sem fuso).
+  const [scheduledAt, setScheduledAt] = useState("");
+
   const currentIsland = islands?.find((i) => i.whatsappChannelId === whatsappChannelId);
   const queuesForIsland = currentIsland?.queues ?? [];
   const selectedQueue = queuesForIsland.find((q) => q.id === routeToQueueId);
@@ -224,6 +232,17 @@ export function CampaignNewTab() {
   if (manualEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(manualEmail)) manualErrors.push("Email inválido");
   const manualMissingVariable = manualVariables.slice(0, totalVars).some((v) => !v);
 
+  const batchSizeNumber = Number(batchSize);
+  const batchIntervalNumber = Number(batchIntervalMinutes);
+  const pacingValid =
+    mode !== "CSV" ||
+    (Number.isInteger(batchSizeNumber) && batchSizeNumber >= 1 && Number.isInteger(batchIntervalNumber) && batchIntervalNumber >= 1);
+  const totalBatches = pacingValid && batchSizeNumber > 0 ? Math.ceil(validRows.length / batchSizeNumber) : 0;
+  const totalDurationMinutes = Math.max(totalBatches - 1, 0) * batchIntervalNumber;
+
+  const scheduledDate = scheduleEnabled && scheduledAt ? new Date(scheduledAt) : null;
+  const scheduleValid = !scheduleEnabled || (scheduledDate !== null && scheduledDate.getTime() > Date.now());
+
   const canSubmit = Boolean(
     whatsappChannelId &&
       selectedTemplate &&
@@ -234,7 +253,9 @@ export function CampaignNewTab() {
         ? rows && rows.length > 0 && invalidRows.length === 0
         : manualPhoneDigits.length >= 8 && manualErrors.length === 0 && !manualMissingVariable) &&
       (!routeToHuman || routeToQueueId) &&
-      (!routeToHuman || !assignSpecificAttendant || routeToUserId),
+      (!routeToHuman || !assignSpecificAttendant || routeToUserId) &&
+      pacingValid &&
+      scheduleValid,
   );
 
   function buildContacts(): ContactPayload[] {
@@ -283,8 +304,17 @@ export function CampaignNewTab() {
         contacts,
         routeToQueueId: routeToHuman ? routeToQueueId : undefined,
         routeToUserId: routeToHuman && assignSpecificAttendant ? routeToUserId : undefined,
+        batchSize: mode === "CSV" ? batchSizeNumber : undefined,
+        batchIntervalMinutes: mode === "CSV" ? batchIntervalNumber : undefined,
+        scheduledAt: scheduledDate ? scheduledDate.toISOString() : undefined,
       });
-      toast.success("Campanha adicionada à fila de disparo.");
+      toast.success(
+        scheduledDate
+          ? `Campanha agendada para ${scheduledDate.toLocaleString("pt-BR")}.`
+          : mode === "CSV"
+            ? "Campanha criada — o disparo em lotes já começou."
+            : "Campanha adicionada à fila de disparo.",
+      );
       navigate(`/campaigns/${result.id}`);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Não foi possível criar a campanha.");
@@ -810,11 +840,89 @@ export function CampaignNewTab() {
               />
             </div>
 
-            {error && <p className="text-destructive text-sm">{error}</p>}
+            {mode === "CSV" && (
+              <div className="flex flex-col gap-3">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="campaign-batch-size">Disparos por lote</Label>
+                    <Input
+                      id="campaign-batch-size"
+                      type="number"
+                      min={1}
+                      step={1}
+                      value={batchSize}
+                      onChange={(e) => setBatchSize(e.target.value)}
+                      placeholder="Ex: 10"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="campaign-batch-interval">Intervalo entre lotes (minutos)</Label>
+                    <Input
+                      id="campaign-batch-interval"
+                      type="number"
+                      min={1}
+                      step={1}
+                      value={batchIntervalMinutes}
+                      onChange={(e) => setBatchIntervalMinutes(e.target.value)}
+                      placeholder="Ex: 10"
+                    />
+                  </div>
+                </div>
+                {pacingValid && validRows.length > 0 ? (
+                  <p className="text-muted-foreground text-xs">
+                    {validRows.length} contato(s) em {totalBatches} lote(s) de até {batchSizeNumber}, com {batchIntervalNumber}{" "}
+                    min entre eles — duração estimada de {totalDurationMinutes} min. Você pode pausar a campanha a qualquer
+                    momento pela tela de detalhes.
+                  </p>
+                ) : (
+                  <p className="text-muted-foreground text-xs">
+                    O disparo em massa é enviado em lotes: informe quantos contatos por vez e quanto tempo esperar entre um
+                    lote e o próximo.
+                  </p>
+                )}
+              </div>
+            )}
+
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                <Switch
+                  checked={scheduleEnabled}
+                  onCheckedChange={setScheduleEnabled}
+                  className="data-[state=checked]:bg-success"
+                />
+                <div>
+                  <Label>Agendar disparo</Label>
+                  <p className="text-muted-foreground text-xs">Escolha a data e o horário em que a campanha deve começar.</p>
+                </div>
+              </div>
+              {scheduleEnabled && (
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="campaign-scheduled-at">Início do disparo</Label>
+                  <Input
+                    id="campaign-scheduled-at"
+                    type="datetime-local"
+                    className="w-fit"
+                    value={scheduledAt}
+                    onChange={(e) => setScheduledAt(e.target.value)}
+                  />
+                  {scheduledAt && !scheduleValid && (
+                    <p className="text-destructive text-xs">Escolha uma data e horário no futuro.</p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {error &&<p className="text-destructive text-sm">{error}</p>}
 
             <Button type="button" disabled={!canSubmit} onClick={handleSubmit} className="w-fit gap-2">
               <FileSpreadsheet className="size-4" />
-              {checkingBlocked ? "Verificando contatos…" : submitting ? "Enviando..." : "Disparar campanha"}
+              {checkingBlocked
+                ? "Verificando contatos…"
+                : submitting
+                  ? "Enviando..."
+                  : scheduleEnabled
+                    ? "Agendar campanha"
+                    : "Disparar campanha"}
             </Button>
           </CardContent>
         </Card>

@@ -4,12 +4,13 @@ import { api } from "../lib/api";
 import { authClient } from "../lib/auth-client";
 import type { AppDispatch } from "../store/store";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { setActiveCompany } from "../store/slices/active-company-slice";
+import { setActiveCompany, type ActiveCompany } from "../store/slices/active-company-slice";
 import { clearAuth, setLoading, setUser } from "../store/slices/auth-slice";
 
 interface Company {
   id: string;
   name: string;
+  isSupportHub: boolean;
 }
 
 interface Member {
@@ -25,7 +26,7 @@ interface Member {
 /// um remount/re-render que nunca viria (o efeito de useBootstrapSession só
 /// roda uma vez, perto da raiz — sozinho ele nunca saberia que uma nova sessão
 /// acabou de ser criada por uma página completamente diferente).
-export async function refreshSessionState(dispatch: AppDispatch): Promise<void> {
+export async function refreshSessionState(dispatch: AppDispatch): Promise<ActiveCompany | null> {
   dispatch(setLoading());
 
   const session = await authClient.getSession().catch(() => null);
@@ -35,7 +36,7 @@ export async function refreshSessionState(dispatch: AppDispatch): Promise<void> 
   if (!sessionUser) {
     dispatch(clearAuth());
     dispatch(setActiveCompany(null));
-    return;
+    return null;
   }
 
   dispatch(
@@ -44,13 +45,14 @@ export async function refreshSessionState(dispatch: AppDispatch): Promise<void> 
       name: sessionUser.name,
       email: sessionUser.email,
       isPlatformAdmin: sessionUser.role === "admin",
+      isSupportAgent: sessionUser.role === "support",
     }),
   );
 
   const activeOrganizationId = sessionData?.activeOrganizationId;
   if (!activeOrganizationId) {
     dispatch(setActiveCompany(null));
-    return;
+    return null;
   }
 
   try {
@@ -61,16 +63,18 @@ export async function refreshSessionState(dispatch: AppDispatch): Promise<void> 
 
     const membership = members.find((m) => m.userId === sessionUser.id);
 
-    dispatch(
-      setActiveCompany({
-        id: company.id,
-        name: company.name,
-        memberRole: membership?.role ?? null,
-        memberPermissions: membership?.permissions ?? null,
-      }),
-    );
+    const activeCompany: ActiveCompany = {
+      id: company.id,
+      name: company.name,
+      memberRole: membership?.role ?? null,
+      memberPermissions: membership?.permissions ?? null,
+      isSupportHub: company.isSupportHub,
+    };
+    dispatch(setActiveCompany(activeCompany));
+    return activeCompany;
   } catch {
     dispatch(setActiveCompany(null));
+    return null;
   }
 }
 

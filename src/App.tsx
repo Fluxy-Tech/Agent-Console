@@ -22,6 +22,16 @@ import { TargetsListPage } from "@/pages/targets/targets-list-page";
 import { ChannelDetailPage } from "@/pages/channels/channel-detail-page";
 import { ChannelsListPage } from "@/pages/channels/channels-list-page";
 import { CrmPage } from "@/pages/crm/crm-page";
+import { SupportDashboardPage } from "@/pages/support/support-dashboard-page";
+import { SupportEmptyState, SupportTicketsLayout } from "@/pages/support/support-tickets-layout";
+import { SupportTeamPage } from "@/pages/support/support-team-page";
+import { SupportTicketPage } from "@/pages/support/support-ticket-page";
+import {
+  TechnicalSupportEmptyState,
+  TechnicalSupportLayout,
+} from "@/pages/technical-support/technical-support-layout";
+import { TechnicalSupportTicketPage } from "@/pages/technical-support/technical-support-ticket-page";
+import { CustomerSupportOnly, SupportTeamOnly } from "@/routes/support-guards";
 import { RedirectIfBootstrapped, RequireActiveCompany, RequireAuth } from "@/routes/require-auth";
 import { useBootstrapSession } from "@/hooks/use-bootstrap-session";
 
@@ -87,6 +97,24 @@ export function App() {
               <Route path="/service-island/:id" element={<ServiceIslandDetailPage />} />
               <Route path="/service-island/:islandId/queue/:queueId" element={<ServiceIslandQueueDetailPage />} />
               <Route path="/access" element={<BusinessDetailPage />} />
+              {/* Suporte técnico em duas áreas separadas, ambas no estilo
+                  do Desk (lista à esquerda + conversa no <Outlet/>):
+                  /support = time de suporte (quem atende);
+                  /technical-support = empresas (quem abre os tickets). */}
+              <Route element={<SupportTeamOnly />}>
+                <Route path="/support" element={<SupportTicketsLayout />}>
+                  <Route index element={<SupportEmptyState />} />
+                  <Route path=":id" element={<SupportTicketPage />} />
+                </Route>
+                <Route path="/support/dashboard" element={<SupportDashboardPage />} />
+                <Route path="/support/team" element={<SupportTeamPage />} />
+              </Route>
+              <Route element={<CustomerSupportOnly />}>
+                <Route path="/technical-support" element={<TechnicalSupportLayout />}>
+                  <Route index element={<TechnicalSupportEmptyState />} />
+                  <Route path=":id" element={<TechnicalSupportTicketPage />} />
+                </Route>
+              </Route>
             </Route>
           </Route>
         </Route>

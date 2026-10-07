@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAppSelector } from "@/store/hooks";
+import { homePathFor } from "@/store/slices/active-company-slice";
 
 export function RequireAuth() {
   const status = useAppSelector((s) => s.auth.status);
@@ -26,9 +27,10 @@ export function RequireActiveCompany() {
 export function RedirectIfBootstrapped({ children }: { children: React.ReactNode }) {
   const status = useAppSelector((s) => s.auth.status);
   const user = useAppSelector((s) => s.auth.user);
+  const activeCompany = useAppSelector((s) => s.activeCompany);
 
   if (status !== "ready") return null;
-  if (user) return <Navigate to="/targets" replace />;
+  if (user) return <Navigate to={homePathFor(activeCompany)} replace />;
 
   return <>{children}</>;
 }

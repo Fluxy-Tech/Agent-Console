@@ -1,7 +1,7 @@
 import { type FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
-import { Building2, Plus, Ticket } from "lucide-react";
+import { Building2, LifeBuoy, Plus, Ticket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { api, ApiError } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setActiveCompany } from "@/store/slices/active-company-slice";
+import { homePathFor, setActiveCompany, type ActiveCompany } from "@/store/slices/active-company-slice";
 import type { Company, Member } from "@/types/domain";
 
 export function BusinessListPage() {
@@ -26,6 +26,8 @@ export function BusinessListPage() {
   const user = useAppSelector((s) => s.auth.user);
   const activeCompanyId = useAppSelector((s) => s.activeCompany?.id);
   const { data: companies, mutate } = useSWR<Company[]>("/api/companies");
+  // "Suporte Sturnus" (só Administradores recebem) sempre no topo da lista.
+  const sortedCompanies = companies && [...companies].sort((a, b) => Number(b.isSupportHub) - Number(a.isSupportHub));
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [name, setName] = useState("");
@@ -80,15 +82,16 @@ export function BusinessListPage() {
       await api.post("/api/session/active-company", { companyId: company.id });
       const members = await api.get<Member[]>(`/api/companies/${company.id}/members`);
       const membership = members.find((m) => m.userId === user?.id);
-      dispatch(
-        setActiveCompany({
-          id: company.id,
-          name: company.name,
-          memberRole: membership?.role ?? null,
-          memberPermissions: membership?.permissions ?? null,
-        }),
-      );
-      navigate("/targets", { replace: true });
+      const activeCompany: ActiveCompany = {
+        id: company.id,
+        name: company.name,
+        memberRole: membership?.role ?? null,
+        memberPermissions: membership?.permissions ?? null,
+        isSupportHub: company.isSupportHub,
+      };
+      dispatch(setActiveCompany(activeCompany));
+      // Suporte Sturnus abre direto na central de chamados.
+      navigate(homePathFor(activeCompany), { replace: true });
     } finally {
       setActivating(null);
     }
@@ -169,15 +172,29 @@ export function BusinessListPage() {
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          {companies?.map((company) => (
-            <Card key={company.id} className={cn("shadow-xl", company.id === activeCompanyId && "border-primary")}>
+          {sortedCompanies?.map((company) => (
+            <Card
+              key={company.id}
+              className={cn(
+                "shadow-xl",
+                company.isSupportHub && "border-primary/40 bg-primary/5",
+                company.id === activeCompanyId && "border-primary",
+              )}
+            >
               <CardHeader className="flex-row items-center gap-3 space-y-0">
-                <div className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
-                  <Building2 className="size-5" />
+                <div
+                  className={cn(
+                    "flex size-10 items-center justify-center rounded-lg",
+                    company.isSupportHub ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary",
+                  )}
+                >
+                  {company.isSupportHub ? <LifeBuoy className="size-5" /> : <Building2 className="size-5" />}
                 </div>
                 <div>
                   <CardTitle className="text-base">{company.name}</CardTitle>
-                  <p className="text-muted-foreground text-xs">{company.cnpj}</p>
+                  <p className="text-muted-foreground text-xs">
+                    {company.isSupportHub ? "Chamados de suporte técnico de todas as empresas" : company.cnpj}
+                  </p>
                 </div>
               </CardHeader>
               <CardContent className="flex gap-2">
@@ -187,11 +204,14 @@ export function BusinessListPage() {
                   disabled={activating === company.id}
                   onClick={() => handleActivate(company)}
                 >
-                  {company.id === activeCompanyId ? "Ativa" : "Acessar"}
+                  {company.id === activeCompanyId ? "Ativa" : company.isSupportHub ? "Acessar suporte" : "Acessar"}
                 </Button>
-                <Button size="sm" variant="ghost" onClick={() => navigate(`/business/${company.id}`)}>
-                  Gerenciar acessos
-                </Button>
+                {/* Ninguém é membro da central de suporte — não há acessos pra gerenciar. */}
+                {!company.isSupportHub && (
+                  <Button size="sm" variant="ghost" onClick={() => navigate(`/business/${company.id}`)}>
+                    Gerenciar acessos
+                  </Button>
+                )}
               </CardContent>
             </Card>
           ))}

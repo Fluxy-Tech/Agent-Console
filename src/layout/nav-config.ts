@@ -1,4 +1,4 @@
-import { BarChart3, Bot, Headset, KeyRound, LandPlot, Megaphone, MessageSquareText, Users, Waypoints } from "lucide-react";
+import { BarChart3, Bot, Headset, KeyRound, LandPlot, LayoutDashboard, LifeBuoy, Ticket, UsersRound, Megaphone, MessageSquareText, Users, Waypoints } from "lucide-react";
 import { PermissionAction } from "@/domain/permission-action";
 
 export interface NavItem {
@@ -8,6 +8,12 @@ export interface NavItem {
   action: PermissionAction;
   /// Link pra fora do console (abre em nova aba), ex.: o Fluxy Desk.
   external?: boolean;
+  /// Contador ao lado do item — "support" = chamados com mensagem não lida.
+  badge?: "support";
+  /// Restrição extra além de `action`: "platformAdmin" = só Administrador;
+  /// "supportTeam" = Administrador ou flag de suporte (quem atende tickets);
+  /// "customer" = quem NÃO é do time de suporte (as empresas).
+  audience?: "platformAdmin" | "supportTeam" | "customer";
 }
 
 export interface NavGroup {
@@ -47,6 +53,45 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: "Configurações",
-    items: [{ label: "Acessos", to: "/access", icon: KeyRound, action: PermissionAction.ACCESS_VIEW }],
+    items: [
+      { label: "Acessos", to: "/access", icon: KeyRound, action: PermissionAction.ACCESS_VIEW },
+      // Área das empresas (abrir e acompanhar tickets). Quem atende usa o
+      // grupo "Suporte técnico" abaixo, com telas próprias.
+      {
+        label: "Suporte técnico",
+        to: "/technical-support",
+        icon: LifeBuoy,
+        action: PermissionAction.SUPPORT_VIEW,
+        audience: "customer",
+        badge: "support",
+      },
+    ],
+  },
+  {
+    label: "Suporte técnico",
+    items: [
+      {
+        label: "Dashboard",
+        to: "/support/dashboard",
+        icon: LayoutDashboard,
+        action: PermissionAction.SUPPORT_VIEW,
+        audience: "supportTeam",
+      },
+      {
+        label: "Tickets",
+        to: "/support",
+        icon: Ticket,
+        action: PermissionAction.SUPPORT_VIEW,
+        audience: "supportTeam",
+        badge: "support",
+      },
+      {
+        label: "Time de suporte",
+        to: "/support/team",
+        icon: UsersRound,
+        action: PermissionAction.SUPPORT_VIEW,
+        audience: "platformAdmin",
+      },
+    ],
   },
 ];

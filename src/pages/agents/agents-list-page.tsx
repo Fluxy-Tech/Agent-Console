@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
 import { toast } from "sonner";
-import { Bot, Plus, Trash2 } from "lucide-react";
+import { Bot, Coins, Plus, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,13 +21,17 @@ import { Card } from "@/components/ui/card";
 import { useCan } from "@/hooks/use-can";
 import { PermissionAction } from "@/domain/permission-action";
 import { api, ApiError } from "@/lib/api";
-import type { Agent } from "@/types/domain";
+import type { Agent, OrganizationTokenUsage, SeriesPeriod } from "@/types/domain";
+import { formatTokens, TokenUsageOverview } from "./token-usage-overview";
 
 export function AgentsListPage() {
   const navigate = useNavigate();
   const can = useCan();
   const canWrite = can(PermissionAction.AGENTS_WRITE);
   const { data: agents, mutate } = useSWR<Agent[]>("/api/agents");
+  const [tokenPeriod, setTokenPeriod] = useState<SeriesPeriod>("current-month");
+  const { data: tokenUsage } = useSWR<OrganizationTokenUsage>(`/api/agents/token-usage?period=${tokenPeriod}`);
+  const tokensByAgent = new Map(tokenUsage?.agents.map((usage) => [usage.agentId, usage]));
 
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -59,6 +63,15 @@ export function AgentsListPage() {
           </Button>
         )}
       </div>
+
+      <TokenUsageOverview
+        data={tokenUsage}
+        period={tokenPeriod}
+        onPeriodChange={setTokenPeriod}
+        totalLabel="Consumo da organização"
+        chartTitle="Consumo de tokens da organização"
+        chartDescription="Soma dos tokens gastos por todos os agentes desta empresa, separada por LLM. O consumo de cada agente aparece no card dele abaixo."
+      />
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {agents?.map((agent) => (
@@ -111,6 +124,7 @@ export function AgentsListPage() {
                 </AlertDialog>
               )}
             </div>
+            <AgentTokensFooter usage={tokensByAgent.get(agent.id)} loaded={!!tokenUsage} />
           </Card>
         ))}
         {agents && agents.length === 0 && (
@@ -119,6 +133,34 @@ export function AgentsListPage() {
           </p>
         )}
       </div>
+    </div>
+  );
+}
+
+/// Rodapé do card do agente com o consumo dele no período escolhido acima.
+function AgentTokensFooter({
+  usage,
+  loaded,
+}: {
+  usage: OrganizationTokenUsage["agents"][number] | undefined;
+  loaded: boolean;
+}) {
+  return (
+    <div className="border-border flex items-center justify-between gap-2 border-t pt-3 text-xs">
+      <span className="text-muted-foreground flex items-center gap-1.5">
+        <Coins className="size-3.5" /> Tokens no período
+      </span>
+      {loaded ? (
+        <span className="text-right">
+          <span className="font-semibold">{formatTokens(usage?.total ?? 0)}</span>
+          <span className="text-muted-foreground">
+            {" "}
+            · ADK {formatTokens(usage?.ADK ?? 0)} · OpenAI {formatTokens(usage?.OPENAI ?? 0)}
+          </span>
+        </span>
+      ) : (
+        <span className="text-muted-foreground">…</span>
+      )}
     </div>
   );
 }

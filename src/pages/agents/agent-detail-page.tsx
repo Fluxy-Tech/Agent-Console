@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useSWR from "swr";
 import { toast } from "sonner";
-import { Database, MessageCircleMore, Save, User } from "lucide-react";
+import { Coins, Database, MessageCircleMore, Save, User } from "lucide-react";
 import { PageBreadcrumb } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,11 +10,12 @@ import type { RagUploadBatch } from "@/components/rag-documents-dialog";
 import { useCan } from "@/hooks/use-can";
 import { PermissionAction } from "@/domain/permission-action";
 import { api, ApiError } from "@/lib/api";
-import type { Agent, RagDocument } from "@/types/domain";
+import type { Agent, RagDocument, SeriesPeriod, TokenUsage } from "@/types/domain";
 import type { FormState } from "./agent-form-types";
 import { IdentityTab } from "./identity-tab";
 import { MessagesTab } from "./messages-tab";
 import { RagTab } from "./rag-tab";
+import { TokenUsageOverview } from "./token-usage-overview";
 
 async function uploadRagBatch(agentId: string, batch: RagUploadBatch): Promise<void> {
   for (const file of batch.files) {
@@ -106,6 +107,11 @@ export function AgentDetailPage() {
   const { data: ragDocuments, mutate: mutateRagDocuments } = useSWR<RagDocument[]>(
     !isNew && id ? `/api/agents/${id}/rag/documents` : null,
     { refreshInterval: (data) => (data?.some((d) => d.status === "PROCESSING") ? 3000 : 0) },
+  );
+
+  const [tokenPeriod, setTokenPeriod] = useState<SeriesPeriod>("current-month");
+  const { data: tokenUsage } = useSWR<TokenUsage>(
+    !isNew && id ? `/api/agents/${id}/token-usage?period=${tokenPeriod}` : null,
   );
 
   useEffect(() => {
@@ -206,6 +212,11 @@ export function AgentDetailPage() {
           <TabsTrigger value="rag">
             <Database /> RAG
           </TabsTrigger>
+          {!isNew && (
+            <TabsTrigger value="tokens">
+              <Coins /> Consumo
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="identity">
@@ -240,6 +251,19 @@ export function AgentDetailPage() {
             ragDocuments={ragDocuments}
           />
         </TabsContent>
+
+        {!isNew && (
+          <TabsContent value="tokens">
+            <TokenUsageOverview
+              data={tokenUsage}
+              period={tokenPeriod}
+              onPeriodChange={setTokenPeriod}
+              totalLabel="Consumo do agente"
+              chartTitle="Consumo de tokens deste agente"
+              chartDescription="Tokens gastos pelo agente no período, separados por LLM: ADK (geração das respostas via Gemini) e OpenAI (escolha de fila, resumos, mensagens de erro e embeddings do RAG)."
+            />
+          </TabsContent>
+        )}
       </Tabs>
 
       {error && <p className="text-destructive text-sm">{error}</p>}

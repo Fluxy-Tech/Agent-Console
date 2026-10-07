@@ -6,6 +6,9 @@ export interface Company {
   cnpj: string;
   status: string | null;
   hasApiAccessToken: boolean;
+  /// Empresa fixa "Suporte Sturnus": porta de entrada do time de suporte
+  /// (só Administradores a veem). Acessar leva direto pra /support.
+  isSupportHub: boolean;
 }
 
 export interface InvitationMember {
@@ -182,6 +185,26 @@ export interface MessagesSeries {
   period: SeriesPeriod;
   granularity: "day" | "month";
   points: { date: string; sent: number; received: number }[];
+}
+
+/// Origem do consumo de tokens: ADK = geração da resposta via Google ADK
+/// (Gemini); OPENAI = chamadas diretas à OpenAI (fila de handoff, resumo do
+/// card, mensagem de erro livre, embeddings do RAG).
+export type TokenOrigin = "OPENAI" | "ADK";
+
+/// GET /api/agents/:id/token-usage?period= — consumo de tokens de um agente.
+export interface TokenUsage {
+  period: SeriesPeriod;
+  granularity: "day" | "month";
+  total: number;
+  byOrigin: Record<TokenOrigin, number>;
+  points: ({ date: string } & Record<TokenOrigin, number>)[];
+}
+
+/// GET /api/agents/token-usage?period= — consumo da empresa inteira, com o
+/// detalhamento por agente (ordenado do que mais consumiu pro que menos).
+export interface OrganizationTokenUsage extends TokenUsage {
+  agents: ({ agentId: string; name: string; deleted: boolean; total: number } & Record<TokenOrigin, number>)[];
 }
 
 export interface ChannelCampaignReport {
@@ -599,6 +622,12 @@ export interface CampaignListItem {
   createdByName: string | null;
   createdByEmail: string | null;
   sentAt: string;
+  /// Disparo escalonado (null = disparo imediato, sem pausa/lotes).
+  batchSize: number | null;
+  batchIntervalMinutes: number | null;
+  active: boolean;
+  scheduledAt: string | null;
+  nextBatchAt: string | null;
 }
 
 export interface CampaignTargetItem {
@@ -689,6 +718,12 @@ export interface ReportOverview {
 
 export interface CampaignDetail extends CampaignListItem {
   targets: CampaignTargetItem[];
+  routeToQueueId: string | null;
+  routeToQueueName: string | null;
+  routeToUserId: string | null;
+  routeToUserName: string | null;
+  /// Contatos que ainda não foram disparados (só disparo escalonado).
+  pendingContacts: number;
 }
 
 export interface CampaignListResult {
@@ -705,4 +740,111 @@ export interface CrmSettings {
   kanban: { userIds: string[]; maxCardsPerUser: number | null; visibleToAgent: boolean };
   /// Membros ativos da empresa, pra montar as listas de seleção.
   users: { userId: string; name: string; email: string; role: string }[];
+}
+
+// ---------- SUPORTE TÉCNICO ----------
+
+export type SupportSeverity = "S1" | "S2" | "S3";
+export type SupportTicketStatus = "OPEN" | "IN_PROGRESS" | "WAITING_CUSTOMER" | "RESOLVED";
+
+export interface SupportUser {
+  id: string;
+  name: string;
+  email: string;
+}
+
+/// Anexo já com URL presignada de leitura (1h) — gerada a cada GET.
+export interface SupportAttachment {
+  id: string;
+  fileName: string;
+  contentType: string;
+  size: number;
+  url: string;
+  createdAt: string;
+  uploadedBy: SupportUser;
+}
+
+/// GET /api/support/tickets — item da lista. organization só importa pro
+/// time de apoio (Administrador), que vê chamados de todas as empresas.
+export interface SupportTicketSummary {
+  id: string;
+  code: number;
+  title: string;
+  severity: SupportSeverity;
+  status: SupportTicketStatus;
+  lastMessageAt: string;
+  resolvedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  organization: { id: string; name: string };
+  openedBy: SupportUser;
+  _count: { messages: number; attachments: number };
+  /// Última mensagem (prévia na lista, estilo Desk) — null = só a abertura.
+  lastMessage: {
+    content: string;
+    authorType: "CUSTOMER" | "SUPPORT";
+    createdAt: string;
+    attachmentCount: number;
+  } | null;
+  /// Mensagens do outro lado ainda não lidas pelo usuário logado.
+  unreadCount: number;
+  /// Só pro time de apoio: chamado nunca aberto por ele (e não resolvido).
+  isNew: boolean;
+}
+
+/// GET /api/support/unread — só os chamados com algo não lido.
+export interface SupportUnread {
+  tickets: number;
+  messages: number;
+  items: { ticketId: string; code: number; title: string; unreadCount: number; isNew: boolean }[];
+}
+
+/// SUPPORT = time de apoio (Administrador da plataforma); CUSTOMER = empresa.
+export interface SupportMessage {
+  id: string;
+  authorType: "CUSTOMER" | "SUPPORT";
+  content: string;
+  createdAt: string;
+  author: SupportUser;
+  attachments: SupportAttachment[];
+}
+
+/// GET /api/support/tickets/:id — attachments = anexos da abertura.
+export interface SupportTicketDetail
+  extends Omit<SupportTicketSummary, "_count" | "unreadCount" | "isNew" | "lastMessage"> {
+  description: string;
+  attachments: SupportAttachment[];
+  messages: SupportMessage[];
+}
+
+/// GET /api/support/team — Administradores + quem tem a flag de suporte.
+export interface SupportTeamMember {
+  id: string;
+  name: string;
+  email: string;
+  role: "admin" | "support";
+  banned: boolean | null;
+  createdAt: string;
+  /// Classificações que atende (Administrador: sempre todas).
+  severities: SupportSeverity[];
+  /// Só quem tem a flag "support" sai do time por esta tela.
+  removable: boolean;
+  /// Administrador fixo pela configuração (PLATFORM_ADMIN_EMAILS).
+  locked: boolean;
+}
+
+export interface SupportStatusCounts {
+  total: number;
+  OPEN: number;
+  IN_PROGRESS: number;
+  WAITING_CUSTOMER: number;
+  RESOLVED: number;
+}
+
+/// GET /api/support/dashboard — só time de suporte, dentro das classificações
+/// de quem consulta (severities null = todas).
+export interface SupportDashboard {
+  totals: SupportStatusCounts;
+  severities: SupportSeverity[] | null;
+  organizations: ({ organizationId: string; name: string } & SupportStatusCounts)[];
 }

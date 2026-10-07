@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
 import { AlertTriangle, CheckCircle2, List, Send } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DateRange } from "@/components/calendar";
@@ -313,6 +314,17 @@ export function CampaignHistoryTab() {
                             {c.totalFailures > 0 && (
                               <span className="text-destructive text-xs">{c.totalFailures} falha(s)</span>
                             )}
+                            {c.status === "PROCESSING" && c.batchSize !== null && !c.active && (
+                              <Badge variant="outline">Pausada</Badge>
+                            )}
+                            {c.status === "PROCESSING" &&
+                              c.active &&
+                              c.scheduledAt &&
+                              new Date(c.scheduledAt).getTime() > Date.now() && (
+                                <Badge variant="outline">
+                                  Agendada · {new Date(c.scheduledAt).toLocaleString("pt-BR")}
+                                </Badge>
+                              )}
                           </div>
                         </TableCell>
                       </TableRow>

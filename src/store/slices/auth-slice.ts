@@ -5,6 +5,10 @@ export interface AuthUser {
   name: string;
   email: string;
   isPlatformAdmin: boolean;
+  /// User.role === "support" — time de suporte técnico: só a tela de Suporte
+  /// técnico (chamados de todas as empresas). Opcional por causa do cache
+  /// persistido de versões antigas.
+  isSupportAgent?: boolean;
 }
 
 interface AuthState {

@@ -19,6 +19,8 @@ export enum PermissionAction {
   ACCESS_VIEW = "ACCESS_VIEW",
   ACCESS_WRITE = "ACCESS_WRITE",
   REPORTS_VIEW = "REPORTS_VIEW",
+  SUPPORT_VIEW = "SUPPORT_VIEW",
+  SUPPORT_WRITE = "SUPPORT_WRITE",
   COMPANIES_MANAGE_OWN = "COMPANIES_MANAGE_OWN",
   COMPANIES_MANAGE_ALL = "COMPANIES_MANAGE_ALL",
 }
@@ -56,6 +58,8 @@ export const PERMISSION_MATRIX: Record<MemberRole, PermissionAction[]> = {
     PermissionAction.ACCESS_VIEW,
     PermissionAction.ACCESS_WRITE,
     PermissionAction.REPORTS_VIEW,
+    PermissionAction.SUPPORT_VIEW,
+    PermissionAction.SUPPORT_WRITE,
     PermissionAction.COMPANIES_MANAGE_OWN,
   ],
 };
@@ -85,6 +89,8 @@ export const CONFIGURABLE_PERMISSIONS: PermissionAction[] = [
   PermissionAction.SERVICE_ISLANDS_WRITE,
   PermissionAction.QUEUES_VIEW,
   PermissionAction.QUEUES_WRITE,
+  PermissionAction.SUPPORT_VIEW,
+  PermissionAction.SUPPORT_WRITE,
 ];
 
 /// Permissões efetivas: sem personalização (null) vale o papel; com
@@ -118,4 +124,5 @@ export const SCREEN_PERMISSIONS: ScreenPermission[] = [
     view: [PermissionAction.SERVICE_ISLANDS_VIEW, PermissionAction.QUEUES_VIEW],
     write: [PermissionAction.SERVICE_ISLANDS_WRITE, PermissionAction.QUEUES_WRITE],
   },
+  { label: "Suporte técnico", view: [PermissionAction.SUPPORT_VIEW], write: [PermissionAction.SUPPORT_WRITE] },
 ];

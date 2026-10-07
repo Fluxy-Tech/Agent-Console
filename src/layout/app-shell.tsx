@@ -5,13 +5,15 @@ import sturnusIcon from "@/assets/IconeAzulSemFundo.png";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { useCan } from "@/hooks/use-can";
+import { useCan, useIsSupportTeam } from "@/hooks/use-can";
+import { useSupportUnread } from "@/hooks/use-support-unread";
 import { NAV_GROUPS } from "./nav-config";
+import { SupportNotifier } from "./support-notifier";
 import { signOut } from "@/lib/auth-client";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { clearAuth } from "@/store/slices/auth-slice";
-import { setActiveCompany } from "@/store/slices/active-company-slice";
-import { ROLE_LABELS } from "@/domain/permission-action";
+import { homePathFor, setActiveCompany } from "@/store/slices/active-company-slice";
+import { PermissionAction, ROLE_LABELS } from "@/domain/permission-action";
 
 export function AppShell() {
   const [collapsed, setCollapsed] = useState(false);
@@ -20,6 +22,9 @@ export function AppShell() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth.user);
   const activeCompany = useAppSelector((s) => s.activeCompany);
+  const actingAsSupport = useIsSupportTeam();
+  const { data: supportUnread } = useSupportUnread();
+  const badgeCounts = { support: supportUnread?.tickets ?? 0 };
 
   async function handleSignOut() {
     await signOut();
@@ -44,20 +49,32 @@ export function AppShell() {
 
   return (
     <div className="flex h-dvh overflow-hidden">
+      <SupportNotifier />
       <aside
         className={cn(
           "bg-sidebar-gradient border-border flex flex-col border-r transition-[width] duration-200",
           collapsed ? "w-16" : "w-64",
         )}
       >
-        <Link to="/targets" className={cn("flex h-14 items-center gap-2 px-4", collapsed ? "justify-center" : "justify-start")}>
+        <Link to={homePathFor(activeCompany)} className={cn("flex h-14 items-center gap-2 px-4", collapsed ? "justify-center" : "justify-start")}>
           <img src={sturnusIcon} alt="Sturnus Flow" className="h-8 w-8 shrink-0 object-contain" />
           {!collapsed && <span className="font-display text-lg font-semibold">Sturnus Flow</span>}
         </Link>
 
         <nav className="flex-1 overflow-y-auto px-2 py-2">
           {NAV_GROUPS.map((group) => {
-            const items = group.items.filter((item) => can(item.action));
+            // Na central "Suporte Sturnus" o menu é só o de suporte — as
+            // outras telas não têm o que mostrar nessa empresa.
+            const items = group.items.filter(
+              (item) =>
+                can(item.action) &&
+                // Telas de quem atende só existem dentro da central Suporte
+                // Sturnus; em qualquer outra empresa vale o menu da empresa.
+                (item.audience !== "platformAdmin" || (!!user?.isPlatformAdmin && actingAsSupport)) &&
+                (item.audience !== "supportTeam" || actingAsSupport) &&
+                (item.audience !== "customer" || !actingAsSupport) &&
+                (!activeCompany?.isSupportHub || item.action === PermissionAction.SUPPORT_VIEW),
+            );
             if (items.length === 0) return null;
 
             return (
@@ -67,8 +84,17 @@ export function AppShell() {
                 )}
                 <div className="flex flex-col gap-1">
                   {items.map((item) => {
+                    // Um item filho mais específico no menu (ex: /support/team
+                    // dentro de /support) ganha o destaque sozinho.
+                    const hasMoreSpecificItem = group.items.some(
+                      (other) =>
+                        other !== item &&
+                        other.to.startsWith(`${item.to}/`) &&
+                        (location.pathname === other.to || location.pathname.startsWith(`${other.to}/`)),
+                    );
                     const isActive =
                       !item.external &&
+                      !hasMoreSpecificItem &&
                       (location.pathname === item.to || location.pathname.startsWith(`${item.to}/`));
                     // NavLink.className aceita uma função, mas quando este link
                     // vira o asChild de um Radix Slot (TooltipTrigger, abaixo), o
@@ -85,10 +111,26 @@ export function AppShell() {
                         ? "bg-primary text-primary-foreground font-medium"
                         : "text-foreground/80 hover:bg-accent hover:text-accent-foreground",
                     );
+                    const badgeCount = item.badge ? badgeCounts[item.badge] : 0;
+                    const badgeLabel = badgeCount > 99 ? "99+" : String(badgeCount);
                     const content = (
                       <>
-                        <item.icon className="size-5 shrink-0" />
+                        <span className="relative shrink-0">
+                          <item.icon className="size-5" />
+                          {/* Recolhido não cabe o número — vira só um ponto no ícone. */}
+                          {collapsed && badgeCount > 0 && (
+                            <span className="bg-destructive ring-sidebar absolute -top-1 -right-1 size-2.5 rounded-full ring-2" />
+                          )}
+                        </span>
                         {!collapsed && item.label}
+                        {!collapsed && badgeCount > 0 && (
+                          <span
+                            className="bg-destructive ml-auto min-w-5 rounded-full px-1.5 text-center text-xs leading-5 font-semibold text-white"
+                            aria-label={`${badgeCount} chamado(s) com mensagem nova`}
+                          >
+                            {badgeLabel}
+                          </span>
+                        )}
                       </>
                     );
                     // Links externos (ex.: Fluxy Desk) abrem em nova aba.
@@ -159,7 +201,7 @@ export function AppShell() {
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium">{user?.name}</p>
                     <p className="text-muted-foreground truncate text-xs">
-                      {activeCompany?.memberRole ? ROLE_LABELS[activeCompany.memberRole] : user?.isPlatformAdmin ? "Administrador" : ""}
+                      {activeCompany?.memberRole ? ROLE_LABELS[activeCompany.memberRole] : user?.isPlatformAdmin ? "Administrador" : user?.isSupportAgent ? "Suporte" : ""}
                     </p>
                   </div>
                 )}
