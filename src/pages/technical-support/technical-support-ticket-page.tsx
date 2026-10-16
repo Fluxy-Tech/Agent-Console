@@ -135,7 +135,7 @@ export function TechnicalSupportTicketPage() {
       <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-3 p-6 text-center text-sm">
         <p>Ticket não encontrado.</p>
         <Button variant="outline" size="sm" onClick={() => navigate("/technical-support")}>
-          Voltar para o suporte técnico
+          Voltar para Ajuda &amp; Suporte
         </Button>
       </div>
     );

@@ -79,7 +79,7 @@ export function TechnicalSupportLayout() {
         <div className="border-border flex items-center justify-between gap-2 border-b px-4 py-3">
           <div className="flex items-center gap-2">
             <LifeBuoy className="text-primary size-5" />
-            <h1 className="font-[family-name:var(--font-display)] text-lg font-semibold">Suporte técnico</h1>
+            <h1 className="font-[family-name:var(--font-display)] text-lg font-semibold">Ajuda &amp; Suporte</h1>
           </div>
           <div className="flex items-center gap-1">
             <BrowserNotificationsButton />
