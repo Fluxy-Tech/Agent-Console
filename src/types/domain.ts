@@ -110,7 +110,8 @@ export type AgentFeatureType =
   | "LOCATION_REQUEST"
   | "CONTEXTUAL_REPLY"
   | "LINK_PREVIEW"
-  | "PAYMENT";
+  | "PAYMENT"
+  | "FLOW";
 
 /// GET /api/agents/:id/features — `config` muda por tipo (ver
 /// pages/agents/features/feature-editors.tsx).

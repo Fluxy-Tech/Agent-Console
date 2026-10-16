@@ -17,6 +17,7 @@ import {
   ContextualReplyEditor,
   CtaUrlEditor,
   DEFAULT_CONFIGS,
+  FlowEditor,
   LinkPreviewEditor,
   ListEditor,
   LocationEditor,
@@ -39,6 +40,7 @@ const EDITORS: Partial<Record<AgentFeatureType, ComponentType<EditorProps>>> = {
   LOCATION_REQUEST: LocationEditor,
   CONTEXTUAL_REPLY: ContextualReplyEditor,
   LINK_PREVIEW: LinkPreviewEditor,
+  FLOW: FlowEditor,
 };
 
 const CLEANERS: Partial<Record<AgentFeatureType, (config: Config) => Config>> = {
@@ -56,6 +58,7 @@ const PROMPT_PLACEHOLDER: Partial<Record<AgentFeatureType, string>> = {
   LOCATION_REQUEST: "Ex.: Quando o contato quiser saber o prazo ou o valor da entrega.",
   CONTEXTUAL_REPLY: "Opcional. Ex.: Sempre que o contato mandar várias perguntas seguidas.",
   LINK_PREVIEW: "Ex.: Quando o contato pedir o link do blog ou de um artigo.",
+  FLOW: "Ex.: Quando o contato quiser fazer o cadastro ou pedir um orçamento.",
 };
 
 /// Modal de adicionar/editar uma funcionalidade de mensagem (AgentFeature).

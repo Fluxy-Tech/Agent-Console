@@ -66,6 +66,12 @@ function featureBadges(feature: AgentFeature): string[] {
       return [c.source === "integration" ? "Sistema da empresa" : `${(c.cards as unknown[]).length} cards`];
     case "LINK_PREVIEW":
       return [s(c.url)];
+    case "FLOW":
+      return [
+        s(c.flowName) || "Flow",
+        c.status === "DRAFT" ? "Rascunho" : c.status === "PUBLISHED" ? "Publicado" : "Indisponível",
+        c.saveAsMetadata ? "Salva metadados" : "Não salva metadados",
+      ];
     default:
       return [];
   }

@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { api, ApiError } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -33,6 +34,7 @@ export const DEFAULT_CONFIGS: Partial<Record<AgentFeatureType, Config>> = {
   LOCATION_REQUEST: { bodyText: "" },
   CONTEXTUAL_REPLY: {},
   LINK_PREVIEW: { url: "" },
+  FLOW: { flowId: "", flowName: "", wabaId: "", status: "", ctaText: "", bodyText: "", headerText: "", footerText: "", saveAsMetadata: true },
 };
 
 const str = (v: unknown) => (typeof v === "string" ? v : "");
@@ -649,5 +651,133 @@ export function ContextualReplyEditor() {
       específica (por exemplo, quando o contato mandou várias perguntas seguidas), a resposta sai citando essa
       mensagem.
     </p>
+  );
+}
+
+// ---------- Formulário (Flow) ----------
+
+interface AgentFlows {
+  flows: { id: string; name: string; status: string; wabaId: string; channel: string }[];
+  hasChannels: boolean;
+  errors: string[];
+}
+
+const FLOW_STATUS_LABEL: Record<string, string> = { DRAFT: "Rascunho", PUBLISHED: "Publicado" };
+
+export function FlowEditor({ agentId, config, onChange, disabled }: EditorProps) {
+  const { data, error, isLoading } = useSWR<AgentFlows>(`/api/agents/${agentId}/flows`);
+  const flowId = str(config.flowId);
+  const flows = data?.flows ?? [];
+  const selected = flows.find((f) => f.id === flowId);
+  const options =
+    flowId && !selected
+      ? [...flows, { id: flowId, name: str(config.flowName) || flowId, status: str(config.status), wabaId: str(config.wabaId), channel: "" }]
+      : flows;
+  const status = selected?.status ?? str(config.status);
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="feature-flow" className="font-bold">
+          Flow
+        </Label>
+        <Select
+          value={flowId}
+          onValueChange={(id) => {
+            const flow = options.find((f) => f.id === id);
+            onChange({ ...config, flowId: id, flowName: flow?.name ?? "", wabaId: flow?.wabaId ?? "", status: flow?.status ?? "" });
+          }}
+          disabled={disabled || isLoading}
+        >
+          <SelectTrigger id="feature-flow" className="w-full">
+            <SelectValue placeholder={isLoading ? "Consultando flows na Meta…" : "Selecione o flow"} />
+          </SelectTrigger>
+          <SelectContent>
+            {options.map((f) => (
+              <SelectItem key={f.id} value={f.id}>
+                {f.name} · {FLOW_STATUS_LABEL[f.status] ?? f.status}
+                {f.channel ? ` · ${f.channel}` : ""}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p className="text-muted-foreground text-xs">
+          Flows em rascunho ou publicados das redes sociais vinculadas a este agente. Crie e publique flows em Redes
+          sociais, na aba Flows.
+        </p>
+        {status === "DRAFT" && (
+          <p className="flex items-start gap-1.5 rounded-md bg-amber-500/10 p-2 text-xs text-amber-700 dark:text-amber-400">
+            <AlertTriangle className="mt-0.5 size-3.5 shrink-0" /> Este flow está em rascunho e é enviado em modo de teste.
+            Publique o flow para usar com os contatos.
+          </p>
+        )}
+        {error && <p className="text-destructive text-xs">Não foi possível consultar os flows.</p>}
+        {data && !data.hasChannels && <p className="text-muted-foreground text-xs">Vincule o agente a uma rede social para listar os flows.</p>}
+        {data && data.hasChannels && flows.length === 0 && data.errors.length === 0 && (
+          <p className="text-muted-foreground text-xs">Nenhum flow em rascunho ou publicado nas redes sociais deste agente.</p>
+        )}
+        {data && data.errors.length > 0 && (
+          <div className="bg-destructive/10 text-destructive flex flex-col gap-1 rounded-md p-2 text-xs">
+            {data.errors.map((m) => (
+              <span key={m}>{m}</span>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <TextField
+        id="flow-cta"
+        label="Texto do botão"
+        value={str(config.ctaText)}
+        onChange={(ctaText) => onChange({ ...config, ctaText })}
+        max={LIMITS.flowCta}
+        placeholder="Ex.: Preencher cadastro"
+        disabled={disabled}
+      />
+      <TextField
+        id="flow-body"
+        label="Texto padrão da mensagem (opcional)"
+        value={str(config.bodyText)}
+        onChange={(bodyText) => onChange({ ...config, bodyText })}
+        max={1024}
+        multiline
+        placeholder="Ex.: Para agilizar, preencha seus dados pelo botão abaixo."
+        hint="Usado quando o agente não escrever o próprio texto."
+        disabled={disabled}
+      />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <TextField
+          id="flow-header"
+          label="Cabeçalho (opcional)"
+          value={str(config.headerText)}
+          onChange={(headerText) => onChange({ ...config, headerText })}
+          max={LIMITS.headerText}
+          disabled={disabled}
+        />
+        <TextField
+          id="flow-footer"
+          label="Rodapé (opcional)"
+          value={str(config.footerText)}
+          onChange={(footerText) => onChange({ ...config, footerText })}
+          max={LIMITS.footerText}
+          disabled={disabled}
+        />
+      </div>
+
+      <label className="border-border flex cursor-pointer items-start justify-between gap-4 rounded-lg border p-3">
+        <span className="flex flex-col gap-0.5">
+          <span className="text-sm font-semibold">Salvar respostas como metadados</span>
+          <span className="text-muted-foreground text-xs">
+            Ligado: cada campo preenchido no flow fica salvo nos metadados do contato, com o nome do campo (ex.: nome,
+            email). Desligado: o agente recebe as respostas na conversa, sem salvar.
+          </span>
+        </span>
+        <Switch
+          checked={config.saveAsMetadata === true}
+          onCheckedChange={(saveAsMetadata) => onChange({ ...config, saveAsMetadata })}
+          disabled={disabled}
+        />
+      </label>
+    </div>
   );
 }

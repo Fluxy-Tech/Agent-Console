@@ -11,6 +11,7 @@ import {
   ShoppingBag,
   SquareKanban,
   SquareMousePointer,
+  Workflow,
   type LucideIcon,
 } from "lucide-react";
 import type { AgentFeatureType, AgentFunctionType } from "@/types/domain";
@@ -93,6 +94,14 @@ export const FEATURES: FeatureInfo[] = [
     single: true,
   },
   {
+    key: "FLOW",
+    kind: "feature",
+    title: "Formulário (Flow)",
+    description: "Abre um formulário do WhatsApp; as respostas podem virar metadados do contato.",
+    icon: Workflow,
+    group: "Mensagens interativas",
+  },
+  {
     key: "CATALOG",
     kind: "feature",
     title: "Catálogo",
@@ -158,5 +167,6 @@ export const LIMITS = {
   carouselMin: 2,
   carouselMax: 10,
   cardBody: 160,
+  flowCta: 30,
   prompt: 1000,
 } as const;
