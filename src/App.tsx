@@ -22,6 +22,8 @@ import { TargetsListPage } from "@/pages/targets/targets-list-page";
 import { ChannelDetailPage } from "@/pages/channels/channel-detail-page";
 import { ChannelsListPage } from "@/pages/channels/channels-list-page";
 import { CrmBoardPage } from "@/pages/crm/crm-board-page";
+import { HelpPage } from "@/pages/help/help-page";
+import { TemplatesPage } from "@/pages/templates/templates-page";
 import { CrmCalendarPage } from "@/pages/crm/crm-calendar-page";
 import { CrmFunnelPage } from "@/pages/crm/crm-funnel-page";
 import { CrmSettingsPage } from "@/pages/crm/crm-settings-page";
@@ -89,6 +91,7 @@ export function App() {
               <Route path="/targets" element={<TargetsListPage />} />
               <Route path="/targets/:id" element={<TargetDetailPage />} />
               <Route path="/campaigns" element={<CampaignsPage />} />
+              <Route path="/campaigns/templates" element={<TemplatesPage />} />
               <Route path="/campaigns/:id" element={<CampaignDetailPage />} />
               <Route path="/crm" element={<Navigate to="/crm/board" replace />} />
               <Route path="/crm/board" element={<CrmBoardPage />} />
@@ -105,6 +108,7 @@ export function App() {
               <Route path="/service-island/:id" element={<ServiceIslandDetailPage />} />
               <Route path="/service-island/:islandId/queue/:queueId" element={<ServiceIslandQueueDetailPage />} />
               <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/duvidas" element={<HelpPage />} />
               {/* Antiga tela "Acessos" — virou aba de Configurações. */}
               <Route path="/access" element={<Navigate to="/settings?tab=access" replace />} />
               {/* Suporte técnico em duas áreas separadas, ambas no estilo

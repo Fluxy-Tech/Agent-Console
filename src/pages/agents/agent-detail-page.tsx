@@ -274,7 +274,7 @@ export function AgentDetailPage() {
               onPeriodChange={setTokenPeriod}
               totalLabel="Consumo do agente"
               chartTitle="Consumo de tokens deste agente"
-              chartDescription="Tokens gastos pelo agente no período, separados por LLM: ADK (geração das respostas via Gemini) e OpenAI (escolha de fila, resumos, mensagens de erro e embeddings do RAG)."
+              chartDescription="Tokens consumidos por este agente no período, separados entre ADK (Gemini) e OpenAI."
             />
           </TabsContent>
         )}

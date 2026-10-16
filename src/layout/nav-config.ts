@@ -1,4 +1,4 @@
-import { BarChart3, Bot, CalendarDays, Funnel, Handshake, Headset, LayoutDashboard, CircleHelp, Ticket, UsersRound, Megaphone, MessageSquareText, Settings, SquareKanban, Users, Waypoints } from "lucide-react";
+import { BarChart3, Bot, CalendarDays, FileText, Send, Funnel, Handshake, Headset, LayoutDashboard, LifeBuoy, CircleHelp, Ticket, UsersRound, Megaphone, MessageSquareText, Settings, SquareKanban, Users, Waypoints } from "lucide-react";
 import { PermissionAction } from "@/domain/permission-action";
 
 export interface NavItem {
@@ -31,7 +31,16 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Operações",
     items: [
       { label: "Contatos", to: "/targets", icon: Users, action: PermissionAction.CONTACTS_VIEW },
-      { label: "Campanhas", to: "/campaigns", icon: Megaphone, action: PermissionAction.CAMPAIGNS_VIEW },
+      {
+        label: "Campanhas",
+        to: "/campaigns",
+        icon: Megaphone,
+        action: PermissionAction.CAMPAIGNS_VIEW,
+        children: [
+          { label: "Disparos", to: "/campaigns", icon: Send },
+          { label: "Templates", to: "/campaigns/templates", icon: FileText },
+        ],
+      },
       {
         label: "CRM",
         to: "/crm",
@@ -60,12 +69,15 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       // Configurações (perfil, empresa e acessos) ficam no menu do usuário,
       // no rodapé da barra lateral — não repetem aqui.
+      // Explicações da plataforma (consumo de tokens, funcionalidades...) —
+      // outras telas apontam pras seções por /duvidas#<id>.
+      { label: "Dúvidas", to: "/duvidas", icon: CircleHelp },
       // Área das empresas (abrir e acompanhar tickets). Quem atende usa o
       // grupo "Suporte técnico" abaixo, com telas próprias.
       {
         label: "Ajuda & Suporte",
         to: "/technical-support",
-        icon: CircleHelp,
+        icon: LifeBuoy,
         action: PermissionAction.SUPPORT_VIEW,
         audience: "customer",
         badge: "support",

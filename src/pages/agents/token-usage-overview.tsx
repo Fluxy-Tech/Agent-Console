@@ -1,8 +1,11 @@
-import { BrainCircuit, Coins, Sparkles } from "lucide-react";
+import { BrainCircuit, CircleHelp, Coins, Sparkles } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import geminiLogo from "@/assets/LogoGermini.png";
 import openaiLogo from "@/assets/LogoOpenAi.png";
 import { MetricCard } from "@/components/metric-card";
+import { Link } from "react-router-dom";
+import { buttonVariants } from "@/components/ui/button";
+import { HELP_SECTION_IDS } from "../help/help-sections";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartContainer,
@@ -187,6 +190,12 @@ export function TokenUsageOverview({
           )}
         </CardContent>
       </Card>
+
+      <div className="flex justify-end">
+        <Link to={`/duvidas#${HELP_SECTION_IDS.tokenUsage}`} className={buttonVariants({ variant: "outline", size: "sm" })}>
+          <CircleHelp className="size-4" /> Saber mais sobre o consumo
+        </Link>
+      </div>
     </div>
   );
 }

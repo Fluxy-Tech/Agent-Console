@@ -14,10 +14,10 @@ export function CampaignsPage() {
 
   return (
     <div className="page-shell">
-      <PageBreadcrumb items={[{ label: "Campanhas" }]} />
+      <PageBreadcrumb items={[{ label: "Campanhas", to: "/campaigns" }, { label: "Disparos" }]} />
 
       <div>
-        <h1 className="page-title">Campanhas</h1>
+        <h1 className="page-title">Disparos</h1>
         <p className="text-muted-foreground mt-1 text-sm">
           Disparos em massa (ou manuais) de templates de WhatsApp, histórico de envios e configurações.
         </p>

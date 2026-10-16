@@ -7,6 +7,7 @@ import { PermissionAction } from "@/domain/permission-action";
 import type { Channel } from "@/types/domain";
 import { ConfigTab } from "./config-tab";
 import { DashboardTab } from "./dashboard-tab";
+import { FlowsTab } from "./flows-tab";
 
 export function ChannelDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -30,6 +31,7 @@ export function ChannelDetailPage() {
         <TabsList>
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="config">Configuração</TabsTrigger>
+          <TabsTrigger value="flows">Flows</TabsTrigger>
         </TabsList>
 
         <TabsContent value="dashboard">
@@ -38,6 +40,10 @@ export function ChannelDetailPage() {
 
         <TabsContent value="config">
           <ConfigTab channel={channel} canWrite={canWrite} onSaved={() => mutate()} />
+        </TabsContent>
+
+        <TabsContent value="flows">
+          <FlowsTab channelId={channel.id} canWrite={canWrite} />
         </TabsContent>
       </Tabs>
     </div>

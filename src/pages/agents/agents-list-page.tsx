@@ -70,7 +70,7 @@ export function AgentsListPage() {
         onPeriodChange={setTokenPeriod}
         totalLabel="Consumo da organização"
         chartTitle="Consumo de tokens da organização"
-        chartDescription="Soma dos tokens gastos por todos os agentes desta empresa, separada por LLM. O consumo de cada agente aparece no card dele abaixo."
+        chartDescription="Soma dos tokens consumidos por todos os agentes desta empresa, separada entre ADK (Gemini) e OpenAI. O consumo de cada agente aparece no card dele."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

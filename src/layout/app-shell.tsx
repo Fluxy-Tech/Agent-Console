@@ -112,8 +112,13 @@ export function AppShell() {
                 <div className="flex flex-col gap-2">
                   {items.map((item) => {
                     if (item.children) {
-                      const groupActive =
-                        location.pathname === item.to || location.pathname.startsWith(`${item.to}/`);
+                      const matches = (to: string) => location.pathname === to || location.pathname.startsWith(`${to}/`);
+                      // Subitem ativo = o de rota mais específica (ex: em
+                      // /campaigns/templates, "Templates" e não "Disparos").
+                      const activeChildTo = item.children
+                        .filter((child) => matches(child.to))
+                        .sort((a, b) => b.to.length - a.to.length)[0]?.to;
+                      const groupActive = Boolean(activeChildTo) || matches(item.to);
                       const open = openGroups[item.to] ?? groupActive;
                       const triggerClass = cn(
                         "flex w-full items-center gap-2 rounded-md px-2 py-2 text-base transition-colors",
@@ -165,8 +170,7 @@ export function AppShell() {
                           {open && (
                             <div className="border-border ml-4 flex flex-col gap-1 border-l pl-2">
                               {item.children.map((child) => {
-                                const childActive =
-                                  location.pathname === child.to || location.pathname.startsWith(`${child.to}/`);
+                                const childActive = child.to === activeChildTo;
                                 return (
                                   <NavLink
                                     key={child.to}
