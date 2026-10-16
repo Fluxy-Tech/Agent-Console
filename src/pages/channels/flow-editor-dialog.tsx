@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { AlertTriangle, Braces } from "lucide-react";
+import { AlertTriangle, Braces, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -24,6 +24,9 @@ export interface WhatsappFlow {
   validation_errors: FlowValidationError[];
   updated_at?: string;
 }
+
+/// Playground da Meta: monta e pré-visualiza um flow e gera o JSON.
+export const FLOWS_PLAYGROUND_URL = "https://developers.facebook.com/docs/whatsapp/flows/playground";
 
 export const FLOW_CATEGORY_LABELS: Record<string, string> = {
   SIGN_UP: "Cadastro",
@@ -207,7 +210,11 @@ export function FlowEditorDialog({
               <p className="text-destructive text-xs">JSON inválido: {jsonError}</p>
             ) : (
               <p className="text-muted-foreground text-xs">
-                Você pode montar o flow visualmente no Flow Builder do WhatsApp Manager e colar o JSON aqui.
+                Monte o flow visualmente no{" "}
+                <a href={FLOWS_PLAYGROUND_URL} target="_blank" rel="noreferrer" className="text-primary inline-flex items-center gap-0.5 font-medium underline-offset-2 hover:underline">
+                  Playground de Flows da Meta <ExternalLink className="size-3" />
+                </a>{" "}
+                ou no Flow Builder do WhatsApp Manager, copie o JSON e cole aqui.
               </p>
             )}
           </div>

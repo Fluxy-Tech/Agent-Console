@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useSWR from "swr";
 import { toast } from "sonner";
-import { Ban, Eye, Pencil, Plus, RefreshCw, Rocket, Trash2, Workflow } from "lucide-react";
+import { Ban, ExternalLink, Eye, Pencil, Plus, RefreshCw, Rocket, Trash2, Workflow } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,11 +13,11 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api, ApiError } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { FLOW_CATEGORY_LABELS, FlowEditorDialog, type WhatsappFlow } from "./flow-editor-dialog";
+import { FLOW_CATEGORY_LABELS, FlowEditorDialog, FLOWS_PLAYGROUND_URL, type WhatsappFlow } from "./flow-editor-dialog";
 
 const STATUS_INFO: Record<string, { label: string; className: string }> = {
   DRAFT: { label: "Rascunho", className: "bg-muted text-muted-foreground" },
@@ -119,7 +119,10 @@ export function FlowsTab({ channelId, canWrite }: { channelId: string; canWrite:
               </p>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <a href={FLOWS_PLAYGROUND_URL} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "outline", size: "sm" })}>
+              <ExternalLink className="size-4" /> Playground da Meta
+            </a>
             <Button type="button" variant="outline" size="icon" onClick={() => mutate()} aria-label="Atualizar">
               <RefreshCw className={cn("size-4", isLoading && "animate-spin")} />
             </Button>
