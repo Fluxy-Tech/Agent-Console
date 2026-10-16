@@ -240,7 +240,7 @@ export function FlowEditorDialog({
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
             Fechar
           </Button>
-          <Button type="button" onClick={handleSave} disabled={saving || !name.trim() || categories.length === 0 || Boolean(jsonError)}>
+          <Button loading={saving} type="button" onClick={handleSave} disabled={saving || !name.trim() || categories.length === 0 || Boolean(jsonError)}>
             {saving ? "Salvando…" : "Salvar rascunho"}
           </Button>
         </DialogFooter>

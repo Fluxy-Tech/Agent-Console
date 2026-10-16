@@ -531,7 +531,7 @@ function CardMedia({ agentId, card, onChange, disabled }: { agentId: string; car
         )}
       </div>
       <div className="flex flex-col gap-1">
-        <Button type="button" variant="outline" size="sm" disabled={disabled || uploading} onClick={() => inputRef.current?.click()}>
+        <Button loading={uploading} type="button" variant="outline" size="sm" disabled={disabled || uploading} onClick={() => inputRef.current?.click()}>
           {uploading ? "Enviando…" : preview ? "Trocar mídia" : "Enviar imagem ou vídeo"}
         </Button>
         <span className="text-muted-foreground text-xs">JPG/PNG até 5 MB ou MP4 até 16 MB.</span>

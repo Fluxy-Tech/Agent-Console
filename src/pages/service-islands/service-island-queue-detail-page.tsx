@@ -121,7 +121,7 @@ export function ServiceIslandQueueDetailPage() {
             <Button type="button" variant="outline" onClick={() => navigate(`/service-island/${island.id}`)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={saving}>
+            <Button loading={saving} type="submit" disabled={saving}>
               <Save className="size-4" /> {saving ? "Salvando…" : "Salvar alterações"}
             </Button>
           </div>

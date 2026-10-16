@@ -81,7 +81,7 @@ export function CrmStageFormDialog({ nextPosition, onSaved, trigger }: CrmStageF
 
           {error && <p className="text-destructive text-sm">{error}</p>}
 
-          <Button type="submit" disabled={saving}>
+          <Button loading={saving} type="submit" disabled={saving}>
             <Save className="size-4" /> {saving ? "Criando…" : "Criar estágio"}
           </Button>
         </form>

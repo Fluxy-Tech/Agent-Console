@@ -434,7 +434,7 @@ export function BusinessDetailPage({ embedded = false }: { embedded?: boolean } 
                     ))}
                   </SelectContent>
                 </Select>
-                <Button type="submit" variant="outline" disabled={generatingCode}>
+                <Button loading={generatingCode} type="submit" variant="outline" disabled={generatingCode}>
                   <Ticket className="size-4" />
                   {generatingCode ? "Gerando…" : "Gerar código"}
                 </Button>
@@ -545,7 +545,7 @@ export function BusinessDetailPage({ embedded = false }: { embedded?: boolean } 
                   <Eye className="size-4" />
                   {viewingToken ? "Carregando…" : company?.hasApiAccessToken ? "Token configurado" : "Nenhum token gerado"}
                 </Button>
-                <Button variant="outline" disabled={generatingToken} onClick={handleGenerateToken}>
+                <Button loading={generatingToken} variant="outline" disabled={generatingToken} onClick={handleGenerateToken}>
                   <KeyRound className="size-4" />
                   {generatingToken ? "Gerando…" : "Gerar novo token"}
                 </Button>

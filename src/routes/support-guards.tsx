@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { LifeBuoy, Loader2 } from "lucide-react";
+import { LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useHasSupportRole, useIsSupportTeam } from "@/hooks/use-can";
@@ -54,8 +54,8 @@ function SwitchToSupportHub() {
             tickets, entre na central.
           </p>
         </div>
-        <Button onClick={handleSwitch} disabled={switching}>
-          {switching ? <Loader2 className="size-4 animate-spin" /> : <LifeBuoy className="size-4" />}
+        <Button loading={switching} onClick={handleSwitch} disabled={switching}>
+          <LifeBuoy className="size-4" />
           Ir para a Suporte Sturnus
         </Button>
       </Card>

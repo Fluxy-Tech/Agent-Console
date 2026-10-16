@@ -113,7 +113,7 @@ export function CrmFunnelFieldDialog({ field, onSaved, trigger }: CrmFunnelField
 
           {error && <p className="text-destructive text-sm">{error}</p>}
 
-          <Button type="submit" disabled={saving}>
+          <Button loading={saving} type="submit" disabled={saving}>
             <Save className="size-4" /> {saving ? "Salvando…" : isEdit ? "Salvar etapa" : "Criar etapa"}
           </Button>
         </form>

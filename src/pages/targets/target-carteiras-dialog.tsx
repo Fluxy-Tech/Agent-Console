@@ -99,7 +99,7 @@ export function TargetCarteirasDialog({ targetId, canWrite, trigger }: TargetCar
         )}
 
         {canWrite && carteiras && carteiras.length > 0 && (
-          <Button onClick={handleSave} disabled={saving}>
+          <Button loading={saving} onClick={handleSave} disabled={saving}>
             <Save className="size-4" /> {saving ? "Salvando…" : "Salvar"}
           </Button>
         )}

@@ -133,7 +133,7 @@ export function MetadataFieldFormDialog({ agentId, field, onSaved, trigger }: Me
 
           {error && <p className="text-destructive text-sm">{error}</p>}
 
-          <Button type="submit" disabled={saving || !keyPreview}>
+          <Button loading={saving} type="submit" disabled={saving || !keyPreview}>
             <Save className="size-4" /> {saving ? "Salvando…" : field ? "Salvar alterações" : "Criar metadado"}
           </Button>
         </form>

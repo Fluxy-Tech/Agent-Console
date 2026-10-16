@@ -249,7 +249,7 @@ export function CrmSettingsTab() {
 
       {canWrite && (
         <div className="flex justify-end">
-          <Button type="button" onClick={handleSave} disabled={saving || maxCardsInvalid}>
+          <Button loading={saving} type="button" onClick={handleSave} disabled={saving || maxCardsInvalid}>
             <Save className="size-4" /> {saving ? "Salvando…" : "Salvar configurações"}
           </Button>
         </div>

@@ -106,7 +106,7 @@ export function CarteiraFormDialog({ serviceIslandId, queues, carteira, onSaved,
 
           {error && <p className="text-destructive text-sm">{error}</p>}
 
-          <Button type="submit" disabled={saving}>
+          <Button loading={saving} type="submit" disabled={saving}>
             <Save className="size-4" /> {saving ? "Salvando…" : carteira ? "Salvar alterações" : "Criar carteira"}
           </Button>
         </form>

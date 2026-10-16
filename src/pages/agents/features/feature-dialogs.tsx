@@ -152,7 +152,7 @@ export function FeatureDialog({
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button type="button" onClick={handleSave} disabled={saving || !name.trim()}>
+          <Button loading={saving} type="button" onClick={handleSave} disabled={saving || !name.trim()}>
             {saving ? "Salvando…" : feature ? "Salvar" : "Adicionar"}
           </Button>
         </DialogFooter>
@@ -350,7 +350,7 @@ export function RgbsDialog({
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button type="button" onClick={handleSave} disabled={saving || Boolean(invalid)}>
+          <Button loading={saving} type="button" onClick={handleSave} disabled={saving || Boolean(invalid)}>
             {saving ? "Salvando…" : adding ? "Adicionar" : "Salvar"}
           </Button>
         </DialogFooter>

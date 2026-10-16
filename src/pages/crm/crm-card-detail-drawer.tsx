@@ -8,7 +8,6 @@ import {
   ExternalLink,
   FileText,
   IdCard,
-  Loader2,
   Mail,
   Paperclip,
   Pencil,
@@ -340,14 +339,14 @@ export function CrmCardDetailDrawer({ cardId, onOpenChange }: CrmCardDetailDrawe
                         className="hidden"
                         onChange={(event) => void handleFilesSelected(event.target.files)}
                       />
-                      <Button
+                      <Button loading={uploading}
                         type="button"
                         variant="outline"
                         size="sm"
                         disabled={uploading}
                         onClick={() => fileInputRef.current?.click()}
                       >
-                        {uploading ? <Loader2 className="size-4 animate-spin" /> : <Paperclip className="size-4" />}
+                        <Paperclip className="size-4" />
                         {uploading ? "Enviando…" : "Anexar arquivo"}
                       </Button>
                     </>
@@ -419,14 +418,14 @@ export function CrmCardDetailDrawer({ cardId, onOpenChange }: CrmCardDetailDrawe
                     maxLength={2000}
                     className="min-h-20"
                   />
-                  <Button
+                  <Button loading={sendingComment}
                     type="button"
                     size="sm"
                     className="self-end"
                     disabled={sendingComment || comment.trim().length === 0}
                     onClick={() => void handleSendComment()}
                   >
-                    {sendingComment ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+                    <Send className="size-4" />
                     Comentar
                   </Button>
                 </div>
@@ -517,10 +516,10 @@ export function CrmCardDetailDrawer({ cardId, onOpenChange }: CrmCardDetailDrawe
                                 <Button
                                   type="button"
                                   size="sm"
-                                  disabled={busy || editingText.trim().length === 0}
+                                  loading={busy} disabled={busy || editingText.trim().length === 0}
                                   onClick={() => void handleUpdateComment(item.id)}
                                 >
-                                  {busy ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+                                  <Check className="size-4" />
                                   Salvar
                                 </Button>
                               </div>
@@ -549,8 +548,8 @@ export function CrmCardDetailDrawer({ cardId, onOpenChange }: CrmCardDetailDrawe
               {canWrite && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button type="button" variant="outline" className="text-destructive" disabled={deletingCard}>
-                      {deletingCard ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
+                    <Button loading={deletingCard} type="button" variant="outline" className="text-destructive" disabled={deletingCard}>
+                      <Trash2 className="size-4" />
                       Apagar card
                     </Button>
                   </AlertDialogTrigger>

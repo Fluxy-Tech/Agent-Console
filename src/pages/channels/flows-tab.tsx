@@ -53,10 +53,11 @@ export function FlowsTab({ channelId, canWrite }: { channelId: string; canWrite:
   const { data: flows, error, isLoading, mutate } = useSWR<WhatsappFlow[]>(`/api/channels/${channelId}/flows`);
   const [editor, setEditor] = useState<{ flow?: WhatsappFlow; json?: string | null } | null>(null);
   const [confirm, setConfirm] = useState<Confirm>(null);
-  const [busyId, setBusyId] = useState<string | null>(null);
+  /// Ação em andamento: trava os botões do flow e mostra o spinner no botão dela.
+  const [busy, setBusy] = useState<{ id: string; kind: "edit" | "preview" | Exclude<Confirm, null>["kind"] } | null>(null);
 
-  async function loadDetail(flow: WhatsappFlow) {
-    setBusyId(flow.id);
+  async function loadDetail(flow: WhatsappFlow, kind: "edit" | "preview") {
+    setBusy({ id: flow.id, kind });
     try {
       return await api.get<WhatsappFlow & { flowJson: string | null; preview?: { preview_url?: string } }>(
         `/api/channels/${channelId}/flows/${flow.id}`,
@@ -65,19 +66,19 @@ export function FlowsTab({ channelId, canWrite }: { channelId: string; canWrite:
       toast.error(err instanceof ApiError ? err.message : "Não foi possível carregar o flow.");
       return null;
     } finally {
-      setBusyId(null);
+      setBusy(null);
     }
   }
 
   async function handleEdit(flow: WhatsappFlow) {
-    const detail = await loadDetail(flow);
+    const detail = await loadDetail(flow, "edit");
     if (detail) setEditor({ flow: detail, json: detail.flowJson });
   }
 
   async function handlePreview(flow: WhatsappFlow) {
     // Abre a aba antes do await: navegadores bloqueiam window.open depois.
     const tab = window.open("", "_blank");
-    const detail = await loadDetail(flow);
+    const detail = await loadDetail(flow, "preview");
     const url = detail?.preview?.preview_url;
     if (url && tab) tab.location.href = url;
     else {
@@ -89,7 +90,7 @@ export function FlowsTab({ channelId, canWrite }: { channelId: string; canWrite:
   async function handleConfirm() {
     if (!confirm) return;
     const { kind, flow } = confirm;
-    setBusyId(flow.id);
+    setBusy({ id: flow.id, kind });
     try {
       if (kind === "delete") await api.delete(`/api/channels/${channelId}/flows/${flow.id}`);
       else await api.post(`/api/channels/${channelId}/flows/${flow.id}/${kind}`, {});
@@ -98,7 +99,7 @@ export function FlowsTab({ channelId, canWrite }: { channelId: string; canWrite:
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : "Não foi possível concluir a ação.");
     } finally {
-      setBusyId(null);
+      setBusy(null);
       setConfirm(null);
     }
   }
@@ -146,7 +147,8 @@ export function FlowsTab({ channelId, canWrite }: { channelId: string; canWrite:
         ) : (
           flows.map((flow) => {
             const info = STATUS_INFO[flow.status] ?? { label: flow.status, className: "bg-muted text-muted-foreground" };
-            const busy = busyId === flow.id;
+            const rowBusy = busy?.id === flow.id;
+            const running = (kind: string) => rowBusy && busy?.kind === kind;
             const isDraft = flow.status === "DRAFT";
             return (
               <div key={flow.id} className="border-border flex flex-col gap-3 rounded-lg border p-4 lg:flex-row lg:items-center">
@@ -170,30 +172,31 @@ export function FlowsTab({ channelId, canWrite }: { channelId: string; canWrite:
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => handlePreview(flow)}>
+                  <Button type="button" variant="outline" size="sm" loading={running("preview")} disabled={rowBusy} onClick={() => handlePreview(flow)}>
                     <Eye className="size-4" /> Pré-visualizar
                   </Button>
                   {canWrite && isDraft && (
                     <>
-                      <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => handleEdit(flow)}>
+                      <Button type="button" variant="outline" size="sm" loading={running("edit")} disabled={rowBusy} onClick={() => handleEdit(flow)}>
                         <Pencil className="size-4" /> Editar
                       </Button>
                       <Button
                         type="button"
                         size="sm"
-                        disabled={busy || flow.validation_errors.length > 0}
+                        loading={running("publish")}
+                        disabled={rowBusy || flow.validation_errors.length > 0}
                         title={flow.validation_errors.length > 0 ? "Corrija os erros antes de publicar." : undefined}
                         onClick={() => setConfirm({ kind: "publish", flow })}
                       >
                         <Rocket className="size-4" /> Publicar
                       </Button>
-                      <Button type="button" variant="ghost" size="icon" disabled={busy} onClick={() => setConfirm({ kind: "delete", flow })} aria-label="Excluir">
+                      <Button type="button" variant="ghost" size="icon" loading={running("delete")} disabled={rowBusy} onClick={() => setConfirm({ kind: "delete", flow })} aria-label="Excluir">
                         <Trash2 className="text-destructive size-4" />
                       </Button>
                     </>
                   )}
                   {canWrite && flow.status === "PUBLISHED" && (
-                    <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => setConfirm({ kind: "deprecate", flow })}>
+                    <Button type="button" variant="outline" size="sm" loading={running("deprecate")} disabled={rowBusy} onClick={() => setConfirm({ kind: "deprecate", flow })}>
                       <Ban className="size-4" /> Descontinuar
                     </Button>
                   )}

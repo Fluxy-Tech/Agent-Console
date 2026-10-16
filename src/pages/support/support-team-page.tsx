@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useSWR from "swr";
 import { toast } from "sonner";
-import { Loader2, Lock, ShieldCheck, Trash2, UserPlus, Users } from "lucide-react";
+import { Lock, ShieldCheck, Trash2, UserPlus, Users } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -178,8 +178,8 @@ export function SupportTeamPage() {
                   </p>
                 </div>
                 {error && <p className="text-destructive text-sm">{error}</p>}
-                <Button type="submit" disabled={adding || !email.trim()}>
-                  {adding ? <Loader2 className="size-4 animate-spin" /> : <UserPlus className="size-4" />}
+                <Button loading={adding} type="submit" disabled={adding || !email.trim()}>
+                  <UserPlus className="size-4" />
                   Adicionar
                 </Button>
               </form>

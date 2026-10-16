@@ -187,7 +187,7 @@ export function CampaignSettingsTab({ canWrite }: CampaignSettingsTabProps) {
               {error && <p className="text-destructive text-sm">{error}</p>}
 
               {canWrite && (
-                <Button type="button" disabled={saving} onClick={handleSave} className="w-fit gap-2">
+                <Button loading={saving} type="button" disabled={saving} onClick={handleSave} className="w-fit gap-2">
                   <Save className="size-4" /> {saving ? "Salvando…" : "Salvar alterações"}
                 </Button>
               )}

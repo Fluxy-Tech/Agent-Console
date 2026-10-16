@@ -106,7 +106,7 @@ export function DefaultQueueDialog({ channel, open, onOpenChange, onSaved }: Def
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button type="button" disabled={saving || !selectedId} onClick={handleConfirm}>
+          <Button loading={saving} type="button" disabled={saving || !selectedId} onClick={handleConfirm}>
             <Save className="size-4" /> {saving ? "Salvando…" : "Salvar fila"}
           </Button>
         </DialogFooter>

@@ -124,7 +124,7 @@ export function SignUpPage() {
               </div>
             </div>
             {error && <p className="text-destructive text-sm">{error}</p>}
-            <Button type="submit" disabled={loading} className="mt-2" size="lg">
+            <Button loading={loading} type="submit" disabled={loading} className="mt-2" size="lg">
               {loading ? "Criando..." : "Criar conta"}
             </Button>
           </form>

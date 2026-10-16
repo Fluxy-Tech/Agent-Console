@@ -151,7 +151,7 @@ export function BusinessListPage() {
                     />
                   </div>
                   {inviteError && <p className="text-destructive text-sm">{inviteError}</p>}
-                  <Button type="submit" disabled={redeeming}>
+                  <Button loading={redeeming} type="submit" disabled={redeeming}>
                     {redeeming ? "Entrando..." : "Entrar na empresa"}
                   </Button>
                 </form>
@@ -179,7 +179,7 @@ export function BusinessListPage() {
                     <Input id="company-cnpj" required value={cnpj} onChange={(e) => setCnpj(e.target.value)} />
                   </div>
                   {error && <p className="text-destructive text-sm">{error}</p>}
-                  <Button type="submit" disabled={creating}>
+                  <Button loading={creating} type="submit" disabled={creating}>
                     {creating ? "Criando..." : "Criar e acessar"}
                   </Button>
                 </form>

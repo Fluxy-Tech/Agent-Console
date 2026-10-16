@@ -166,7 +166,7 @@ export function GeneralSettingsTab({ island, canWrite, canManageTags, onSaved }:
               />
             </div>
             {canWrite && (
-              <Button type="submit" disabled={savingName}>
+              <Button loading={savingName} type="submit" disabled={savingName}>
                 <Save className="size-4" /> {savingName ? "Salvando…" : "Salvar"}
               </Button>
             )}

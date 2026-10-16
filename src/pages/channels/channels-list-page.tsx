@@ -244,7 +244,7 @@ export function ChannelsListPage() {
                         </div>
                       ))}
                     </div>
-                    <Button
+                    <Button loading={registering}
                       onClick={handleRegisterAll}
                       disabled={registering || results.every((r) => r.alreadyRegistered)}
                     >
@@ -320,7 +320,7 @@ export function ChannelsListPage() {
                     />
                   </div>
                   {error && <p className="text-destructive text-sm">{error}</p>}
-                  <Button type="submit" disabled={saving}>
+                  <Button loading={saving} type="submit" disabled={saving}>
                     {saving ? "Criando…" : "Criar canal"}
                   </Button>
                 </form>

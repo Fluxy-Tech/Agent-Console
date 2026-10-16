@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { Loader2, Paperclip } from "lucide-react";
+import { Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -162,8 +162,7 @@ export function NewTicketDialog({
             <Button type="button" variant="outline" disabled={submitting} onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={submitting}>
-              {submitting && <Loader2 className="size-4 animate-spin" />}
+            <Button loading={submitting} type="submit" disabled={submitting}>
               {submitting ? "Abrindo…" : "Abrir chamado"}
             </Button>
           </DialogFooter>

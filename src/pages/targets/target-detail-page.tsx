@@ -183,7 +183,7 @@ export function TargetDetailPage() {
               </Button>
             }
           />
-          <Button
+          <Button loading={creatingCard}
             variant="outline"
             disabled={hasCrmCard || !canWrite || creatingCard}
             onClick={handleCreateCrmCard}

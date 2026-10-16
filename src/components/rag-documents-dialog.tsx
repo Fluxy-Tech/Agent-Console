@@ -196,7 +196,7 @@ export function RagDocumentsDialog({
         </div>
 
         <DialogFooter>
-          <Button type="button" disabled={files.length === 0 || submitting} onClick={handleSubmit} className="gap-2">
+          <Button loading={submitting} type="button" disabled={files.length === 0 || submitting} onClick={handleSubmit} className="gap-2">
             <Upload className="size-4" />
             {submitting ? "Enviando..." : "Anexar"}
           </Button>

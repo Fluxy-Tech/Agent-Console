@@ -177,7 +177,7 @@ export function TicketDetailDialog({ ticketId, onOpenChange }: TicketDetailDialo
                 <div className="mt-auto flex flex-col gap-2 border-t pt-3">
                   <h3 className="text-muted-foreground text-xs font-medium tracking-wide uppercase">Ações</h3>
                   {canReopen && (
-                    <Button variant="outline" size="sm" disabled={reopening} onClick={handleReopen}>
+                    <Button loading={reopening} variant="outline" size="sm" disabled={reopening} onClick={handleReopen}>
                       <RotateCcw className="size-3.5" /> {reopening ? "Reabrindo…" : "Reabrir ticket"}
                     </Button>
                   )}

@@ -33,7 +33,8 @@ interface MemberPermissionsDialogProps {
 /// "Acessar" junto. Acessos e gestão de empresas seguem presos ao papel.
 export function MemberPermissionsDialog({ companyId, member, onOpenChange, onSaved }: MemberPermissionsDialogProps) {
   const [selected, setSelected] = useState<Set<PermissionAction>>(new Set());
-  const [saving, setSaving] = useState(false);
+  /// "reset" = voltar ao padrão do papel; "save" = salvar as marcações.
+  const [saving, setSaving] = useState<"reset" | "save" | null>(null);
 
   useEffect(() => {
     if (!member) return;
@@ -57,7 +58,7 @@ export function MemberPermissionsDialog({ companyId, member, onOpenChange, onSav
 
   async function save(permissions: PermissionAction[] | null) {
     if (!member) return;
-    setSaving(true);
+    setSaving(permissions ? "save" : "reset");
     try {
       await api.put(`/api/companies/${companyId}/members/${member.id}/permissions`, { permissions });
       toast.success(permissions ? "Permissões atualizadas." : "Permissões voltaram ao padrão do papel.");
@@ -66,7 +67,7 @@ export function MemberPermissionsDialog({ companyId, member, onOpenChange, onSav
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : "Não foi possível salvar as permissões.");
     } finally {
-      setSaving(false);
+      setSaving(null);
     }
   }
 
@@ -132,7 +133,8 @@ export function MemberPermissionsDialog({ companyId, member, onOpenChange, onSav
           <Button
             type="button"
             variant="ghost"
-            disabled={saving || member?.permissions === null}
+            loading={saving === "reset"}
+            disabled={saving !== null || member?.permissions === null}
             onClick={() => save(null)}
             title="Descarta as marcações e volta a seguir o papel do usuário"
           >
@@ -142,8 +144,8 @@ export function MemberPermissionsDialog({ companyId, member, onOpenChange, onSav
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="button" disabled={saving} onClick={() => save([...selected])}>
-              {saving ? "Salvando…" : "Salvar"}
+            <Button loading={saving === "save"} type="button" disabled={saving !== null} onClick={() => save([...selected])}>
+              {saving === "save" ? "Salvando…" : "Salvar"}
             </Button>
           </div>
         </DialogFooter>

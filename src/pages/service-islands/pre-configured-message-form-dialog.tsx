@@ -148,7 +148,7 @@ export function PreConfiguredMessageFormDialog({
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={saving || queueIds.size === 0}>
+            <Button loading={saving} type="submit" disabled={saving || queueIds.size === 0}>
               <Save className="size-4" /> {saving ? "Salvando…" : message ? "Salvar alterações" : "Criar mensagem"}
             </Button>
           </DialogFooter>

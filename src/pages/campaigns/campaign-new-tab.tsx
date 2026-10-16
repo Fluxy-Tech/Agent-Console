@@ -898,7 +898,7 @@ export function CampaignNewTab() {
 
             {error &&<p className="text-destructive text-sm">{error}</p>}
 
-            <Button type="button" disabled={!canSubmit} onClick={handleSubmit} className="w-fit gap-2">
+            <Button loading={checkingBlocked || submitting} type="button" disabled={!canSubmit} onClick={handleSubmit} className="w-fit gap-2">
               <FileSpreadsheet className="size-4" />
               {checkingBlocked
                 ? "Verificando contatos…"

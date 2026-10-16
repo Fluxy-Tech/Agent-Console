@@ -375,7 +375,7 @@ export function TemplateEditorDialog({
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button type="button" onClick={handleSubmit} disabled={!canSubmit}>
+          <Button loading={saving} type="button" onClick={handleSubmit} disabled={!canSubmit}>
             {saving ? "Enviando…" : "Enviar para aprovação"}
           </Button>
         </DialogFooter>
@@ -437,7 +437,7 @@ function HeaderMediaUpload({
         }}
       />
       <div className="flex flex-wrap items-center gap-2">
-        <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => inputRef.current?.click()}>
+        <Button loading={uploading} type="button" variant="outline" size="sm" disabled={uploading} onClick={() => inputRef.current?.click()}>
           <Upload className="size-4" /> {uploading ? "Enviando…" : hasFile ? "Trocar arquivo" : "Enviar arquivo de exemplo"}
         </Button>
         {header.fileName ? (

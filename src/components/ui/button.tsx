@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+import { Spinner } from "./spinner";
 
 /// Padrão único de botão do Agent Console e do Desk (os dois arquivos são
 /// idênticos de propósito). A altura casa com inputs e selects: default h-11,
@@ -39,8 +40,21 @@ export const buttonVariants = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {}
+    VariantProps<typeof buttonVariants> {
+  /// Criando/salvando: mostra o Spinner no lugar do ícone e desabilita o botão.
+  loading?: boolean;
+}
 
-export function Button({ className, variant, size, ...props }: ButtonProps) {
-  return <button className={cn(buttonVariants({ variant, size }), className)} {...props} />;
+export function Button({ className, variant, size, loading = false, disabled, children, ...props }: ButtonProps) {
+  return (
+    <button
+      className={cn(buttonVariants({ variant, size }), loading && "[&>svg:not([role=status])]:hidden", className)}
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
+      {...props}
+    >
+      {loading && <Spinner />}
+      {children}
+    </button>
+  );
 }

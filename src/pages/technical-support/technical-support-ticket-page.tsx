@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useSWR, { mutate as mutateGlobal } from "swr";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, Paperclip, Send } from "lucide-react";
+import { ArrowLeft, Paperclip, Send } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -176,6 +176,7 @@ export function TechnicalSupportTicketPage() {
               <Button
                 variant="outline-destructive"
                 size="sm"
+                loading={updating}
                 disabled={updating}
               >
                 Encerrar
@@ -271,14 +272,14 @@ export function TechnicalSupportTicketPage() {
                     className="h-12 min-h-0 flex-1 resize-none"
                     disabled={sending}
                   />
-                  <Button
+                  <Button loading={sending}
                     type="submit"
                     size="icon-lg"
                     className="shrink-0"
                     aria-label="Enviar"
                     disabled={sending || (!content.trim() && files.length === 0)}
                   >
-                    {sending ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+                    <Send className="size-4" />
                   </Button>
                 </div>
               </form>

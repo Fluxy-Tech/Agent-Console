@@ -78,7 +78,7 @@ export function MetadataEditor({ metadata, saving, onSave }: MetadataEditorProps
         <Button type="button" variant="outline" size="sm" onClick={addRow}>
           <Plus className="size-4" /> Adicionar
         </Button>
-        <Button type="button" size="sm" disabled={saving} onClick={handleSave}>
+        <Button loading={saving} type="button" size="sm" disabled={saving} onClick={handleSave}>
           <Save className="size-4" /> {saving ? "Salvando…" : "Salvar metadados"}
         </Button>
       </div>

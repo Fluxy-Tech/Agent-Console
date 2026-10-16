@@ -124,7 +124,7 @@ export function BlockAgentsDialog({ targetId, targetName, blockedAgentIds, disab
           <Button type="button" variant="outline" onClick={() => setOpen(false)}>
             Cancelar
           </Button>
-          <Button type="button" onClick={handleSave} disabled={saving}>
+          <Button loading={saving} type="button" onClick={handleSave} disabled={saving}>
             <Save className="size-4" /> {saving ? "Salvando…" : "Salvar"}
           </Button>
         </DialogFooter>

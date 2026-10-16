@@ -284,7 +284,7 @@ export function AgentDetailPage() {
 
       {canWrite && (
         <div className="flex justify-end gap-2">
-          <Button type="submit" disabled={saving}>
+          <Button loading={saving} type="submit" disabled={saving}>
             <Save className="size-4" /> {saving ? "Salvando…" : isNew ? "Criar agente" : "Salvar alterações"}
           </Button>
         </div>

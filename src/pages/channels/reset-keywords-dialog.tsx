@@ -160,7 +160,7 @@ export function ResetKeywordsDialog({ channel, disabled, onSaved, trigger }: Res
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancelar
             </Button>
-            <Button type="button" disabled={saving} onClick={handleSave}>
+            <Button loading={saving} type="button" disabled={saving} onClick={handleSave}>
               <Save className="size-4" /> {saving ? "Salvando…" : "Salvar alterações"}
             </Button>
           </DialogFooter>

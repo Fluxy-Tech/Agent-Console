@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 import { toast } from "sonner";
-import { Check, ExternalLink, FileText, Loader2, Lock, Paperclip, Pencil, Send, Trash2, X } from "lucide-react";
+import { Check, ExternalLink, FileText, Lock, Paperclip, Pencil, Send, Trash2, X } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -313,14 +313,14 @@ export function CrmCalendarEventDrawer({ eventId, onOpenChange, onChanged }: Crm
                           className="hidden"
                           onChange={(e) => void handleFilesSelected(e.target.files)}
                         />
-                        <Button
+                        <Button loading={uploading}
                           type="button"
                           variant="outline"
                           size="sm"
                           disabled={uploading}
                           onClick={() => fileInputRef.current?.click()}
                         >
-                          {uploading ? <Loader2 className="size-4 animate-spin" /> : <Paperclip className="size-4" />}
+                          <Paperclip className="size-4" />
                           {uploading ? "Enviando…" : "Anexar documento"}
                         </Button>
                       </>
@@ -372,14 +372,14 @@ export function CrmCalendarEventDrawer({ eventId, onOpenChange, onChanged }: Crm
                       maxLength={2000}
                       className="min-h-20"
                     />
-                    <Button
+                    <Button loading={sendingAnnotation}
                       type="button"
                       size="sm"
                       className="self-end"
                       disabled={sendingAnnotation || annotation.trim().length === 0}
                       onClick={() => void handleSendAnnotation()}
                     >
-                      {sendingAnnotation ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+                      <Send className="size-4" />
                       Anotar
                     </Button>
                   </div>
@@ -477,10 +477,10 @@ export function CrmCalendarEventDrawer({ eventId, onOpenChange, onChanged }: Crm
                                   <Button
                                     type="button"
                                     size="sm"
-                                    disabled={busy || editingText.trim().length === 0}
+                                    loading={busy} disabled={busy || editingText.trim().length === 0}
                                     onClick={() => void handleUpdateAnnotation(item.id)}
                                   >
-                                    {busy ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+                                    <Check className="size-4" />
                                     Salvar
                                   </Button>
                                 </div>

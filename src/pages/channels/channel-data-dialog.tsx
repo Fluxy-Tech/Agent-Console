@@ -110,7 +110,7 @@ export function ChannelDataDialog({ channel, disabled, onSaved, trigger }: Chann
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancelar
               </Button>
-              <Button type="submit" disabled={saving}>
+              <Button loading={saving} type="submit" disabled={saving}>
                 <Save className="size-4" /> {saving ? "Salvando…" : "Salvar alterações"}
               </Button>
             </DialogFooter>

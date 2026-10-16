@@ -87,7 +87,7 @@ function ProfileForm({ profile, onSaved }: { profile: UserProfile; onSaved: (pro
             <Input id="profile-email" value={profile.email} disabled />
           </div>
           <div>
-            <Button type="submit" disabled={saving || !dirty || !name.trim()}>
+            <Button loading={saving} type="submit" disabled={saving || !dirty || !name.trim()}>
               {saving ? "Salvando…" : "Salvar alterações"}
             </Button>
           </div>

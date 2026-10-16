@@ -114,7 +114,8 @@ function CampaignDispatchControl({ campaign, onUpdated }: { campaign: CampaignDe
   const { data: islands } = useSWR<ServiceIsland[]>("/api/service-islands");
   const queues = islands?.find((i) => i.whatsappChannelId === campaign.whatsappChannelId)?.queues ?? [];
 
-  const [saving, setSaving] = useState(false);
+  /// Qual ação está em andamento (só o botão dela mostra o spinner).
+  const [saving, setSaving] = useState<"active" | "destination" | null>(null);
   const [destination, setDestination] = useState<"AGENT" | "HUMAN">(campaign.routeToQueueId ? "HUMAN" : "AGENT");
   const [queueId, setQueueId] = useState(campaign.routeToQueueId ?? "");
   const [userId, setUserId] = useState(campaign.routeToUserId ?? "");
@@ -126,21 +127,22 @@ function CampaignDispatchControl({ campaign, onUpdated }: { campaign: CampaignDe
       ? campaign.routeToQueueId !== null
       : queueId !== (campaign.routeToQueueId ?? "") || userId !== (campaign.routeToUserId ?? "");
 
-  async function run(action: () => Promise<CampaignDetail>, success: string) {
-    setSaving(true);
+  async function run(kind: "active" | "destination", action: () => Promise<CampaignDetail>, success: string) {
+    setSaving(kind);
     try {
       onUpdated(await action());
       toast.success(success);
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : "Não foi possível atualizar a campanha.");
     } finally {
-      setSaving(false);
+      setSaving(null);
     }
   }
 
   function toggleActive() {
     const active = !campaign.active;
     void run(
+      "active",
       () => api.patch<CampaignDetail>(`/api/campaigns/${campaign.id}/active`, { active }),
       active ? "Campanha retomada." : "Campanha pausada.",
     );
@@ -148,6 +150,7 @@ function CampaignDispatchControl({ campaign, onUpdated }: { campaign: CampaignDe
 
   function saveDestination() {
     void run(
+      "destination",
       () =>
         api.patch<CampaignDetail>(`/api/campaigns/${campaign.id}/destination`, {
           routeToQueueId: destination === "HUMAN" ? queueId : null,
@@ -177,7 +180,7 @@ function CampaignDispatchControl({ campaign, onUpdated }: { campaign: CampaignDe
             </div>
           </div>
           {!completed && (
-            <Button type="button" variant={campaign.active ? "outline" : "default"} disabled={saving} onClick={toggleActive} className="gap-2">
+            <Button type="button" variant={campaign.active ? "outline" : "default"} loading={saving === "active"} disabled={saving !== null} onClick={toggleActive} className="gap-2">
               {campaign.active ? <Pause className="size-4" /> : <Play className="size-4" />}
               {campaign.active ? "Pausar" : "Retomar"}
             </Button>
@@ -293,7 +296,8 @@ function CampaignDispatchControl({ campaign, onUpdated }: { campaign: CampaignDe
             <Button
               type="button"
               className="w-fit"
-              disabled={saving || !destinationChanged || (destination === "HUMAN" && !queueId)}
+              loading={saving === "destination"}
+              disabled={saving !== null || !destinationChanged || (destination === "HUMAN" && !queueId)}
               onClick={saveDestination}
             >
               Salvar destino

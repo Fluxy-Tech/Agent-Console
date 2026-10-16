@@ -102,7 +102,7 @@ function CompanyForm({ company, onSaved }: { company: Company; onSaved: (company
             />
           </div>
           <div>
-            <Button type="submit" disabled={saving || !dirty || !name.trim() || !cnpj.trim()}>
+            <Button loading={saving} type="submit" disabled={saving || !dirty || !name.trim() || !cnpj.trim()}>
               {saving ? "Salvando…" : "Salvar alterações"}
             </Button>
           </div>

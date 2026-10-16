@@ -159,7 +159,7 @@ function StageColumn({
               }}
               className="h-7 text-sm"
             />
-            <Button type="button" variant="ghost" size="icon-sm"  disabled={saving} onClick={handleSave}>
+            <Button type="button" variant="ghost" size="icon-sm" loading={saving} disabled={saving} onClick={handleSave}>
               <Check className="size-3.5" />
             </Button>
             <Button type="button" variant="ghost" size="icon-sm"  onClick={() => setEditing(false)}>

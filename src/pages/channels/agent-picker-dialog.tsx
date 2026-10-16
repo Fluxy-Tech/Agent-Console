@@ -163,7 +163,7 @@ export function AgentPicker({ channel, disabled, onSaved }: AgentPickerProps) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={saving}>Cancelar</AlertDialogCancel>
-            <AlertDialogAction disabled={saving} onClick={confirmChange}>
+            <AlertDialogAction loading={saving} disabled={saving} onClick={confirmChange}>
               {saving ? "Trocando…" : "Trocar agente"}
             </AlertDialogAction>
           </AlertDialogFooter>
