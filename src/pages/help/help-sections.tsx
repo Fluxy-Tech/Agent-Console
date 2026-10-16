@@ -44,7 +44,7 @@ const ADK_ITEMS: UsageItem[] = [
   {
     title: "Ações durante a conversa",
     description:
-      "Quando o agente registra um dado do contato, consulta a agenda, agenda um evento ou envia um catálogo, botões, listas ou outra funcionalidade, ele faz etapas adicionais de raciocínio antes de concluir a resposta.",
+      "Quando o agente registra um dado do contato, consulta a agenda, agenda um evento ou envia um catálogo, botões, listas, formulários ou outra funcionalidade, ele faz etapas adicionais de raciocínio antes de concluir a resposta.",
     when: "Somente nas respostas em que o agente executa alguma ação.",
   },
 ];
@@ -159,23 +159,47 @@ export const HELP_SECTIONS: HelpSection[] = [
     id: HELP_SECTION_IDS.agentFeatures,
     title: "Funcionalidades do agente",
     summary:
-      "Na aba Função do agente, o botão Adicionar funcionalidade permite que o agente faça mais do que responder com texto. Cada funcionalidade tem uma descrição de quando deve ser usada, escrita pela sua empresa.",
+      "Na aba Função do agente, o botão Adicionar funcionalidade permite que o agente faça mais do que responder com texto. Cada funcionalidade tem uma descrição de quando deve ser usada, escrita pela sua empresa. O agente só usa a funcionalidade nessa situação.",
     icon: Workflow,
     content: (
-      <Topics
-        items={[
-          { title: "Agendamento de evento", text: "O agente combina dia e horário com o contato e agenda o evento na agenda de um usuário disponível." },
-          { title: "Card no Kanban", text: "O agente cria o card do contato no Kanban com os dados coletados." },
-          { title: "Botão de link", text: "Mensagem com um botão que abre um endereço da internet." },
-          { title: "Lista de opções", text: "Menu com até 10 opções para o contato escolher." },
-          { title: "Botões de resposta", text: "Até 3 botões de resposta rápida, definidos pela empresa ou criados pelo agente." },
-          { title: "Carrossel de mídia", text: "De 2 a 10 cards com imagem ou vídeo, cada um com um botão de link." },
-          { title: "Solicitar localização", text: "Pede a localização do contato, que fica salva no cadastro dele." },
-          { title: "Catálogo e carrossel de produtos", text: "Envia produtos do catálogo da Meta, com foto e preço." },
-          { title: "Respostas contextuais", text: "O agente responde citando a mensagem do contato a que se refere." },
-          { title: "Prévia de link", text: "Envia um link com o título e a imagem do site." },
-        ]}
-      />
+      <div className="flex flex-col gap-4">
+        <Subtitle>Funções</Subtitle>
+        <Topics
+          items={[
+            { title: "Agendamento de evento", text: "O agente combina dia e horário com o contato e agenda o evento na agenda de um usuário disponível." },
+            { title: "Card no Kanban", text: "O agente cria o card do contato no Kanban com os dados coletados." },
+          ]}
+        />
+        <Subtitle>Mensagens interativas</Subtitle>
+        <Topics
+          items={[
+            { title: "Botão de link", text: "Mensagem com um botão que abre um endereço da internet." },
+            { title: "Lista de opções", text: "Menu com até 10 opções para o contato escolher." },
+            { title: "Botões de resposta", text: "Até 3 botões de resposta rápida, definidos pela empresa ou criados pelo agente." },
+            { title: "Carrossel de mídia", text: "De 2 a 10 cards com imagem ou vídeo, cada um com um botão de link." },
+            { title: "Solicitar localização", text: "Pede a localização do contato, que fica salva no metadado localization do contato." },
+            {
+              title: "Formulário (Flow)",
+              text: "Envia um formulário do WhatsApp, aberto por um botão na mensagem. As respostas chegam ao agente e, se a empresa escolher, ficam salvas nos metadados do contato.",
+            },
+          ]}
+        />
+        <Subtitle>Catálogo</Subtitle>
+        <Topics
+          items={[
+            { title: "Catálogo", text: "Envia o catálogo da Meta inteiro ou apenas os produtos escolhidos pelo agente." },
+            { title: "Carrossel de produtos", text: "De 2 a 10 produtos do catálogo lado a lado, com foto e preço." },
+          ]}
+        />
+        <Subtitle>Recursos de mensagem</Subtitle>
+        <Topics
+          items={[
+            { title: "Respostas contextuais", text: "O agente responde citando a mensagem do contato a que se refere." },
+            { title: "Prévia de link", text: "Envia um link com o título e a imagem do site." },
+            { title: "RGBS", text: "Divide a resposta em mensagens curtas, enviadas uma de cada vez. Veja a seção RGBS nesta página." },
+          ]}
+        />
+      </div>
     ),
     questions: [
       {
@@ -187,6 +211,21 @@ export const HELP_SECTIONS: HelpSection[] = [
         question: "Por que o catálogo não aparece para seleção?",
         answer:
           "O catálogo precisa estar conectado à conta do WhatsApp da rede social vinculada ao agente, no Commerce Manager da Meta, e o acesso à Meta precisa ter permissão para catálogos.",
+      },
+      {
+        question: "Como funciona o formulário (Flow)?",
+        answer:
+          "Primeiro crie o formulário em Redes sociais, na aba Flows. Para montar o formulário de forma visual, use o Playground da Meta indicado nessa aba. Depois, no agente, adicione a funcionalidade Formulário (Flow), escolha o formulário e escreva o texto do botão. Quando o contato envia o formulário, o agente recebe as respostas como uma mensagem do contato.",
+      },
+      {
+        question: "O que faz a opção Salvar respostas como metadados?",
+        answer:
+          "Com a opção ligada, cada campo preenchido no formulário fica salvo nos metadados do contato com o nome do campo, por exemplo nome ou email, sem apagar os dados que já existiam. Assim o agente não pergunta de novo o que o contato já informou. Com a opção desligada, o agente recebe as respostas na conversa, mas nada é salvo no cadastro.",
+      },
+      {
+        question: "Posso usar um formulário que ainda está em rascunho?",
+        answer:
+          "Pode, mas ele é enviado em modo de teste, indicado para conferir o formulário antes de usar com os contatos. Depois de publicado na aba Flows, a funcionalidade passa a enviar a versão publicada automaticamente. Formulários descontinuados ou excluídos deixam de ser enviados.",
       },
       {
         question: "As mensagens interativas funcionam a qualquer momento?",
