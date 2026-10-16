@@ -170,7 +170,7 @@ export function SupportTicketPage() {
             disabled={updating}
             onValueChange={(value) => handleUpdate({ status: value as SupportTicketStatus }, "Status atualizado.")}
           >
-            <SelectTrigger className="h-10 w-[170px]" aria-label="Status do ticket">
+            <SelectTrigger className="w-[170px]" aria-label="Status do ticket">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -186,7 +186,7 @@ export function SupportTicketPage() {
             disabled={updating}
             onValueChange={(value) => handleUpdate({ severity: value as SupportSeverity }, "Classificação atualizada.")}
           >
-            <SelectTrigger className="h-10 w-[150px]" aria-label="Reclassificar ticket">
+            <SelectTrigger className="w-[150px]" aria-label="Reclassificar ticket">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -240,8 +240,8 @@ export function SupportTicketPage() {
                 <Button
                   type="button"
                   variant="outline"
-                  size="icon"
-                  className="size-12 shrink-0"
+                  size="icon-lg"
+                  className="shrink-0"
                   aria-label="Anexar arquivo"
                   disabled={sending || picker.full}
                   onClick={picker.open}
@@ -265,8 +265,8 @@ export function SupportTicketPage() {
                 />
                 <Button
                   type="submit"
-                  size="icon"
-                  className="size-12 shrink-0"
+                  size="icon-lg"
+                  className="shrink-0"
                   aria-label="Enviar"
                   disabled={sending || (!content.trim() && files.length === 0)}
                 >

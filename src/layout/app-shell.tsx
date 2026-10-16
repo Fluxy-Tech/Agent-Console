@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import useSWR from "swr";
 import { ArrowRightLeft, ChevronDown, ChevronsLeft, ChevronsRight, LogOut, Settings } from "lucide-react";
-import sturnusIcon from "@/assets/IconeAzulSemFundo.png";
+import sturnusIcon from "@/assets/IconeBrancoSemFundo.png";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -59,7 +59,7 @@ export function AppShell() {
       <SupportNotifier />
       <aside
         className={cn(
-          "bg-card border-border flex flex-col border-r transition-[width] duration-200",
+          "theme-navy border-border flex flex-col border-r transition-[width] duration-200",
           collapsed ? "w-16" : "w-64",
         )}
       >

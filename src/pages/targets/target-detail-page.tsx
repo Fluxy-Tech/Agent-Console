@@ -157,7 +157,7 @@ export function TargetDetailPage() {
   );
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="page-shell">
       <PageBreadcrumb
         items={[{ label: "Contatos", to: "/targets" }, { label: target.name || target.waId || "Contato" }]}
       />
@@ -165,7 +165,7 @@ export function TargetDetailPage() {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">
+            <h1 className="page-title">
               {target.name || target.waId || "Contato sem nome"}
             </h1>
             <Badge variant="outline">{STATUS_LABELS[target.status]}</Badge>

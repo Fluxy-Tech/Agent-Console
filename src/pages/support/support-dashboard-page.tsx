@@ -35,12 +35,12 @@ export function SupportDashboardPage() {
   const percent = (part: number) => (totals && totals.total > 0 ? `${Math.round((part / totals.total) * 100)}% do total` : "—");
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="page-shell">
       <PageBreadcrumb items={[{ label: "Suporte técnico", to: "/support/dashboard" }, { label: "Dashboard" }]} />
 
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">Dashboard de suporte</h1>
+          <h1 className="page-title">Dashboard de suporte</h1>
           <p className="text-muted-foreground mt-1 text-sm">Visão geral dos tickets abertos pelas empresas.</p>
         </div>
         {data && (

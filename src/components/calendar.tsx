@@ -76,8 +76,7 @@ export function Calendar({ month, onMonthChange, selected, onSelect }: CalendarP
         <Button
           type="button"
           variant="ghost"
-          size="icon"
-          className="size-7"
+          size="icon-sm"
           onClick={() => onMonthChange(new Date(month.getFullYear(), month.getMonth() - 1, 1))}
         >
           <ChevronLeft className="size-4" />
@@ -88,8 +87,7 @@ export function Calendar({ month, onMonthChange, selected, onSelect }: CalendarP
         <Button
           type="button"
           variant="ghost"
-          size="icon"
-          className="size-7"
+          size="icon-sm"
           onClick={() => onMonthChange(new Date(month.getFullYear(), month.getMonth() + 1, 1))}
         >
           <ChevronRight className="size-4" />

@@ -14,7 +14,7 @@ export function DropdownMenuContent({
       <DropdownMenuPrimitive.Content
         sideOffset={sideOffset}
         className={cn(
-          "bg-popover text-popover-foreground border-border z-50 min-w-[10rem] rounded-md border p-1 shadow-md",
+          "bg-popover text-popover-foreground border-border z-50 min-w-[10rem] rounded-xl border p-1.5 shadow-[0_16px_40px_-12px_rgba(7,15,38,0.25)]",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           className,
         )}
@@ -28,7 +28,7 @@ export function DropdownMenuItem({ className, ...props }: React.ComponentProps<t
   return (
     <DropdownMenuPrimitive.Item
       className={cn(
-        "hover:bg-accent hover:text-accent-foreground flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none",
+        "hover:bg-accent hover:text-accent-foreground flex cursor-pointer items-center gap-2 rounded-lg px-2.5 py-2 text-sm outline-none transition-colors",
         className,
       )}
       {...props}

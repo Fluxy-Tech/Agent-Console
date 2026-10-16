@@ -159,10 +159,10 @@ function StageColumn({
               }}
               className="h-7 text-sm"
             />
-            <Button type="button" variant="ghost" size="icon" className="size-7" disabled={saving} onClick={handleSave}>
+            <Button type="button" variant="ghost" size="icon-sm"  disabled={saving} onClick={handleSave}>
               <Check className="size-3.5" />
             </Button>
-            <Button type="button" variant="ghost" size="icon" className="size-7" onClick={() => setEditing(false)}>
+            <Button type="button" variant="ghost" size="icon-sm"  onClick={() => setEditing(false)}>
               <X className="size-3.5" />
             </Button>
           </div>
@@ -174,13 +174,13 @@ function StageColumn({
             </div>
             {canWrite && (
               <div className="flex shrink-0 items-center gap-0.5">
-                <Button type="button" variant="ghost" size="icon" className="size-7" onClick={startEditing}>
+                <Button type="button" variant="ghost" size="icon-sm"  onClick={startEditing}>
                   <Pencil className="size-3.5" />
                 </Button>
                 {!stage.isDefault && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button type="button" variant="ghost" size="icon" className="size-7">
+                      <Button type="button" variant="ghost" size="icon-sm" >
                         <Trash2 className="text-destructive size-3.5" />
                       </Button>
                     </AlertDialogTrigger>
@@ -296,7 +296,7 @@ export function CrmBoardPage() {
 
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">Quadro</h1>
+          <h1 className="page-title">Quadro</h1>
           <p className="text-muted-foreground mt-1 text-sm">
             Acompanhe seus leads em formato Kanban e arraste os cards entre os estágios.
           </p>

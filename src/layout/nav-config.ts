@@ -1,4 +1,4 @@
-import { BarChart3, Bot, CalendarDays, Funnel, Handshake, Headset, LayoutDashboard, LifeBuoy, Ticket, UsersRound, Megaphone, MessageSquareText, Settings, SquareKanban, Users, Waypoints } from "lucide-react";
+import { BarChart3, Bot, CalendarDays, Funnel, Handshake, Headset, LayoutDashboard, CircleHelp, Ticket, UsersRound, Megaphone, MessageSquareText, Settings, SquareKanban, Users, Waypoints } from "lucide-react";
 import { PermissionAction } from "@/domain/permission-action";
 
 export interface NavItem {
@@ -63,9 +63,9 @@ export const NAV_GROUPS: NavGroup[] = [
       // Área das empresas (abrir e acompanhar tickets). Quem atende usa o
       // grupo "Suporte técnico" abaixo, com telas próprias.
       {
-        label: "Suporte técnico",
+        label: "Ajuda & Suporte",
         to: "/technical-support",
-        icon: LifeBuoy,
+        icon: CircleHelp,
         action: PermissionAction.SUPPORT_VIEW,
         audience: "customer",
         badge: "support",

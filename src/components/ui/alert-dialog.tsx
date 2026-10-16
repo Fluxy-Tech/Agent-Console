@@ -21,7 +21,7 @@ function AlertDialogOverlay({ className, ...props }: React.ComponentProps<typeof
     <AlertDialogPrimitive.Overlay
       data-slot="alert-dialog-overlay"
       className={cn(
-        "fixed inset-0 z-50 bg-black/50 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+        "fixed inset-0 z-50 bg-[#070f26]/45 backdrop-blur-[2px] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
         className,
       )}
       {...props}
@@ -36,7 +36,7 @@ function AlertDialogContent({ className, ...props }: React.ComponentProps<typeof
       <AlertDialogPrimitive.Content
         data-slot="alert-dialog-content"
         className={cn(
-          "fixed top-[50%] left-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border bg-background p-6 shadow-lg duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+          "fixed top-[50%] left-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-5 rounded-2xl border bg-card p-7 shadow-[0_24px_64px_-16px_rgba(7,15,38,0.35)] duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
           className,
         )}
         {...props}
@@ -56,7 +56,7 @@ function AlertDialogFooter({ className, ...props }: React.ComponentProps<"div">)
 }
 
 function AlertDialogTitle({ className, ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Title>) {
-  return <AlertDialogPrimitive.Title data-slot="alert-dialog-title" className={cn("text-lg font-semibold", className)} {...props} />;
+  return <AlertDialogPrimitive.Title data-slot="alert-dialog-title" className={cn("text-xl font-semibold tracking-tight", className)} {...props} />;
 }
 
 function AlertDialogDescription({ className, ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Description>) {

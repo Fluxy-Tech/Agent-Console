@@ -174,9 +174,8 @@ export function TechnicalSupportTicketPage() {
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button
-                variant="outline"
+                variant="outline-destructive"
                 size="sm"
-                className="border-destructive/50 text-destructive hover:text-destructive h-10"
                 disabled={updating}
               >
                 Encerrar
@@ -249,8 +248,8 @@ export function TechnicalSupportTicketPage() {
                   <Button
                     type="button"
                     variant="outline"
-                    size="icon"
-                    className="size-12 shrink-0"
+                    size="icon-lg"
+                    className="shrink-0"
                     aria-label="Anexar arquivo"
                     disabled={sending || picker.full}
                     onClick={picker.open}
@@ -274,8 +273,8 @@ export function TechnicalSupportTicketPage() {
                   />
                   <Button
                     type="submit"
-                    size="icon"
-                    className="size-12 shrink-0"
+                    size="icon-lg"
+                    className="shrink-0"
                     aria-label="Enviar"
                     disabled={sending || (!content.trim() && files.length === 0)}
                   >

@@ -130,11 +130,11 @@ export function SupportTeamPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="page-shell">
       <PageBreadcrumb items={[{ label: "Suporte técnico", to: "/support" }, { label: "Time de suporte" }]} />
 
       <div>
-        <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">Time de suporte</h1>
+        <h1 className="page-title">Time de suporte</h1>
         <p className="text-muted-foreground mt-1 text-sm">
           Quem tem a flag de suporte vê e responde os tickets de todas as empresas e acessa a central Suporte
           Sturnus, sem acesso às demais telas das empresas.
@@ -235,8 +235,8 @@ export function SupportTeamPage() {
                           <AlertDialogTrigger asChild>
                             <Button
                               variant="ghost"
-                              size="icon"
-                              className="text-muted-foreground hover:text-destructive size-8 shrink-0"
+                              size="icon-sm"
+                              className="text-muted-foreground hover:text-destructive shrink-0"
                               disabled={removingId === member.id}
                               aria-label={`Remover ${member.name} do time de suporte`}
                             >

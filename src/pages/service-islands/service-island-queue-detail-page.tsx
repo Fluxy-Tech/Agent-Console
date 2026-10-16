@@ -6,6 +6,7 @@ import { ArrowLeft, Clock, Save, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PageBreadcrumb } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -96,7 +97,7 @@ export function ServiceIslandQueueDetailPage() {
   );
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6 p-6">
+    <form onSubmit={handleSubmit} className="page-shell">
       <PageBreadcrumb
         items={[
           { label: "Ilhas de Atendimento", to: "/service-island" },
@@ -111,7 +112,7 @@ export function ServiceIslandQueueDetailPage() {
             <ArrowLeft className="size-4" />
           </Button>
           <div>
-            <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">Editar fila</h1>
+            <h1 className="page-title">Editar fila</h1>
             <p className="text-muted-foreground mt-1 text-sm">Configure as informações, horários e atendentes da fila.</p>
           </div>
         </div>
@@ -128,7 +129,7 @@ export function ServiceIslandQueueDetailPage() {
       </div>
 
       <Card className="shadow-xl">
-        <CardContent className="flex flex-col gap-6 p-6">
+        <CardContent className="page-shell">
           <div className="flex flex-col gap-4">
             <div>
               <h2 className="text-base font-semibold">Informações da fila</h2>
@@ -270,12 +271,10 @@ export function ServiceIslandQueueDetailPage() {
                         </p>
                       </div>
                     </div>
-                    <input
-                      type="checkbox"
-                      className="size-4 shrink-0 accent-primary"
+                    <Checkbox
                       disabled={!canWrite}
                       checked={checked}
-                      onChange={() => toggleMember(member.userId)}
+                      onCheckedChange={() => toggleMember(member.userId)}
                     />
                   </label>
                 );

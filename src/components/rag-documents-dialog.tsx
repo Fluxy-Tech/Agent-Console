@@ -169,8 +169,8 @@ export function RagDocumentsDialog({
             </p>
             <Button
               type="button"
-              variant="outline"
-              className="border-primary/40 bg-primary/5 hover:bg-primary/10 w-full gap-1.5 border-dashed"
+              variant="dashed"
+              className="w-full gap-1.5"
               onClick={addCategory}
             >
               <Plus className="size-4" /> Adicionar categoria

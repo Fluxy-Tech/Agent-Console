@@ -95,9 +95,9 @@ export function RagTab({
               trigger={
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="dashed"
                   disabled={disabled}
-                  className="w-full gap-2 border-dashed border-[#25D366]/40 bg-[#25D366]/10 hover:bg-[#25D366]/20"
+                  className="w-full gap-2"
                 >
                   <Plus className="size-4" /> Anexar documentos
                 </Button>

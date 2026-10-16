@@ -272,7 +272,7 @@ export function CrmCardDetailDrawer({ cardId, onOpenChange }: CrmCardDetailDrawe
                   onValueChange={(value) => void handleChangePriority(value as CardPriority)}
                   disabled={!canWrite}
                 >
-                  <SelectTrigger className="w-36 data-[size=default]:h-9">
+                  <SelectTrigger size="sm" className="w-36">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -376,7 +376,7 @@ export function CrmCardDetailDrawer({ cardId, onOpenChange }: CrmCardDetailDrawe
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                className="size-9 shrink-0"
+                                className="shrink-0"
                                 disabled={removingKey === attachment.s3Key}
                                 aria-label={`Remover ${attachment.fileName} do card`}
                               >
@@ -462,8 +462,7 @@ export function CrmCardDetailDrawer({ cardId, onOpenChange }: CrmCardDetailDrawe
                                   <Button
                                     type="button"
                                     variant="ghost"
-                                    size="icon"
-                                    className="size-7 !h-7"
+                                    size="icon-sm"
                                     disabled={busy}
                                     onClick={() => startEditingComment(item.id, item.comment)}
                                     aria-label="Editar comentário"
@@ -475,8 +474,7 @@ export function CrmCardDetailDrawer({ cardId, onOpenChange }: CrmCardDetailDrawe
                                       <Button
                                         type="button"
                                         variant="ghost"
-                                        size="icon"
-                                        className="size-7 !h-7"
+                                        size="icon-sm"
                                         disabled={busy}
                                         aria-label="Apagar comentário"
                                       >

@@ -1,10 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:wght@500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800;900&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @theme inline {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Bricolage Grotesque", "Inter", ui-sans-serif, system-ui, sans-serif;
+  /* Mesma família do site: Epilogue no texto e nos títulos. */
+  --font-sans: "Epilogue", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Epilogue", ui-sans-serif, system-ui, sans-serif;
 
   --color-background: var(--background);
   --color-page: var(--page);
@@ -15,6 +16,7 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-deep: var(--primary-deep);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -48,111 +50,119 @@
   --color-sidebar-hover-foreground: var(--sidebar-hover-foreground);
   --color-sidebar-item-foreground: var(--sidebar-item-foreground);
 
-  /* Portal com cantos levemente arredondados: todos os tokens de raio
-     usam o mesmo valor pequeno (equivalente ao rounded-lg). */
-  --radius-xs: var(--radius);
-  --radius-sm: var(--radius);
-  --radius-md: var(--radius);
-  --radius-lg: var(--radius);
-  --radius-xl: var(--radius);
-  --radius-2xl: var(--radius);
-  --radius-3xl: var(--radius);
-  --radius-4xl: var(--radius);
+  /* Escala de raios: controles pequenos mais retos, painéis e janelas mais
+     suaves (cards rounded-2xl, diálogos rounded-2xl, botões rounded-full). */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.625rem;
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1.125rem;
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 2rem;
+}
+
+/* Como no site: nada parado tem sombra. Os cards usavam shadow-xl (e campos
+   shadow-xs/sm) como "estilo de card"; zerar esses três tokens deixa todos
+   chapados de uma vez, com a borda fazendo a separação. Menus, popovers e
+   diálogos usam shadow-md/lg e continuam flutuando. */
+@theme {
+  --shadow-xs: 0 0 #0000;
+  --shadow-sm: 0 0 #0000;
+  --shadow-xl: 0 0 #0000;
 }
 
 :root {
-  --radius: 0.5rem;
+  /* Cantos discretos nos painéis; os botões são pílulas (button.tsx). */
+  --radius: 0.375rem;
 
-  /* Identidade azul Fluxy (#1E56E9). */
-  --background: oklch(0.99 0.003 264);
-  /* Fundo da área de conteúdo do portal: cinza neutro (neutral-100), sem tom azul. */
-  --page: oklch(0.97 0 0);
-  --foreground: oklch(0.18 0.02 264);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.02 264);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.02 264);
-  --primary: oklch(0.5185 0.2290 263.94);
-  --primary-foreground: oklch(0.98 0.005 264);
-  --secondary: oklch(0.95 0.01 264);
-  --secondary-foreground: oklch(0.24 0.03 264);
-  --muted: oklch(0.96 0.007 264);
-  --muted-foreground: oklch(0.5 0.02 264);
-  --accent: oklch(0.94 0.03 264);
-  --accent-foreground: oklch(0.24 0.03 264);
+  /* Paleta do site Sturnus Flow: papel, azul-marinho (tinta), azul da marca
+     (#1E56E9) como acento e azul-céu nos destaques suaves. */
+  --background: #f6f7fb;
+  --foreground: #070f26;
+  --card: #ffffff;
+  --card-foreground: #070f26;
+  --popover: #ffffff;
+  --popover-foreground: #070f26;
+  --primary: #1e56e9;
+  --primary-foreground: #ffffff;
+  /* Tom do hover/pressão dos botões primários. */
+  --primary-deep: #1848c9;
+  --secondary: #e9edf7;
+  --secondary-foreground: #070f26;
+  --muted: #e9edf7;
+  --muted-foreground: #4b5675;
+  --accent: #dce6fd;
+  --accent-foreground: #0e1d4a;
   --destructive: oklch(0.58 0.24 27);
-  --destructive-foreground: oklch(0.98 0.005 264);
+  --destructive-foreground: #ffffff;
   --success: oklch(0.62 0.17 149);
   --success-foreground: oklch(0.98 0.005 264);
   --warning: oklch(0.75 0.16 75);
-  --warning-foreground: oklch(0.24 0.03 264);
-  --border: oklch(0.9 0.01 264);
-  --input: oklch(0.9 0.01 264);
-  --ring: oklch(0.5185 0.2290 263.94);
+  --warning-foreground: #070f26;
+  --border: #e1e6f1;
+  --input: #d5dcea;
+  --ring: #1e56e9;
 
-  /* Cores dos gráficos (Area Chart - Interactive): chart-1 segue a marca
-     (azul primário) e chart-2 reaproveita o verde de --success — combina
-     com o azul e já é usado no resto da UI. Ambos resolvidos via var(),
-     então adaptam sozinhos no dark sem precisar redeclarar lá embaixo. */
-  --chart-1: var(--primary);
-  --chart-2: var(--success);
-
-  --sidebar: oklch(0.99 0.003 264);
-  --sidebar-foreground: oklch(0.18 0.02 264);
-  --sidebar-primary: oklch(0.5185 0.2290 263.94);
-  --sidebar-primary-foreground: oklch(0.98 0.005 264);
-  --sidebar-accent: oklch(0.94 0.03 264);
-  --sidebar-accent-foreground: oklch(0.24 0.03 264);
-  --sidebar-border: oklch(0.9 0.01 264);
-  --sidebar-ring: oklch(0.5185 0.2290 263.94);
-  /* Item do menu lateral: ativo azul claro com texto azul escuro; hover cinza claro com texto preto. */
-  --sidebar-active: oklch(0.89 0.065 264);
-  --sidebar-active-foreground: oklch(0.36 0.16 264);
-  --sidebar-hover: oklch(0.95 0 0);
-  --sidebar-hover-foreground: oklch(0 0 0);
-  /* Itens não selecionados: preto mais claro, sólido (vale para texto e ícone). */
-  --sidebar-item-foreground: oklch(0.45 0.015 264);
+  /* Menu lateral azul-marinho, como os capítulos escuros do site. */
+  --sidebar: #070f26;
+  --sidebar-foreground: #f6f7fb;
+  --sidebar-primary: #1e56e9;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #0e1d4a;
+  --sidebar-accent-foreground: #f6f7fb;
+  --sidebar-border: #16244f;
+  --sidebar-ring: #8fb0ff;
+  /* Item ativo: pílula azul da marca com texto branco; hover: azul-noite. */
+  --sidebar-active: #1e56e9;
+  --sidebar-active-foreground: #ffffff;
+  --sidebar-hover: #0e1d4a;
+  --sidebar-hover-foreground: #ffffff;
+  --sidebar-item-foreground: #b9c3e0;
+  /* Fundo da área de conteúdo: o papel do site. */
+  --page: #f6f7fb;
 }
 
 .dark {
-  --background: oklch(0.16 0.015 264);
-  --page: oklch(0.16 0 0);
-  --foreground: oklch(0.96 0.005 264);
-  --card: oklch(0.2 0.018 264);
-  --card-foreground: oklch(0.96 0.005 264);
-  --popover: oklch(0.2 0.018 264);
-  --popover-foreground: oklch(0.96 0.005 264);
-  --primary: oklch(0.70 0.20 264);
-  --primary-foreground: oklch(0.16 0.015 264);
-  --secondary: oklch(0.26 0.02 264);
-  --secondary-foreground: oklch(0.96 0.005 264);
-  --muted: oklch(0.24 0.018 264);
-  --muted-foreground: oklch(0.68 0.02 264);
-  --accent: oklch(0.3 0.05 264);
-  --accent-foreground: oklch(0.96 0.005 264);
+  --background: #070f26;
+  --foreground: #f6f7fb;
+  --card: #0e1d4a;
+  --card-foreground: #f6f7fb;
+  --popover: #0e1d4a;
+  --popover-foreground: #f6f7fb;
+  --primary: #5b86ff;
+  --primary-foreground: #070f26;
+  --primary-deep: #8fb0ff;
+  --secondary: #16244f;
+  --secondary-foreground: #f6f7fb;
+  --muted: #16244f;
+  --muted-foreground: #b9c3e0;
+  --accent: #1c2d61;
+  --accent-foreground: #f6f7fb;
   --destructive: oklch(0.6 0.22 27);
-  --destructive-foreground: oklch(0.96 0.005 264);
+  --destructive-foreground: #f6f7fb;
   --success: oklch(0.68 0.17 149);
   --success-foreground: oklch(0.16 0.015 264);
   --warning: oklch(0.78 0.15 75);
-  --warning-foreground: oklch(0.16 0.015 264);
-  --border: oklch(0.3 0.02 264);
-  --input: oklch(0.3 0.02 264);
-  --ring: oklch(0.70 0.20 264);
+  --warning-foreground: #070f26;
+  --border: #1c2d61;
+  --input: #1c2d61;
+  --ring: #8fb0ff;
 
-  --sidebar: oklch(0.19 0.018 264);
-  --sidebar-foreground: oklch(0.96 0.005 264);
-  --sidebar-primary: oklch(0.70 0.20 264);
-  --sidebar-primary-foreground: oklch(0.16 0.015 264);
-  --sidebar-accent: oklch(0.3 0.05 264);
-  --sidebar-accent-foreground: oklch(0.96 0.005 264);
-  --sidebar-border: oklch(0.3 0.02 264);
-  --sidebar-ring: oklch(0.70 0.20 264);
-  --sidebar-active: oklch(0.30 0.08 264);
-  --sidebar-active-foreground: oklch(0.85 0.09 264);
-  --sidebar-hover: oklch(0.27 0.01 264);
-  --sidebar-hover-foreground: oklch(1 0 0);
-  --sidebar-item-foreground: oklch(0.75 0.01 264);
+  --sidebar: #050b1d;
+  --sidebar-foreground: #f6f7fb;
+  --sidebar-primary: #5b86ff;
+  --sidebar-primary-foreground: #070f26;
+  --sidebar-accent: #0e1d4a;
+  --sidebar-accent-foreground: #f6f7fb;
+  --sidebar-border: #16244f;
+  --sidebar-ring: #8fb0ff;
+  --sidebar-active: #1e56e9;
+  --sidebar-active-foreground: #ffffff;
+  --sidebar-hover: #0e1d4a;
+  --sidebar-hover-foreground: #ffffff;
+  --sidebar-item-foreground: #b9c3e0;
+  --page: #070f26;
 }
 
 @layer base {
@@ -164,7 +174,12 @@
   }
   body {
     @apply bg-background text-foreground font-sans;
-    font-feature-settings: "cv11", "ss01";
+  }
+  /* Títulos apertados, como no site. */
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]) {
@@ -172,12 +187,60 @@
   }
 }
 
+/* Painéis em azul-marinho (menu lateral): redefine os tokens dentro do bloco,
+   então bg-card, text-muted-foreground, border-border, botões ghost/outline
+   etc. já saem certos sobre o fundo escuro sem mexer em cada classe. */
+.theme-navy {
+  --background: #070f26;
+  --foreground: #f6f7fb;
+  --card: #070f26;
+  --card-foreground: #f6f7fb;
+  --muted: #0e1d4a;
+  --muted-foreground: #9aa6cc;
+  --secondary: #0e1d4a;
+  --secondary-foreground: #f6f7fb;
+  --accent: #0e1d4a;
+  --accent-foreground: #ffffff;
+  --border: #16244f;
+  --input: #22336a;
+  --ring: #8fb0ff;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* Estrutura padrão das telas internas: conteúdo centralizado com largura
+   máxima e respiro generoso, título forte e apertado. */
+@layer components {
+  .page-shell {
+    margin-inline: auto;
+    display: flex;
+    width: 100%;
+    max-width: 1480px;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1.75rem 1.5rem 3rem;
+  }
+  @media (min-width: 64rem) {
+    .page-shell {
+      padding: 2.25rem 2.5rem 4rem;
+    }
+  }
+  .page-title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+}
+
 .bg-dot-grid {
   background-color: var(--color-background);
 }
 
+/* Antes um degradê; agora o menu é azul-marinho chapado. */
 .bg-sidebar-gradient {
-  background: linear-gradient(180deg, var(--color-sidebar) 0%, color-mix(in oklch, var(--color-sidebar), var(--color-primary) 4%) 100%);
+  background-color: var(--color-sidebar);
 }
 
 /* Entrada da logo na home pública: começa grande e vai encolhendo até o

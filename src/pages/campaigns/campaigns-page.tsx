@@ -13,11 +13,11 @@ export function CampaignsPage() {
   const canConfigure = can(PermissionAction.WABAS_WRITE);
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="page-shell">
       <PageBreadcrumb items={[{ label: "Campanhas" }]} />
 
       <div>
-        <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">Campanhas</h1>
+        <h1 className="page-title">Campanhas</h1>
         <p className="text-muted-foreground mt-1 text-sm">
           Disparos em massa (ou manuais) de templates de WhatsApp, histórico de envios e configurações.
         </p>

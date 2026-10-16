@@ -49,12 +49,12 @@ export function AgentsListPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="page-shell">
       <PageBreadcrumb items={[{ label: "Agentes", to: "/agents" }, { label: "Lista" }]} />
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">Agentes</h1>
+          <h1 className="page-title">Agentes</h1>
           <p className="text-muted-foreground mt-1 text-sm">Agentes de IA configurados para esta empresa.</p>
         </div>
         {canWrite && (
@@ -97,8 +97,8 @@ export function AgentsListPage() {
                     <Button
                       type="button"
                       variant="ghost"
-                      size="icon"
-                      className="text-muted-foreground hover:text-destructive size-8 shrink-0"
+                      size="icon-sm"
+                      className="text-muted-foreground hover:text-destructive shrink-0"
                       disabled={deletingId === agent.id}
                       onClick={(e) => e.stopPropagation()}
                     >

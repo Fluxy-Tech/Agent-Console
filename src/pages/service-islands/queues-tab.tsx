@@ -326,8 +326,7 @@ export function QueuesTab({ islandId, canManageQueues }: QueuesTabProps) {
                     <div className="flex items-center justify-center">
                       <Button
                         variant="outline"
-                        size="icon"
-                        className="size-8"
+                        size="icon-sm"
                         onClick={() => navigate(`/service-island/${islandId}/queue/${queue.id}`)}
                       >
                         <Pencil className="size-4" />

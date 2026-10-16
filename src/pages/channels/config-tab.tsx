@@ -80,8 +80,8 @@ export function ConfigTab({ channel, canWrite, onSaved }: ConfigTabProps) {
               trigger={
                 <Button
                   type="button"
-                  variant="outline"
-                  className="border-primary/40 text-primary bg-primary/10 hover:bg-primary/15 w-full border-dashed"
+                  variant="dashed"
+                  className="w-full"
                   disabled={!canWrite}
                 >
                   <Pencil className="size-4" /> Editar dados
@@ -117,8 +117,8 @@ export function ConfigTab({ channel, canWrite, onSaved }: ConfigTabProps) {
               </div>
               <Button
                 type="button"
-                variant="outline"
-                className="border-success text-success bg-success/10 hover:bg-success/15 w-full border-dashed"
+                variant="dashed"
+                className="w-full"
                 onClick={() => navigate(`/service-island/${channel.serviceIsland!.id}`)}
               >
                 <Eye className="size-4" /> Ver ilha de atendimento
@@ -151,7 +151,7 @@ export function ConfigTab({ channel, canWrite, onSaved }: ConfigTabProps) {
             disabled={!canWrite}
             onSaved={onSaved}
             trigger={
-              <Button type="button" variant="outline" className="border-primary/40 text-primary bg-primary/10 hover:bg-primary/15 w-full border-dashed" disabled={!canWrite}>
+              <Button type="button" variant="dashed" className="w-full" disabled={!canWrite}>
                 <Pencil className="size-4" /> Gerenciar palavras-chave
                 {channel.wordsToReset.length > 0 ? ` (${channel.wordsToReset.length})` : ""}
               </Button>

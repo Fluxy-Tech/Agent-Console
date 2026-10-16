@@ -41,7 +41,7 @@ export function MetricCard({ icon: Icon, iconClassName, label, imageSrc, value, 
       type={onClick ? "button" : undefined}
       onClick={onClick}
       className={cn(
-        "bg-card text-card-foreground flex items-start gap-3 rounded-xl p-4 text-left shadow-xl",
+        "bg-card text-card-foreground border-border flex items-start gap-3 rounded-xl border p-4 text-left",
         onClick &&
           "hover:border-primary/40 hover:bg-accent/40 focus-visible:ring-ring/50 cursor-pointer transition-colors focus-visible:ring-[3px] focus-visible:outline-none",
       )}

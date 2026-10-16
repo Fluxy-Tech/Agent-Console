@@ -196,13 +196,13 @@ export function AgentDetailPage() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6 p-6">
+    <form onSubmit={handleSubmit} className="page-shell">
       <PageBreadcrumb
         items={[{ label: "Agentes", to: "/agents" }, { label: isNew ? "Novo agente" : form.name || "Agente" }]}
       />
 
       <div>
-        <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">
+        <h1 className="page-title">
           {isNew ? "Novo agente" : form.name || "Agente"}
         </h1>
         <p className="text-muted-foreground mt-1 text-sm">

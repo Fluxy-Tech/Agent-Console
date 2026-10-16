@@ -16,11 +16,11 @@ export function CrmPageShell({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="page-shell">
       <PageBreadcrumb items={[{ label: "CRM", to: "/crm" }, { label: section }]} />
       {title && (
         <div>
-          <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">{title}</h1>
+          <h1 className="page-title">{title}</h1>
           {description && <p className="text-muted-foreground mt-1 text-sm">{description}</p>}
         </div>
       )}

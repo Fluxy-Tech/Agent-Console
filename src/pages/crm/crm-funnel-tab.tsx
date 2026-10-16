@@ -95,7 +95,7 @@ export function CrmFunnelTab() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">Métricas de funil</h1>
+          <h1 className="page-title">Métricas de funil</h1>
           <p className="text-muted-foreground mt-1 text-sm">
             Cada etapa olha para um campo dos metadados do contato. Clique numa etapa para ver os contatos.
           </p>
@@ -149,14 +149,14 @@ export function CrmFunnelTab() {
                     field={field}
                     onSaved={() => mutate()}
                     trigger={
-                      <Button type="button" variant="ghost" size="icon" className="size-8">
+                      <Button type="button" variant="ghost" size="icon-sm" >
                         <Pencil className="size-3.5" />
                       </Button>
                     }
                   />
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button type="button" variant="ghost" size="icon" className="size-8">
+                      <Button type="button" variant="ghost" size="icon-sm" >
                         <Trash2 className="text-destructive size-3.5" />
                       </Button>
                     </AlertDialogTrigger>

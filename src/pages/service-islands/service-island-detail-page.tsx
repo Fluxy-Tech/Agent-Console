@@ -24,11 +24,11 @@ export function ServiceIslandDetailPage() {
   if (!island) return <div className="p-6 text-sm text-muted-foreground">Carregando…</div>;
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="page-shell">
       <PageBreadcrumb items={[{ label: "Ilhas de Atendimento", to: "/service-island" }, { label: island.name }]} />
 
       <div>
-        <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">{island.name}</h1>
+        <h1 className="page-title">{island.name}</h1>
         <p className="text-muted-foreground mt-1 text-sm">
           Monitore o atendimento, acompanhe o histórico, gerencie as filas e configure as regras desta ilha de
           atendimento.

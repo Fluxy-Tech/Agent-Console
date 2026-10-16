@@ -20,11 +20,11 @@ export function SettingsPage() {
   const tab = requested && tabs.includes(requested) ? requested : "profile";
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="page-shell">
       <PageBreadcrumb items={[{ label: "Configurações" }]} />
 
       <div>
-        <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">Configurações</h1>
+        <h1 className="page-title">Configurações</h1>
         <p className="text-muted-foreground mt-1 text-sm">
           {isManager ? "Seus dados, os dados da empresa e os acessos da equipe." : "Seus dados de usuário."}
         </p>

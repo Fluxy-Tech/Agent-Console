@@ -346,7 +346,7 @@ export function CrmCalendarEventDrawer({ eventId, onOpenChange, onChanged }: Crm
                               type="button"
                               variant="ghost"
                               size="icon"
-                              className="size-9 shrink-0"
+                              className="shrink-0"
                               disabled={removingKey === document.s3Key}
                               onClick={() => void handleRemoveDocument(document.s3Key)}
                               aria-label={`Remover ${document.fileName} do evento`}
@@ -414,8 +414,7 @@ export function CrmCalendarEventDrawer({ eventId, onOpenChange, onChanged }: Crm
                                     <Button
                                       type="button"
                                       variant="ghost"
-                                      size="icon"
-                                      className="size-7"
+                                      size="icon-sm"
                                       disabled={busy}
                                       onClick={() => {
                                         setEditingAnnotationId(item.id);
@@ -430,8 +429,7 @@ export function CrmCalendarEventDrawer({ eventId, onOpenChange, onChanged }: Crm
                                         <Button
                                           type="button"
                                           variant="ghost"
-                                          size="icon"
-                                          className="size-7"
+                                          size="icon-sm"
                                           disabled={busy}
                                           aria-label="Apagar anotação"
                                         >

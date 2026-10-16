@@ -96,8 +96,8 @@ export function MetadataFieldsCard({ agentId, canWrite }: MetadataFieldsCardProp
                 trigger={
                   <Button
                     type="button"
-                    variant="outline"
-                    className="w-full gap-2 border-dashed border-[#25D366]/40 bg-[#25D366]/10 hover:bg-[#25D366]/20"
+                    variant="dashed"
+                    className="w-full gap-2"
                   >
                     <Plus className="size-4" /> Adicionar metadado
                   </Button>
@@ -141,8 +141,8 @@ export function MetadataFieldsCard({ agentId, canWrite }: MetadataFieldsCardProp
                             <Button
                               type="button"
                               variant="ghost"
-                              size="icon"
-                              className="text-muted-foreground size-8"
+                              size="icon-sm"
+                              className="text-muted-foreground"
                               aria-label={`Editar ${field.name}`}
                             >
                               <Pencil className="size-4" />
@@ -154,8 +154,8 @@ export function MetadataFieldsCard({ agentId, canWrite }: MetadataFieldsCardProp
                             <Button
                               type="button"
                               variant="ghost"
-                              size="icon"
-                              className="text-muted-foreground hover:text-destructive size-8"
+                              size="icon-sm"
+                              className="text-muted-foreground hover:text-destructive"
                               disabled={busyId === field.id}
                               aria-label={`Excluir ${field.name}`}
                             >

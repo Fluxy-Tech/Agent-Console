@@ -318,7 +318,7 @@ export function CampaignDetailPage() {
   if (!campaign) return <div className="text-muted-foreground p-6 text-sm">Carregando…</div>;
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="page-shell">
       <PageBreadcrumb items={[{ label: "Campanhas", to: "/campaigns" }, { label: campaign.name }]} />
 
       <div className="flex items-start gap-3">
@@ -327,7 +327,7 @@ export function CampaignDetailPage() {
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">{campaign.name}</h1>
+            <h1 className="page-title">{campaign.name}</h1>
             <Badge variant={campaignStatusBadge(campaign).variant}>{campaignStatusBadge(campaign).label}</Badge>
           </div>
           <p className="text-muted-foreground mt-1 text-sm">Detalhes do disparo desta campanha de WhatsApp.</p>

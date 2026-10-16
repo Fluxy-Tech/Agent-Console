@@ -430,8 +430,7 @@ export function CrmCalendarTab() {
           <Button
             type="button"
             variant="ghost"
-            size="icon"
-            className="size-8"
+            size="icon-sm"
             aria-label="Período anterior"
             onClick={() => setAnchor(shiftAnchor(view, anchor, -1))}
           >
@@ -440,8 +439,7 @@ export function CrmCalendarTab() {
           <Button
             type="button"
             variant="ghost"
-            size="icon"
-            className="size-8"
+            size="icon-sm"
             aria-label="Próximo período"
             onClick={() => setAnchor(shiftAnchor(view, anchor, 1))}
           >

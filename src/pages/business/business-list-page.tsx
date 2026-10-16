@@ -1,7 +1,8 @@
 import { type FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
-import { Building2, LifeBuoy, Plus, Ticket } from "lucide-react";
+import { Building2, LifeBuoy, LogOut, Plus, Ticket } from "lucide-react";
+import sturnusIcon from "@/assets/IconeAzulSemFundo.png";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -15,8 +16,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api, ApiError } from "@/lib/api";
+import { signOut } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { clearAuth } from "@/store/slices/auth-slice";
 import { homePathFor, setActiveCompany, type ActiveCompany } from "@/store/slices/active-company-slice";
 import type { Company, Member } from "@/types/domain";
 
@@ -97,15 +100,29 @@ export function BusinessListPage() {
     }
   }
 
+  // Tela fora do AppShell (sem menu lateral): o "Sair" precisa estar aqui,
+  // senão quem não tem empresa nenhuma fica preso nela.
+  async function handleSignOut() {
+    await signOut();
+    dispatch(clearAuth());
+    dispatch(setActiveCompany(null));
+    window.location.href = "/signin";
+  }
+
   return (
-    <div className="bg-dot-grid min-h-screen p-6">
-      <div className="mx-auto flex max-w-3xl flex-col gap-6">
-        <div className="flex items-center justify-between">
+    <div className="bg-dot-grid min-h-screen">
+      <div className="page-shell max-w-none">
+        <div className="flex items-center gap-2.5">
+          <img src={sturnusIcon} alt="" className="size-8 object-contain" />
+          <span className="font-display text-xl font-bold tracking-tight">Sturnus Flow</span>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">Empresas</h1>
+            <h1 className="page-title">Empresas</h1>
             <p className="text-muted-foreground mt-1 text-sm">Escolha a empresa que deseja acessar.</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline">
@@ -168,15 +185,18 @@ export function BusinessListPage() {
                 </form>
               </DialogContent>
             </Dialog>
+
+            <Button variant="ghost" onClick={handleSignOut}>
+              <LogOut className="size-4" /> Sair
+            </Button>
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           {sortedCompanies?.map((company) => (
             <Card
               key={company.id}
               className={cn(
-                "shadow-xl",
                 company.isSupportHub && "border-primary/40 bg-primary/5",
                 company.id === activeCompanyId && "border-primary",
               )}
@@ -216,7 +236,7 @@ export function BusinessListPage() {
             </Card>
           ))}
           {companies && companies.length === 0 && (
-            <p className="text-muted-foreground col-span-2 text-sm">
+            <p className="text-muted-foreground col-span-full text-sm">
               Você ainda não faz parte de nenhuma empresa. Crie uma nova ou entre com um código de convite.
             </p>
           )}

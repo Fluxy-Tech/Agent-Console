@@ -99,11 +99,11 @@ export function ReportsPage() {
       : (channels?.find((c) => c.id === whatsappChannelId)?.displayNumber ?? "Todos os canais");
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="page-shell">
       <PageBreadcrumb items={[{ label: "Métricas", to: "/reports" }, { label: "Início" }]} />
 
       <div>
-        <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">Métricas da plataforma</h1>
+        <h1 className="page-title">Métricas da plataforma</h1>
         <p className="text-muted-foreground mt-1 text-sm">Visão consolidada de atendimento e evolução dos canais.</p>
       </div>
 

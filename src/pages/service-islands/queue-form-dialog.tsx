@@ -1,6 +1,7 @@
 import { type FormEvent, useEffect, useState } from "react";
 import { Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -167,10 +168,9 @@ export function QueueFormDialog({ serviceIslandId, queue, members, onSaved, trig
             <div className="flex flex-col gap-1 rounded-md border p-2">
               {members.map((member) => (
                 <label key={member.userId} className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={memberUserIds.includes(member.userId)}
-                    onChange={() => toggleMember(member.userId)}
+                    onCheckedChange={() => toggleMember(member.userId)}
                   />
                   {member.user.name}
                 </label>

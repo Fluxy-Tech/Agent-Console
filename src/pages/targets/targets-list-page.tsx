@@ -107,11 +107,11 @@ export function TargetsListPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="page-shell">
       <PageBreadcrumb items={[{ label: "Contatos", to: "/targets" }, { label: "Lista" }]} />
 
       <div>
-        <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">Contatos</h1>
+        <h1 className="page-title">Contatos</h1>
         <p className="text-muted-foreground mt-1 text-sm">Contatos cadastrados nas Redes sociais desta empresa.</p>
       </div>
 
