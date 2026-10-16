@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useSWR from "swr";
 import { toast } from "sonner";
-import { Coins, Database, MessageCircleMore, Save, User } from "lucide-react";
+import { Coins, Database, MessageCircleMore, Save, User, Workflow } from "lucide-react";
 import { PageBreadcrumb } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,6 +12,7 @@ import { PermissionAction } from "@/domain/permission-action";
 import { api, ApiError } from "@/lib/api";
 import type { Agent, RagDocument, SeriesPeriod, TokenUsage } from "@/types/domain";
 import type { FormState } from "./agent-form-types";
+import { FunctionsTab } from "./functions-tab";
 import { IdentityTab } from "./identity-tab";
 import { MessagesTab } from "./messages-tab";
 import { RagTab } from "./rag-tab";
@@ -39,7 +40,7 @@ const EMPTY_FORM: FormState = {
   processingMessage:
     "Só um momento, por favor. Estou analisando cuidadosamente sua mensagem para te dar a resposta mais completa e precisa possível. Já retorno com as informações!",
   transferMessage:
-    "Entendido! Para garantir que você receba o melhor atendimento, vou transferir esta conversa para um de nossos atendentes, que dará continuidade a partir daqui. Por favor, aguarde só mais um instante — em breve alguém da nossa equipe vai falar com você.",
+    "Entendido! Para garantir que você receba o melhor atendimento, vou transferir esta conversa para um de nossos atendentes, que dará continuidade a partir daqui. Por favor, aguarde só mais um instante. Em breve alguém da nossa equipe vai falar com você.",
   unsupportedFormatMessage:
     "Desculpe, ainda não consigo processar esse tipo de arquivo ou mídia que você enviou. Para que eu possa te ajudar da melhor forma, poderia, por gentileza, reenviar sua solicitação em texto?",
   blockedMessage:
@@ -56,6 +57,10 @@ const EMPTY_FORM: FormState = {
   personality: "Comunique-se de forma cordial, clara e objetiva, como um atendente profissional e prestativo.",
   ragEnabled: false,
   ragChunkSize: 500,
+  rgbsEnabled: false,
+  timeSmall: 5,
+  timeMedium: 10,
+  timeLarge: 15,
 };
 
 function toForm(agent: Agent): FormState {
@@ -75,6 +80,10 @@ function toForm(agent: Agent): FormState {
     personality: agent.personality ?? "",
     ragEnabled: agent.ragEnabled,
     ragChunkSize: agent.ragChunkSize ?? 500,
+    rgbsEnabled: agent.rgbsEnabled,
+    timeSmall: agent.timeSmall,
+    timeMedium: agent.timeMedium,
+    timeLarge: agent.timeLarge,
   };
 }
 
@@ -130,7 +139,7 @@ export function AgentDetailPage() {
 
     if (isNew) {
       setPendingRagUploads((prev) => [...prev, batch]);
-      toast.success(`${batch.files.length} arquivo(s) preparado(s) — serão enviados ao criar o agente.`);
+      toast.success(`${batch.files.length} arquivo(s) preparado(s). Eles serão enviados ao criar o agente.`);
       return;
     }
 
@@ -138,7 +147,7 @@ export function AgentDetailPage() {
     try {
       await uploadRagBatch(id!, batch);
       await mutateRagDocuments();
-      toast.success("Documentos anexados — processando em segundo plano.");
+      toast.success("Documentos anexados. O processamento continua em segundo plano.");
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : "Não foi possível anexar os documentos.");
     } finally {
@@ -206,6 +215,9 @@ export function AgentDetailPage() {
           <TabsTrigger value="identity">
             <User /> Identidade
           </TabsTrigger>
+          <TabsTrigger value="functions">
+            <Workflow /> Função
+          </TabsTrigger>
           <TabsTrigger value="messages">
             <MessageCircleMore /> Mensagens fixas
           </TabsTrigger>
@@ -224,8 +236,6 @@ export function AgentDetailPage() {
             form={form}
             set={set}
             disabled={disabled}
-            agentId={id}
-            canWrite={canWrite}
             openaiToken={openaiToken}
             onChangeOpenaiToken={setOpenaiToken}
             openaiTokenPreview={agent?.openaiTokenPreview ?? null}
@@ -233,6 +243,10 @@ export function AgentDetailPage() {
             onChangeGeminiToken={setGeminiToken}
             geminiTokenPreview={agent?.geminiTokenPreview ?? null}
           />
+        </TabsContent>
+
+        <TabsContent value="functions">
+          <FunctionsTab form={form} set={set} disabled={disabled} agentId={id} canWrite={canWrite} />
         </TabsContent>
 
         <TabsContent value="messages">

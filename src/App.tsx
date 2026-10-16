@@ -21,7 +21,10 @@ import { TargetDetailPage } from "@/pages/targets/target-detail-page";
 import { TargetsListPage } from "@/pages/targets/targets-list-page";
 import { ChannelDetailPage } from "@/pages/channels/channel-detail-page";
 import { ChannelsListPage } from "@/pages/channels/channels-list-page";
-import { CrmPage } from "@/pages/crm/crm-page";
+import { CrmBoardPage } from "@/pages/crm/crm-board-page";
+import { CrmCalendarPage } from "@/pages/crm/crm-calendar-page";
+import { CrmFunnelPage } from "@/pages/crm/crm-funnel-page";
+import { CrmSettingsPage } from "@/pages/crm/crm-settings-page";
 import { SettingsPage } from "@/pages/settings/settings-page";
 import { SupportDashboardPage } from "@/pages/support/support-dashboard-page";
 import { SupportEmptyState, SupportTicketsLayout } from "@/pages/support/support-tickets-layout";
@@ -87,7 +90,11 @@ export function App() {
               <Route path="/targets/:id" element={<TargetDetailPage />} />
               <Route path="/campaigns" element={<CampaignsPage />} />
               <Route path="/campaigns/:id" element={<CampaignDetailPage />} />
-              <Route path="/crm" element={<CrmPage />} />
+              <Route path="/crm" element={<Navigate to="/crm/board" replace />} />
+              <Route path="/crm/board" element={<CrmBoardPage />} />
+              <Route path="/crm/calendar" element={<CrmCalendarPage />} />
+              <Route path="/crm/funnel" element={<CrmFunnelPage />} />
+              <Route path="/crm/settings" element={<CrmSettingsPage />} />
               <Route path="/reports" element={<ReportsPage />} />
               <Route path="/agents" element={<AgentsListPage />} />
               <Route path="/agents/new" element={<AgentDetailPage />} />

@@ -14,6 +14,10 @@ export interface FormState {
   personality: string;
   ragEnabled: boolean;
   ragChunkSize: number;
+  rgbsEnabled: boolean;
+  timeSmall: number;
+  timeMedium: number;
+  timeLarge: number;
 }
 
 export interface AgentFormTabProps {

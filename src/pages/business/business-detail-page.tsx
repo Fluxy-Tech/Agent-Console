@@ -403,7 +403,7 @@ export function BusinessDetailPage({ embedded = false }: { embedded?: boolean } 
                   <CardTitle className="text-base">Código de convite</CardTitle>
                   <p className="text-muted-foreground mt-1 text-sm">
                     Gere um código pro e-mail da pessoa que você quer convidar. Na tela de cadastro, o resgate só é
-                    aceito se ela se cadastrar com esse mesmo e-mail — já entra direto nesta empresa, com o papel
+                    aceito se ela se cadastrar com esse mesmo e-mail e já entra direto nesta empresa, com o papel
                     escolhido abaixo.
                   </p>
                 </div>
@@ -591,7 +591,7 @@ export function BusinessDetailPage({ embedded = false }: { embedded?: boolean } 
           <DialogHeader>
             <DialogTitle>Código gerado</DialogTitle>
             <DialogDescription>
-              Envie este código para <strong>{generatedCode?.email}</strong> digitar na tela de cadastro — só é
+              Envie este código para <strong>{generatedCode?.email}</strong> digitar na tela de cadastro. Só é
               aceito se ela se cadastrar com esse e-mail. Papel: {generatedCode && ROLE_LABELS[generatedCode.role]}.
             </DialogDescription>
           </DialogHeader>

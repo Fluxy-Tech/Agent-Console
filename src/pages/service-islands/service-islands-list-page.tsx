@@ -42,7 +42,7 @@ export function ServiceIslandsListPage() {
         ))}
         {islands && islands.length === 0 && (
           <p className="text-muted-foreground col-span-full text-sm">
-            Nenhuma ilha de atendimento ainda — crie uma rede social para gerar uma automaticamente.
+            Nenhuma ilha de atendimento ainda. Crie uma rede social para gerar uma automaticamente.
           </p>
         )}
       </div>

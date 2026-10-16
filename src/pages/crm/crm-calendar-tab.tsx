@@ -384,7 +384,7 @@ function TimeGridView({
   );
 }
 
-/// Aba "Calendário" do Kanban Board: visões Dia, Semana e Mês no estilo
+/// Tela "Calendário" do CRM: visões Dia, Semana e Mês no estilo
 /// Google Agenda com os eventos da empresa ativa. Clicar num horário/dia vazio
 /// cria um evento ali; clicar num evento abre o detalhe.
 export function CrmCalendarTab() {

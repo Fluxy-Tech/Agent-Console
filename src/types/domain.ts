@@ -67,6 +67,12 @@ export interface Agent {
   ragEnabled: boolean;
   ragChunkSize: number | null;
   handoffAfterFunctions: boolean;
+  /// RGBS: quebra a resposta em [QB] e espera (segundos) antes de cada parte
+  /// conforme o tamanho — até 40 chars / até 100 / acima de 100.
+  rgbsEnabled: boolean;
+  timeSmall: number;
+  timeMedium: number;
+  timeLarge: number;
   /// 6 primeiros chars do token decifrado, só pra confirmação visual — nunca
   /// o token completo. null quando nenhum token está configurado.
   openaiTokenPreview: string | null;
@@ -90,6 +96,32 @@ export interface AgentMetadataField {
   active: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+/// Funcionalidades de mensagem do agente (aba "Função" › Adicionar
+/// funcionalidade). PAYMENT existe só no backend — o Console não mostra.
+export type AgentFeatureType =
+  | "CATALOG"
+  | "PRODUCT_CAROUSEL"
+  | "CTA_URL"
+  | "LIST"
+  | "REPLY_BUTTONS"
+  | "MEDIA_CAROUSEL"
+  | "LOCATION_REQUEST"
+  | "CONTEXTUAL_REPLY"
+  | "LINK_PREVIEW"
+  | "PAYMENT";
+
+/// GET /api/agents/:id/features — `config` muda por tipo (ver
+/// pages/agents/features/feature-editors.tsx).
+export interface AgentFeature {
+  id: string;
+  agentId: string;
+  type: AgentFeatureType;
+  name: string;
+  prompt: string;
+  config: Record<string, unknown>;
+  createdAt: string;
 }
 
 export type AgentFunctionType = "CALENDAR_EVENT" | "KANBAN_CARD";
@@ -209,6 +241,10 @@ export interface TokenUsage {
   granularity: "day" | "month";
   total: number;
   byOrigin: Record<TokenOrigin, number>;
+  /// Total de cada origem separado em entrada (prompt) e saída (resposta).
+  /// Consumo registrado antes dessa separação não entra aqui — por isso
+  /// input + output pode ficar abaixo do byOrigin.
+  breakdown: Record<TokenOrigin, { input: number; output: number }>;
   points: ({ date: string } & Record<TokenOrigin, number>)[];
 }
 

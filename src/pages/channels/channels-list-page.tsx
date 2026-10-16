@@ -175,7 +175,7 @@ export function ChannelsListPage() {
                     <Label htmlFor="lookup-agent">Agente (opcional)</Label>
                     <Select value={lookupAgentId} onValueChange={setLookupAgentId}>
                       <SelectTrigger id="lookup-agent" className="w-full">
-                        <SelectValue placeholder="Nenhum — só atendimento humano" />
+                        <SelectValue placeholder="Nenhum (só atendimento humano)" />
                       </SelectTrigger>
                       <SelectContent>
                         {agents?.map((a) => (
@@ -273,7 +273,7 @@ export function ChannelsListPage() {
                     <Label htmlFor="wc-agent">Agente (opcional)</Label>
                     <Select value={agentId} onValueChange={setAgentId}>
                       <SelectTrigger id="wc-agent" className="w-full">
-                        <SelectValue placeholder="Nenhum — só atendimento humano" />
+                        <SelectValue placeholder="Nenhum (só atendimento humano)" />
                       </SelectTrigger>
                       <SelectContent>
                         {agents?.map((a) => (

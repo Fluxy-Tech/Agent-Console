@@ -95,7 +95,7 @@ export function CampaignSettingsTab({ canWrite }: CampaignSettingsTabProps) {
               <CardTitle>Bloqueio automático por frase</CardTitle>
               <p className="text-muted-foreground mt-1 text-sm">
                 Quando um contato responde a um disparo de campanha com uma destas frases, ele para de receber
-                campanhas desta rede social — até você removê-lo manualmente.
+                campanhas desta rede social até você removê-lo manualmente.
               </p>
             </div>
           </div>

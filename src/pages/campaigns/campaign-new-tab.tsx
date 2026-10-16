@@ -5,16 +5,6 @@ import Papa from "papaparse";
 import { toast } from "sonner";
 import { CheckCircle2, Download, Eye, FileSpreadsheet, FileText, Headset, Radio, Reply, Send, Upload, Users, XCircle } from "lucide-react";
 import fundoWhatsApp from "@/assets/FundoWhatsApp.jpg";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -26,6 +16,7 @@ import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { api, ApiError } from "@/lib/api";
+import { CampaignContactCheckDialog, hasContactIssues, type ContactCheckResult } from "./campaign-contact-check-dialog";
 import type { Channel, ServiceIsland, Template } from "@/types/domain";
 
 interface ParsedRow {
@@ -92,9 +83,10 @@ export function CampaignNewTab() {
   const [checkingBlocked, setCheckingBlocked] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Preenchidos quando /api/campaigns/blocked-contacts encontra contatos
-  // bloqueados — abre o alerta de confirmação em vez de disparar direto.
-  const [blockedPhones, setBlockedPhones] = useState<string[] | null>(null);
+  // Preenchidos quando /api/campaigns/contact-check encontra contatos
+  // bloqueados, em atendimento ou em outro disparo em andamento — abre o
+  // alerta de confirmação em vez de disparar direto.
+  const [contactCheck, setContactCheck] = useState<ContactCheckResult | null>(null);
   const [pendingContacts, setPendingContacts] = useState<ContactPayload[] | null>(null);
 
   const [routeToHuman, setRouteToHuman] = useState(false);
@@ -312,7 +304,7 @@ export function CampaignNewTab() {
         scheduledDate
           ? `Campanha agendada para ${scheduledDate.toLocaleString("pt-BR")}.`
           : mode === "CSV"
-            ? "Campanha criada — o disparo em lotes já começou."
+            ? "Campanha criada. O disparo em lotes já começou."
             : "Campanha adicionada à fila de disparo.",
       );
       navigate(`/campaigns/${result.id}`);
@@ -331,62 +323,54 @@ export function CampaignNewTab() {
 
     setCheckingBlocked(true);
     try {
-      const { blockedPhones: blocked } = await api.post<{ blockedPhones: string[] }>("/api/campaigns/blocked-contacts", {
+      const result = await api.post<ContactCheckResult>("/api/campaigns/contact-check", {
         whatsappChannelId,
         phones: contacts.map((c) => c.phone),
       });
 
-      if (blocked.length > 0) {
-        setBlockedPhones(blocked);
+      if (hasContactIssues(result)) {
+        setContactCheck(result);
         setPendingContacts(contacts);
         return;
       }
 
       await dispatchCampaign(contacts);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Não foi possível verificar contatos bloqueados.");
+      setError(err instanceof ApiError ? err.message : "Não foi possível verificar os contatos da lista.");
     } finally {
       setCheckingBlocked(false);
     }
   }
 
-  function handleCancelBlocked() {
-    setBlockedPhones(null);
+  function handleCancelContactCheck() {
+    setContactCheck(null);
     setPendingContacts(null);
   }
 
-  async function handleContinueWithoutBlocked() {
-    if (!pendingContacts || !blockedPhones) return;
-    const blockedSet = new Set(blockedPhones);
-    const filtered = pendingContacts.filter((c) => !blockedSet.has(c.phone));
-    setBlockedPhones(null);
+  /// Bloqueados sempre saem; `removeFlagged` tira também quem está em
+  /// atendimento ou em outro disparo em andamento.
+  async function handleContinueAfterCheck(removeFlagged: boolean) {
+    if (!pendingContacts || !contactCheck) return;
+    const excluded = new Set(contactCheck.blockedPhones);
+    if (removeFlagged) {
+      for (const c of contactCheck.inService) excluded.add(c.phone);
+      for (const c of contactCheck.inCampaign) excluded.add(c.phone);
+    }
+    const filtered = pendingContacts.filter((c) => !excluded.has(c.phone));
+    setContactCheck(null);
     setPendingContacts(null);
     await dispatchCampaign(filtered);
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <AlertDialog
-        open={blockedPhones !== null}
-        onOpenChange={(open) => {
-          if (!open) handleCancelBlocked();
-        }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Contatos bloqueados para campanha</AlertDialogTitle>
-            <AlertDialogDescription>
-              {blockedPhones?.length} contato(s) já pediram para não receber mais mensagens de campanha nesta rede
-              social e não serão incluídos neste disparo: {blockedPhones?.join(", ")}. Deseja continuar o disparo sem
-              eles?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleContinueWithoutBlocked}>Continuar sem eles</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <CampaignContactCheckDialog
+        result={contactCheck}
+        totalContacts={pendingContacts?.length ?? 0}
+        onCancel={handleCancelContactCheck}
+        onRemoveFlagged={() => handleContinueAfterCheck(true)}
+        onSendAnyway={() => handleContinueAfterCheck(false)}
+      />
 
       <Card className="shadow-xl">
         <CardHeader>
@@ -691,7 +675,7 @@ export function CampaignNewTab() {
               </div>
               <div>
                 <CardTitle className="text-base">Contatos</CardTitle>
-                <CardDescription>Informe quem vai receber o disparo — em massa (CSV) ou manual.</CardDescription>
+                <CardDescription>Informe quem vai receber o disparo: em massa (CSV) ou manual.</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -871,7 +855,7 @@ export function CampaignNewTab() {
                 {pacingValid && validRows.length > 0 ? (
                   <p className="text-muted-foreground text-xs">
                     {validRows.length} contato(s) em {totalBatches} lote(s) de até {batchSizeNumber}, com {batchIntervalNumber}{" "}
-                    min entre eles — duração estimada de {totalDurationMinutes} min. Você pode pausar a campanha a qualquer
+                    min entre eles, com duração estimada de {totalDurationMinutes} min. Você pode pausar a campanha a qualquer
                     momento pela tela de detalhes.
                   </p>
                 ) : (

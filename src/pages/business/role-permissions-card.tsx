@@ -76,7 +76,7 @@ export function RolePermissionsCard() {
             <CardTitle className="text-base">O que cada papel pode fazer</CardTitle>
             <p className="text-muted-foreground mt-1 text-sm">
               Este é o padrão de cada papel. Pelo botão de permissões na lista acima, dá para liberar ou restringir
-              telas para um usuário específico — só a tela de Acessos continua exclusiva do Gerente.
+              telas para um usuário específico. Só a tela de Acessos continua exclusiva do Gerente.
             </p>
           </div>
         </div>

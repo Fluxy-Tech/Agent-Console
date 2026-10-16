@@ -7,12 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import geminiLogo from "@/assets/LogoGermini.png";
 import openaiLogo from "@/assets/LogoOpenAi.png";
 import type { AgentFormTabProps } from "./agent-form-types";
-import { AgentFunctionsCard } from "./agent-functions-card";
-import { MetadataFieldsCard } from "./metadata-fields-card";
 
 interface IdentityTabProps extends AgentFormTabProps {
-  agentId: string | undefined;
-  canWrite: boolean;
   openaiToken: string;
   onChangeOpenaiToken: (value: string) => void;
   openaiTokenPreview: string | null;
@@ -25,8 +21,6 @@ export function IdentityTab({
   form,
   set,
   disabled,
-  agentId,
-  canWrite,
   openaiToken,
   onChangeOpenaiToken,
   openaiTokenPreview,
@@ -101,10 +95,6 @@ export function IdentityTab({
         </CardContent>
       </Card>
 
-      <MetadataFieldsCard agentId={agentId} canWrite={canWrite} />
-
-      <AgentFunctionsCard agentId={agentId} canWrite={canWrite} />
-
       <Card className="shadow-xl">
         <CardHeader>
           <div className="flex items-start gap-3">
@@ -136,7 +126,7 @@ export function IdentityTab({
                 disabled={disabled}
                 className="pl-8"
                 placeholder={
-                  openaiTokenPreview ? `${openaiTokenPreview}•••••••• — digite para trocar` : "Nenhum token configurado"
+                  openaiTokenPreview ? `${openaiTokenPreview}•••••••• (digite para trocar)` : "Nenhum token configurado"
                 }
                 value={openaiToken}
                 onChange={(e) => onChangeOpenaiToken(e.target.value)}
@@ -160,7 +150,7 @@ export function IdentityTab({
                 disabled={disabled}
                 className="pl-8"
                 placeholder={
-                  geminiTokenPreview ? `${geminiTokenPreview}•••••••• — digite para trocar` : "Nenhum token configurado"
+                  geminiTokenPreview ? `${geminiTokenPreview}•••••••• (digite para trocar)` : "Nenhum token configurado"
                 }
                 value={geminiToken}
                 onChange={(e) => onChangeGeminiToken(e.target.value)}
@@ -170,7 +160,7 @@ export function IdentityTab({
           <div className="flex items-start gap-2 border-t pt-4">
             <ShieldCheck className="text-primary size-4 shrink-0" />
             <p className="text-muted-foreground text-xs">
-              Guardados de forma criptografada — por segurança, nunca mostramos o token completo aqui, só os 6
+              Guardados de forma criptografada. Por segurança, nunca mostramos o token completo aqui, só os 6
               primeiros caracteres do que já está salvo.
             </p>
           </div>

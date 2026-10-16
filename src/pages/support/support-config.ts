@@ -40,7 +40,7 @@ export const SEVERITY_INFO: Record<SupportSeverity, SeverityInfo> = {
     name: "Alta",
     summary: "Impacta o funcionamento e a visualização.",
     impact:
-      "Uma funcionalidade ou tela não funciona, ou mostra dados errados, sem contorno simples — mas o atendimento no WhatsApp continua.",
+      "Uma funcionalidade ou tela não funciona, ou mostra dados errados, sem contorno simples, mas o atendimento no WhatsApp continua.",
     examples: [
       "Campanha não dispara ou Kanban não salva",
       "Relatório/métrica não carrega ou mostra valores errados",

@@ -50,7 +50,7 @@ function SwitchToSupportHub() {
         <div className="flex flex-col gap-1">
           <p className="font-semibold">As telas de suporte ficam na central Suporte Sturnus</p>
           <p className="text-muted-foreground text-sm">
-            Você está acessando uma empresa — aqui valem só as telas liberadas para você nela. Para atender os
+            Você está acessando uma empresa: aqui valem só as telas liberadas para você nela. Para atender os
             tickets, entre na central.
           </p>
         </div>

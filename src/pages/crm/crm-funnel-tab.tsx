@@ -92,11 +92,11 @@ export function CrmFunnelTab() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold">Funil de conversões</h2>
-          <p className="text-muted-foreground text-sm">
+          <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">Métricas de funil</h1>
+          <p className="text-muted-foreground mt-1 text-sm">
             Cada etapa olha para um campo dos metadados do contato. Clique numa etapa para ver os contatos.
           </p>
         </div>
@@ -164,7 +164,7 @@ export function CrmFunnelTab() {
                       <AlertDialogHeader>
                         <AlertDialogTitle>Excluir etapa "{field.name}"?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Os metadados dos contatos não são alterados — só a etapa sai do funil.
+                          Os metadados dos contatos não são alterados, só a etapa sai do funil.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>

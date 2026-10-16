@@ -55,7 +55,7 @@ export function SupportNotifier() {
       if (pathnameRef.current === ticketPath && !document.hidden) continue;
 
       const title = becameNew && !gotNewMessage ? `Novo chamado #${item.code}` : `Nova mensagem no chamado #${item.code}`;
-      const description = isSupportTeam ? item.title : `${item.title} — resposta do time de apoio`;
+      const description = isSupportTeam ? item.title : `${item.title} (resposta do time de apoio)`;
 
       toast.info(title, {
         id: `support-${item.ticketId}`,

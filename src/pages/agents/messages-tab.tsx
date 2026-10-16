@@ -82,7 +82,7 @@ export function MessagesTab({ form, set, disabled }: AgentFormTabProps) {
             <div>
               <CardTitle>Mensagens obrigatórias</CardTitle>
               <p className="text-muted-foreground mt-1 text-sm">
-                Sempre têm um texto configurado e são enviadas automaticamente pelo agente — sem opção de desativar.
+                Sempre têm um texto configurado e são enviadas automaticamente pelo agente, sem opção de desativar.
               </p>
             </div>
           </div>
@@ -128,7 +128,7 @@ export function MessagesTab({ form, set, disabled }: AgentFormTabProps) {
             <div>
               <CardTitle>Mensagens opcionais</CardTitle>
               <p className="text-muted-foreground mt-1 text-sm">
-                Cada uma tem um switch — quando desativada, a IA responde livremente nesse cenário.
+                Cada uma tem um switch: quando desativada, a IA responde livremente nesse cenário.
               </p>
             </div>
           </div>

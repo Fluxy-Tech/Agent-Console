@@ -136,7 +136,7 @@ export function QueuesTab({ islandId, canManageQueues }: QueuesTabProps) {
       toast.success(`${deletedCount} fila(s) excluída(s).`);
     }
     if (disabledCount > 0) {
-      toast.success(`${disabledCount} fila(s) desabilitada(s) — tinham histórico de atendimento, que foi preservado.`);
+      toast.success(`${disabledCount} fila(s) desabilitada(s), pois tinham histórico de atendimento, que foi preservado.`);
     }
     if (failures.length > 0) {
       toast.error(`${failures.length} fila(s) não puderam ser excluídas.`, {
@@ -192,7 +192,7 @@ export function QueuesTab({ islandId, canManageQueues }: QueuesTabProps) {
                   <AlertDialogTitle>Excluir {selectedCount} fila(s)?</AlertDialogTitle>
                   <AlertDialogDescription>
                     Filas sem nenhum ticket são excluídas de verdade. Filas com algum ticket (mesmo já encerrado) são
-                    só desabilitadas — somem desta lista, mas o histórico de atendimento é preservado. Esta ação não
+                    só desabilitadas: somem desta lista, mas o histórico de atendimento é preservado. Esta ação não
                     pode ser desfeita.
                   </AlertDialogDescription>
                 </AlertDialogHeader>

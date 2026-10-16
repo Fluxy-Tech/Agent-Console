@@ -134,7 +134,7 @@ export function ResetKeywordsDialog({ channel, disabled, onSaved, trigger }: Res
             ))}
             {words.length === 0 && (
               <p className="text-muted-foreground py-2 text-center text-sm">
-                Nenhuma palavra-chave cadastrada — o reset de jornada fica desativado para este canal.
+                Nenhuma palavra-chave cadastrada. O reset de jornada fica desativado para este canal.
               </p>
             )}
           </div>

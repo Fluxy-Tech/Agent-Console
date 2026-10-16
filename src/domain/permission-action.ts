@@ -115,7 +115,7 @@ export interface ScreenPermission {
 export const SCREEN_PERMISSIONS: ScreenPermission[] = [
   { label: "Contatos", view: [PermissionAction.CONTACTS_VIEW], write: [PermissionAction.CONTACTS_WRITE] },
   { label: "Campanhas", view: [PermissionAction.CAMPAIGNS_VIEW], write: [PermissionAction.CAMPAIGNS_WRITE] },
-  { label: "Kanban Board", view: [PermissionAction.CRM_VIEW], write: [PermissionAction.CRM_WRITE] },
+  { label: "CRM", view: [PermissionAction.CRM_VIEW], write: [PermissionAction.CRM_WRITE] },
   { label: "Métricas", view: [PermissionAction.REPORTS_VIEW], write: [] },
   { label: "Agentes de IA", view: [PermissionAction.AGENTS_VIEW], write: [PermissionAction.AGENTS_WRITE] },
   { label: "Redes Sociais", view: [PermissionAction.WABAS_VIEW], write: [PermissionAction.WABAS_WRITE] },

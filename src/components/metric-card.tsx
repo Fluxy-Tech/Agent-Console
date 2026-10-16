@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { ChevronRight, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -5,11 +6,15 @@ interface MetricCardProps {
   icon: LucideIcon;
   iconClassName?: string;
   label: string;
+  /// Opcional — imagem (ex.: logo da empresa) no lugar do ícone.
+  imageSrc?: string;
   value: string | number;
   sublabel: string;
   /// Opcional — quando presente, o card vira um botão (ex: abre um modal com
   /// o detalhamento daquele número).
   onClick?: () => void;
+  /// Opcional — detalhamento extra abaixo do sublabel (ex.: entrada/saída).
+  children?: ReactNode;
 }
 
 /// iconClassName sempre traz "bg-*" (fundo do círculo do ícone) + "text-*"
@@ -28,7 +33,7 @@ function extractTextClasses(className?: string): string | undefined {
 /// affordance de clique, pra manter a semântica/acessibilidade certa.
 /// Número e sublabel ficam alinhados com o label (não com o ícone) — todo o
 /// texto começa na mesma coluna, à direita do círculo do ícone.
-export function MetricCard({ icon: Icon, iconClassName, label, value, sublabel, onClick }: MetricCardProps) {
+export function MetricCard({ icon: Icon, iconClassName, label, imageSrc, value, sublabel, onClick, children }: MetricCardProps) {
   const Wrapper = onClick ? "button" : "div";
 
   return (
@@ -41,9 +46,13 @@ export function MetricCard({ icon: Icon, iconClassName, label, value, sublabel, 
           "hover:border-primary/40 hover:bg-accent/40 focus-visible:ring-ring/50 cursor-pointer transition-colors focus-visible:ring-[3px] focus-visible:outline-none",
       )}
     >
-      <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg", iconClassName)}>
-        <Icon className="size-5" />
-      </div>
+      {imageSrc ? (
+        <img src={imageSrc} alt="" className="size-10 shrink-0 rounded-sm object-cover" />
+      ) : (
+        <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg", iconClassName)}>
+          <Icon className="size-5" />
+        </div>
+      )}
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span className="text-muted-foreground text-sm">{label}</span>
@@ -51,6 +60,7 @@ export function MetricCard({ icon: Icon, iconClassName, label, value, sublabel, 
         </div>
         <p className="mt-1 text-2xl font-semibold">{value}</p>
         <p className={cn("text-xs", extractTextClasses(iconClassName))}>{sublabel}</p>
+        {children}
       </div>
     </Wrapper>
   );

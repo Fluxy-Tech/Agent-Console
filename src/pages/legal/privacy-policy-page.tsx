@@ -101,7 +101,7 @@ const SECTIONS: PolicySection[] = [
   {
     title: "15. Dados do agente responsável",
     paragraphs: [
-      "Controladora: Sturnus Flow [Razão social a confirmar] — CNPJ [a confirmar] — [endereço a confirmar]. Estes dados de identificação societária serão atualizados aqui antes da publicação oficial desta política.",
+      "Controladora: Sturnus Flow [Razão social a confirmar], CNPJ [a confirmar], [endereço a confirmar]. Estes dados de identificação societária serão atualizados aqui antes da publicação oficial desta política.",
     ],
   },
   {

@@ -12,19 +12,7 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
-import {
-  CalendarDays,
-  Check,
-  Funnel,
-  MessageSquare,
-  Paperclip,
-  Pencil,
-  Plus,
-  Settings,
-  SquareKanban,
-  Trash2,
-  X,
-} from "lucide-react";
+import { Check, MessageSquare, Paperclip, Pencil, Plus, Trash2, X } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -40,7 +28,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PageBreadcrumb } from "@/components/ui/breadcrumb";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCan } from "@/hooks/use-can";
 import { PermissionAction } from "@/domain/permission-action";
 import { api, ApiError } from "@/lib/api";
@@ -48,9 +35,6 @@ import { cn } from "@/lib/utils";
 import { CARD_PRIORITY_LABELS, type CrmCard, type CrmStage } from "@/types/domain";
 import { CARD_PRIORITY_DOT_CLASSES } from "./card-priority";
 import { CrmCardDetailDrawer } from "./crm-card-detail-drawer";
-import { CrmCalendarTab } from "./crm-calendar-tab";
-import { CrmSettingsTab } from "./crm-settings-tab";
-import { CrmFunnelTab } from "./crm-funnel-tab";
 import { CrmStageFormDialog } from "./crm-stage-form-dialog";
 
 const CARD_CLASSES = "bg-card flex w-full flex-col gap-1 rounded-lg p-3 text-left shadow-sm";
@@ -204,7 +188,7 @@ function StageColumn({
                       <AlertDialogHeader>
                         <AlertDialogTitle>Excluir estágio "{stage.nameStage}"?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Os cards deste estágio não são excluídos — ficam sem estágio até serem movidos para outra
+                          Os cards deste estágio não são excluídos: ficam sem estágio até serem movidos para outra
                           coluna. Esta ação não pode ser desfeita.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
@@ -234,12 +218,11 @@ function StageColumn({
   );
 }
 
-export function CrmPage() {
+export function CrmBoardPage() {
   const can = useCan();
   const canWrite = can(PermissionAction.CRM_WRITE);
   const { data, mutate } = useSWR<{ stages: CrmStage[] }>("/api/crm");
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
-  const [tab, setTab] = useState("kanban");
   const [draggingCardId, setDraggingCardId] = useState<string | null>(null);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
 
@@ -307,19 +290,18 @@ export function CrmPage() {
   }
 
   return (
-    // No Kanban a página ocupa a altura da tela para o quadro esticar até embaixo;
-    // nas outras abas o conteúdo segue o fluxo normal e a página rola.
-    <div className={cn("flex flex-col gap-6 p-6", tab === "kanban" && "h-full")}>
-      <PageBreadcrumb items={[{ label: "Kanban Board", to: "/crm" }, { label: "Início" }]} />
+    // A página ocupa a altura da tela para o quadro esticar até embaixo.
+    <div className="flex h-full flex-col gap-6 p-6">
+      <PageBreadcrumb items={[{ label: "CRM", to: "/crm" }, { label: "Quadro" }]} />
 
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">Kanban Board</h1>
+          <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">Quadro</h1>
           <p className="text-muted-foreground mt-1 text-sm">
             Acompanhe seus leads em formato Kanban e arraste os cards entre os estágios.
           </p>
         </div>
-        {canWrite && tab === "kanban" && (
+        {canWrite && (
           <CrmStageFormDialog
             nextPosition={nextPosition}
             onSaved={() => mutate()}
@@ -332,64 +314,33 @@ export function CrmPage() {
         )}
       </div>
 
-      <Tabs value={tab} onValueChange={setTab} className={cn(tab === "kanban" && "min-h-0 flex-1")}>
-        <TabsList>
-          <TabsTrigger value="kanban">
-            <SquareKanban /> Kanban
-          </TabsTrigger>
-          <TabsTrigger value="calendar">
-            <CalendarDays /> Calendário
-          </TabsTrigger>
-          <TabsTrigger value="funnel">
-            <Funnel /> Funil de conversões
-          </TabsTrigger>
-          <TabsTrigger value="settings">
-            <Settings /> Configurações
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="kanban" className="min-h-0">
-          <DndContext
-            sensors={sensors}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onDragCancel={() => setDraggingCardId(null)}
-          >
-            <div className="flex h-full gap-4 overflow-x-auto pb-4">
-              {stages.map((stage) => (
-                <StageColumn
-                  key={stage.id}
-                  stage={stage}
-                  canDrag={canWrite}
-                  canWrite={canWrite}
-                  onOpenCard={setSelectedCardId}
-                  onRename={handleRenameStage}
-                  onDelete={handleDeleteStage}
-                />
-              ))}
+      <DndContext
+        sensors={sensors}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragCancel={() => setDraggingCardId(null)}
+      >
+        <div className="flex min-h-0 flex-1 gap-4 overflow-x-auto pb-4">
+          {stages.map((stage) => (
+            <StageColumn
+              key={stage.id}
+              stage={stage}
+              canDrag={canWrite}
+              canWrite={canWrite}
+              onOpenCard={setSelectedCardId}
+              onRename={handleRenameStage}
+              onDelete={handleDeleteStage}
+            />
+          ))}
+        </div>
+        <DragOverlay>
+          {draggingCard && (
+            <div className={cn(CARD_CLASSES, "w-66 cursor-grabbing shadow-lg")}>
+              <CrmCardBody card={draggingCard} />
             </div>
-            <DragOverlay>
-              {draggingCard && (
-                <div className={cn(CARD_CLASSES, "w-66 cursor-grabbing shadow-lg")}>
-                  <CrmCardBody card={draggingCard} />
-                </div>
-              )}
-            </DragOverlay>
-          </DndContext>
-        </TabsContent>
-
-        <TabsContent value="funnel">
-          <CrmFunnelTab />
-        </TabsContent>
-
-        <TabsContent value="calendar">
-          <CrmCalendarTab />
-        </TabsContent>
-
-        <TabsContent value="settings">
-          <CrmSettingsTab />
-        </TabsContent>
-      </Tabs>
+          )}
+        </DragOverlay>
+      </DndContext>
 
       <CrmCardDetailDrawer cardId={selectedCardId} onOpenChange={(open) => !open && setSelectedCardId(null)} />
     </div>

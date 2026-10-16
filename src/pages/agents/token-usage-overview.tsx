@@ -1,5 +1,7 @@
 import { BrainCircuit, Coins, Sparkles } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import geminiLogo from "@/assets/LogoGermini.png";
+import openaiLogo from "@/assets/LogoOpenAi.png";
 import { MetricCard } from "@/components/metric-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -11,7 +13,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { SeriesPeriod, TokenUsage } from "@/types/domain";
+import type { SeriesPeriod, TokenOrigin, TokenUsage } from "@/types/domain";
 import {
   buildYearOptions,
   formatBucketLabel,
@@ -34,6 +36,26 @@ export function formatTokens(value: number): string {
 
 function percentOf(part: number, total: number): string {
   return total > 0 ? `${Math.round((part / total) * 100)}% do total` : "Sem consumo no período";
+}
+
+/// Total de entrada (input) e saída (output) de uma origem, embaixo do card.
+function InputOutputBreakdown({ data, origin }: { data: TokenUsage | undefined; origin: TokenOrigin }) {
+  const breakdown = data?.breakdown?.[origin];
+  const items = [
+    { label: "Input", value: breakdown?.input },
+    { label: "Output", value: breakdown?.output },
+  ];
+
+  return (
+    <div className="border-border mt-3 grid grid-cols-2 gap-3 border-t pt-3">
+      {items.map((item) => (
+        <div key={item.label} className="min-w-0">
+          <p className="text-muted-foreground text-xs">{item.label}</p>
+          <p className="truncate text-sm font-semibold">{data ? formatTokens(item.value ?? 0) : "…"}</p>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export function TokenPeriodSelect({
@@ -97,16 +119,22 @@ export function TokenUsageOverview({
           icon={Sparkles}
           iconClassName="bg-primary/10 text-primary"
           label="ADK (Gemini)"
+          imageSrc={geminiLogo}
           value={data ? formatTokens(data.byOrigin.ADK) : "…"}
           sublabel={percentOf(data?.byOrigin.ADK ?? 0, total)}
-        />
+        >
+          <InputOutputBreakdown data={data} origin="ADK" />
+        </MetricCard>
         <MetricCard
           icon={BrainCircuit}
           iconClassName="bg-success/15 text-success"
           label="OpenAI"
+          imageSrc={openaiLogo}
           value={data ? formatTokens(data.byOrigin.OPENAI) : "…"}
           sublabel={percentOf(data?.byOrigin.OPENAI ?? 0, total)}
-        />
+        >
+          <InputOutputBreakdown data={data} origin="OPENAI" />
+        </MetricCard>
       </div>
 
       <Card className="pt-0 shadow-xl">

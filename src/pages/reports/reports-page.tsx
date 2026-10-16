@@ -207,8 +207,8 @@ export function ReportsPage() {
       <div>
         <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold">Métricas de atendimento</h2>
         <p className="text-muted-foreground mt-1 mb-3 text-sm">
-          Qual fila recebe mais tickets e como está a velocidade de atendimento — tempo entre um atendente assumir o
-          ticket e encerrá-lo — nas filas mais lenta e mais rápida.
+          Qual fila recebe mais tickets e como está a velocidade de atendimento (tempo entre um atendente assumir o
+          ticket e encerrá-lo) nas filas mais lenta e mais rápida.
         </p>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <QueueMetricCard

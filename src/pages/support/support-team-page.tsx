@@ -137,7 +137,7 @@ export function SupportTeamPage() {
         <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold">Time de suporte</h1>
         <p className="text-muted-foreground mt-1 text-sm">
           Quem tem a flag de suporte vê e responde os tickets de todas as empresas e acessa a central Suporte
-          Sturnus — sem acesso às demais telas das empresas.
+          Sturnus, sem acesso às demais telas das empresas.
         </p>
       </div>
 
@@ -167,7 +167,7 @@ export function SupportTeamPage() {
                     disabled={adding}
                   />
                   <p className="text-muted-foreground text-xs">
-                    Só é possível adicionar quem já tem conta na plataforma — o e-mail é conferido antes.
+                    Só é possível adicionar quem já tem conta na plataforma. O e-mail é conferido antes.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -247,7 +247,7 @@ export function SupportTeamPage() {
                             <AlertDialogHeader>
                               <AlertDialogTitle>Remover {member.name} do time de suporte?</AlertDialogTitle>
                               <AlertDialogDescription>
-                                A conta continua existindo e mantém o acesso às empresas em que é membro — só
+                                A conta continua existindo e mantém o acesso às empresas em que é membro. Só
                                 deixa de ver e responder os tickets de suporte.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
@@ -266,7 +266,7 @@ export function SupportTeamPage() {
               )}
               <p className="text-muted-foreground text-xs">
                 Administradores atendem todas as classificações e não saem do time por aqui. Para o time de
-                suporte, clique nas classificações para ligar/desligar — salva na hora.
+                suporte, clique nas classificações para ligar/desligar. Salva na hora.
               </p>
             </CardContent>
           </Card>

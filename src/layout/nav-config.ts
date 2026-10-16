@@ -1,4 +1,4 @@
-import { BarChart3, Bot, Headset, LandPlot, LayoutDashboard, LifeBuoy, Ticket, UsersRound, Megaphone, MessageSquareText, Settings, Users, Waypoints } from "lucide-react";
+import { BarChart3, Bot, CalendarDays, Funnel, Handshake, Headset, LayoutDashboard, LifeBuoy, Ticket, UsersRound, Megaphone, MessageSquareText, Settings, SquareKanban, Users, Waypoints } from "lucide-react";
 import { PermissionAction } from "@/domain/permission-action";
 
 export interface NavItem {
@@ -16,6 +16,9 @@ export interface NavItem {
   /// "supportTeam" = Administrador ou flag de suporte (quem atende tickets);
   /// "customer" = quem NÃO é do time de suporte (as empresas).
   audience?: "platformAdmin" | "supportTeam" | "customer";
+  /// Subitens: o item vira um grupo que abre uma lista no menu (ex.: CRM).
+  /// Herdam o `action` do pai.
+  children?: NavItem[];
 }
 
 export interface NavGroup {
@@ -29,7 +32,18 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: "Contatos", to: "/targets", icon: Users, action: PermissionAction.CONTACTS_VIEW },
       { label: "Campanhas", to: "/campaigns", icon: Megaphone, action: PermissionAction.CAMPAIGNS_VIEW },
-      { label: "Kanban Board", to: "/crm", icon: LandPlot, action: PermissionAction.CRM_VIEW },
+      {
+        label: "CRM",
+        to: "/crm",
+        icon: Handshake,
+        action: PermissionAction.CRM_VIEW,
+        children: [
+          { label: "Quadro", to: "/crm/board", icon: SquareKanban },
+          { label: "Calendário", to: "/crm/calendar", icon: CalendarDays },
+          { label: "Métricas de funil", to: "/crm/funnel", icon: Funnel },
+          { label: "Configuração", to: "/crm/settings", icon: Settings },
+        ],
+      },
     ],
   },
   {
@@ -42,10 +56,10 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: "Configurações",
+    label: "Ajuda",
     items: [
-      // Meu perfil (todos) + Empresa e Acessos (Gerente/Administrador).
-      { label: "Configurações", to: "/settings", icon: Settings },
+      // Configurações (perfil, empresa e acessos) ficam no menu do usuário,
+      // no rodapé da barra lateral — não repetem aqui.
       // Área das empresas (abrir e acompanhar tickets). Quem atende usa o
       // grupo "Suporte técnico" abaixo, com telas próprias.
       {
