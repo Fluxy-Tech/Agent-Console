@@ -14,7 +14,9 @@ export interface MetaComponent {
   type: string;
   format?: string;
   text?: string;
-  example?: { header_text?: string[]; body_text?: string[][] };
+  example?: { header_text?: string[]; body_text?: string[][]; header_handle?: string[] };
+  add_security_recommendation?: boolean;
+  code_expiration_minutes?: number;
   buttons?: { type: string; text?: string; url?: string; phone_number?: string; example?: string[] | string }[];
 }
 
@@ -24,16 +26,64 @@ export type TemplateButton =
   | { type: "PHONE_NUMBER"; text: string; phoneNumber: string }
   | { type: "COPY_CODE"; example: string };
 
-/// Formulário do editor — mesmo formato aceito pelo POST do Agent-Api.
+export type HeaderFormat = "NONE" | "TEXT" | "IMAGE" | "VIDEO" | "DOCUMENT";
+export type MediaFormat = Exclude<HeaderFormat, "NONE" | "TEXT">;
+
+export interface AuthenticationOptions {
+  addSecurityRecommendation: boolean;
+  codeExpirationMinutes: number | null;
+  otpType: "COPY_CODE" | "ONE_TAP" | "ZERO_TAP";
+  buttonText: string;
+  autofillText: string;
+  packageName: string;
+  signatureHash: string;
+  zeroTapTermsAccepted: boolean;
+}
+
+/// Formulário do editor. O POST do Agent-Api usa `authentication` só na
+/// categoria AUTHENTICATION e ignora o resto.
 export interface TemplateForm {
   name: string;
-  category: "MARKETING" | "UTILITY";
+  category: "MARKETING" | "UTILITY" | "AUTHENTICATION";
   language: string;
-  header: { format: "NONE" | "TEXT"; text: string; example: string };
+  header: {
+    format: HeaderFormat;
+    text: string;
+    example: string;
+    /// Arquivo enviado pelo Console (chave no S3).
+    mediaKey?: string;
+    /// Mídia de exemplo do template clonado (link da Meta).
+    sourceUrl?: string;
+    /// Só pra prévia.
+    previewUrl?: string;
+    fileName?: string;
+  };
   body: { text: string; examples: string[] };
   footer: string;
   buttons: TemplateButton[];
+  authentication: AuthenticationOptions;
 }
+
+/// Arquivos aceitos como mídia de exemplo do cabeçalho.
+export const MEDIA_RULES: Record<MediaFormat, { accept: string; maxBytes: number; label: string }> = {
+  IMAGE: { accept: "image/jpeg,image/png", maxBytes: 5 * 1024 * 1024, label: "Imagem JPG ou PNG de até 5 MB." },
+  VIDEO: { accept: "video/mp4", maxBytes: 16 * 1024 * 1024, label: "Vídeo MP4 de até 16 MB." },
+  DOCUMENT: { accept: "application/pdf", maxBytes: 20 * 1024 * 1024, label: "PDF de até 20 MB." },
+};
+
+export const HEADER_LABELS: Record<HeaderFormat, string> = {
+  NONE: "Sem cabeçalho",
+  TEXT: "Texto",
+  IMAGE: "Imagem",
+  VIDEO: "Vídeo",
+  DOCUMENT: "Documento",
+};
+
+export const OTP_LABELS: Record<AuthenticationOptions["otpType"], string> = {
+  COPY_CODE: "Copiar código",
+  ONE_TAP: "Preencher com um toque (Android)",
+  ZERO_TAP: "Preenchimento automático (Android)",
+};
 
 export const LIMITS = { header: 60, body: 1024, footer: 60, buttonText: 25, buttons: 10, copyCode: 15 } as const;
 
@@ -76,7 +126,25 @@ export const EMPTY_FORM: TemplateForm = {
   body: { text: "", examples: [] },
   footer: "",
   buttons: [],
+  authentication: {
+    addSecurityRecommendation: true,
+    codeExpirationMinutes: 10,
+    otpType: "COPY_CODE",
+    buttonText: "Copiar código",
+    autofillText: "",
+    packageName: "",
+    signatureHash: "",
+    zeroTapTermsAccepted: false,
+  },
 };
+
+/// Texto fixo da Meta pros templates de autenticação (aproximado, pra prévia).
+export function authenticationPreview(options: AuthenticationOptions) {
+  return {
+    body: `*123456* é seu código de verificação.${options.addSecurityRecommendation ? " Para sua segurança, não o compartilhe." : ""}`,
+    footer: options.codeExpirationMinutes ? `Este código expira em ${options.codeExpirationMinutes} minutos.` : "",
+  };
+}
 
 /// Variáveis {{n}} distintas do texto, em ordem.
 export function variablesOf(text: string): number[] {
@@ -94,8 +162,8 @@ export function sanitizeName(value: string): string {
 }
 
 /// Clone: converte o template da Meta no formulário do editor. O que o editor
-/// ainda não suporta (cabeçalho de mídia, botões de flow/OTP) fica de fora e
-/// vira aviso pro usuário.
+/// ainda não suporta (botões de flow, por exemplo) fica de fora e vira aviso
+/// pro usuário.
 export function fromMetaTemplate(template: MessageTemplate, existingNames: string[]): { form: TemplateForm; warnings: string[] } {
   const warnings: string[] = [];
   const header = template.components.find((c) => c.type === "HEADER");
@@ -103,8 +171,37 @@ export function fromMetaTemplate(template: MessageTemplate, existingNames: strin
   const footer = template.components.find((c) => c.type === "FOOTER");
   const buttons = template.components.find((c) => c.type === "BUTTONS")?.buttons ?? [];
 
-  if (header && header.format !== "TEXT") {
-    warnings.push("O cabeçalho com imagem, vídeo ou documento não foi copiado. Esta tela cria cabeçalhos de texto.");
+  let name = sanitizeName(`${template.name}_copia`);
+  for (let i = 2; existingNames.includes(name); i++) name = sanitizeName(`${template.name}_copia_${i}`);
+
+  if (template.category === "AUTHENTICATION") {
+    const otp = buttons[0];
+    return {
+      form: {
+        ...structuredClone(EMPTY_FORM),
+        name,
+        category: "AUTHENTICATION",
+        language: template.language,
+        authentication: {
+          ...EMPTY_FORM.authentication,
+          addSecurityRecommendation: Boolean(body?.add_security_recommendation),
+          codeExpirationMinutes: footer?.code_expiration_minutes ?? null,
+          buttonText: otp?.text ?? EMPTY_FORM.authentication.buttonText,
+        },
+      },
+      warnings: ["O botão foi copiado como Copiar código. Se o original preenche o código no app, ajuste o tipo do botão."],
+    };
+  }
+
+  let formHeader: TemplateForm["header"] = { format: "NONE", text: "", example: "" };
+  if (header?.format === "TEXT") {
+    formHeader = { format: "TEXT", text: header.text ?? "", example: header.example?.header_text?.[0] ?? "" };
+  } else if (header && ["IMAGE", "VIDEO", "DOCUMENT"].includes(header.format ?? "")) {
+    const sample = header.example?.header_handle?.[0];
+    formHeader = { format: header.format as MediaFormat, text: "", example: "", sourceUrl: sample, previewUrl: sample };
+    if (!sample) warnings.push("A mídia de exemplo do cabeçalho não veio da Meta. Envie o arquivo de novo antes de enviar.");
+  } else if (header) {
+    warnings.push("O cabeçalho deste template é de um tipo que esta tela ainda não cria e não foi copiado.");
   }
 
   const formButtons: TemplateButton[] = [];
@@ -121,18 +218,13 @@ export function fromMetaTemplate(template: MessageTemplate, existingNames: strin
   const vars = variablesOf(bodyText);
   const examples = body?.example?.body_text?.[0] ?? [];
 
-  let name = sanitizeName(`${template.name}_copia`);
-  for (let i = 2; existingNames.includes(name); i++) name = sanitizeName(`${template.name}_copia_${i}`);
-
   return {
     form: {
+      ...structuredClone(EMPTY_FORM),
       name,
       category: template.category === "MARKETING" ? "MARKETING" : "UTILITY",
       language: template.language,
-      header:
-        header?.format === "TEXT"
-          ? { format: "TEXT", text: header.text ?? "", example: header.example?.header_text?.[0] ?? "" }
-          : { format: "NONE", text: "", example: "" },
+      header: formHeader,
       body: { text: bodyText, examples: vars.map((_, i) => examples[i] ?? "") },
       footer: footer?.text ?? "",
       buttons: formButtons,

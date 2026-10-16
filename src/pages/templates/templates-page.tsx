@@ -32,6 +32,7 @@ import {
   LANGUAGES,
   REJECTION_LABELS,
   STATUS_INFO,
+  type MediaFormat,
   type MessageTemplate,
   type TemplateButton,
   type TemplateForm,
@@ -41,6 +42,8 @@ type Editor = { initial?: TemplateForm; warnings?: string[]; cloneOf?: string } 
 
 function previewButtons(template: MessageTemplate): TemplateButton[] {
   const buttons = template.components.find((c) => c.type === "BUTTONS")?.buttons ?? [];
+  // A Meta devolve o botão do código de autenticação como URL.
+  if (template.category === "AUTHENTICATION") return [{ type: "COPY_CODE", example: "" }];
   return buttons.map((b) =>
     b.type === "URL"
       ? { type: "URL", text: b.text ?? "", url: b.url ?? "", example: "" }
@@ -195,11 +198,16 @@ export function TemplatesPage() {
                   <TemplatePreview
                     headerText={header?.format === "TEXT" ? header.text : undefined}
                     headerExample={header?.example?.header_text?.[0]}
-                    mediaHeader={header && header.format !== "TEXT" ? `Cabeçalho: ${header.format?.toLowerCase()}` : undefined}
+                    mediaHeader={
+                      header && ["IMAGE", "VIDEO", "DOCUMENT"].includes(header.format ?? "")
+                        ? { format: header.format as MediaFormat, url: header.example?.header_handle?.[0] }
+                        : undefined
+                    }
                     bodyText={t.components.find((c) => c.type === "BODY")?.text ?? ""}
                     bodyExamples={t.components.find((c) => c.type === "BODY")?.example?.body_text?.[0]}
                     footerText={t.components.find((c) => c.type === "FOOTER")?.text}
                     buttons={previewButtons(t)}
+                    copyCodeLabel={t.category === "AUTHENTICATION" ? t.components.find((c) => c.type === "BUTTONS")?.buttons?.[0]?.text : undefined}
                   />
                   {canWrite && (
                     <div className="mt-auto flex gap-2">
