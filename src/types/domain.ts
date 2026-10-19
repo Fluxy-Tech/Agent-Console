@@ -73,6 +73,9 @@ export interface Agent {
   timeSmall: number;
   timeMedium: number;
   timeLarge: number;
+  /// Quantas das últimas mensagens trocadas (contato + agente) vão pro modelo
+  /// a cada resposta. Mínimo 2. Afeta o consumo de tokens.
+  limitHistoryToAgent: number;
   /// 6 primeiros chars do token decifrado, só pra confirmação visual — nunca
   /// o token completo. null quando nenhum token está configurado.
   openaiTokenPreview: string | null;

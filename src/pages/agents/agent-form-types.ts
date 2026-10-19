@@ -18,6 +18,7 @@ export interface FormState {
   timeSmall: number;
   timeMedium: number;
   timeLarge: number;
+  limitHistoryToAgent: number;
 }
 
 export interface AgentFormTabProps {

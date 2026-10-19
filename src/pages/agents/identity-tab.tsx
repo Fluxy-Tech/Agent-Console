@@ -1,4 +1,4 @@
-import { FileUser, Link, Lock, ShieldCheck } from "lucide-react";
+import { FileUser, Link, Lock, ShieldCheck, TriangleAlert } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,6 +7,9 @@ import { Textarea } from "@/components/ui/textarea";
 import geminiLogo from "@/assets/LogoGermini.png";
 import openaiLogo from "@/assets/LogoOpenAi.png";
 import type { AgentFormTabProps } from "./agent-form-types";
+
+const LIMIT_HISTORY_MIN = 2;
+const LIMIT_HISTORY_MAX = 50;
 
 interface IdentityTabProps extends AgentFormTabProps {
   openaiToken: string;
@@ -91,6 +94,35 @@ export function IdentityTab({
               onChange={(e) => set("personality", e.target.value)}
             />
             <p className="text-muted-foreground self-end text-xs">{form.personality.length} caracteres</p>
+          </div>
+
+          {/* 4º Histórico enviado ao agente */}
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="agent-limit-history" className="font-bold">
+              Histórico enviado ao agente
+            </Label>
+            <p className="text-muted-foreground text-xs">
+              Quantas das últimas mensagens trocadas com o contato o agente considera ao responder. Mínimo de{" "}
+              {LIMIT_HISTORY_MIN} mensagens.
+            </p>
+            <Input
+              id="agent-limit-history"
+              type="number"
+              required
+              min={LIMIT_HISTORY_MIN}
+              max={LIMIT_HISTORY_MAX}
+              className="max-w-32"
+              disabled={disabled}
+              value={Number.isNaN(form.limitHistoryToAgent) ? "" : form.limitHistoryToAgent}
+              onChange={(e) => set("limitHistoryToAgent", e.target.valueAsNumber)}
+            />
+            <div className="flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-700 dark:text-amber-400">
+              <TriangleAlert className="mt-0.5 size-4 shrink-0" />
+              <p>
+                Alterar esse número afeta o valor gasto de tokens: quanto mais mensagens já trocadas forem enviadas ao
+                agente, maior o consumo em cada resposta.
+              </p>
+            </div>
           </div>
         </CardContent>
       </Card>

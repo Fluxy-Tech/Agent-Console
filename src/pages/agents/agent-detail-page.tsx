@@ -5,6 +5,16 @@ import { toast } from "sonner";
 import { Coins, Database, MessageCircleMore, Save, User, Workflow } from "lucide-react";
 import { PageBreadcrumb } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { RagUploadBatch } from "@/components/rag-documents-dialog";
 import { useCan } from "@/hooks/use-can";
@@ -61,6 +71,7 @@ const EMPTY_FORM: FormState = {
   timeSmall: 5,
   timeMedium: 10,
   timeLarge: 15,
+  limitHistoryToAgent: 6,
 };
 
 function toForm(agent: Agent): FormState {
@@ -84,6 +95,7 @@ function toForm(agent: Agent): FormState {
     timeSmall: agent.timeSmall,
     timeMedium: agent.timeMedium,
     timeLarge: agent.timeLarge,
+    limitHistoryToAgent: agent.limitHistoryToAgent,
   };
 }
 
@@ -99,6 +111,9 @@ export function AgentDetailPage() {
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Alerta de custo: toda mudança do histórico enviado ao agente precisa ser
+  // confirmada antes de salvar (ver handleSubmit).
+  const [confirmHistoryOpen, setConfirmHistoryOpen] = useState(false);
 
   // Tokens de IA nunca vêm preenchidos do backend (só a prévia de 6 chars,
   // em agent.openaiTokenPreview/geminiTokenPreview) — campo em branco aqui =
@@ -155,8 +170,17 @@ export function AgentDetailPage() {
     }
   }
 
-  async function handleSubmit(event: React.FormEvent) {
+  function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    const savedLimit = agent?.limitHistoryToAgent ?? EMPTY_FORM.limitHistoryToAgent;
+    if (form.limitHistoryToAgent !== savedLimit) {
+      setConfirmHistoryOpen(true);
+      return;
+    }
+    void save();
+  }
+
+  async function save() {
     setError(null);
     setSaving(true);
     try {
@@ -281,6 +305,24 @@ export function AgentDetailPage() {
       </Tabs>
 
       {error && <p className="text-destructive text-sm">{error}</p>}
+
+      <AlertDialog open={confirmHistoryOpen} onOpenChange={setConfirmHistoryOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Alterar o histórico enviado ao agente?</AlertDialogTitle>
+            <AlertDialogDescription>
+              O agente passará a considerar as últimas {form.limitHistoryToAgent} mensagens trocadas com o contato em
+              cada resposta. Essa alteração afeta o valor gasto de tokens: quanto mais mensagens já trocadas forem
+              enviadas, maior o consumo por resposta. Com menos mensagens o consumo cai, mas o agente lembra menos do
+              que já foi conversado.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={() => void save()}>Confirmar e salvar</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {canWrite && (
         <div className="flex justify-end gap-2">
