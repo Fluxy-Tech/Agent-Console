@@ -254,9 +254,9 @@ export const HELP_SECTIONS: HelpSection[] = [
         <Subtitle>Intervalo antes de cada mensagem</Subtitle>
         <Topics
           items={[
-            { title: "Mensagem pequena", text: "Até 40 caracteres. Intervalo mínimo de 5 segundos." },
-            { title: "Mensagem média", text: "De 41 a 100 caracteres. Intervalo mínimo de 10 segundos." },
-            { title: "Mensagem grande", text: "Acima de 100 caracteres. Intervalo mínimo de 15 segundos." },
+            { title: "Mensagem pequena", text: "Até 40 caracteres. Intervalo mínimo de 1 segundo." },
+            { title: "Mensagem média", text: "De 41 a 100 caracteres. Intervalo mínimo de 4 segundos." },
+            { title: "Mensagem grande", text: "Acima de 100 caracteres. Intervalo mínimo de 8 segundos." },
           ]}
         />
       </div>

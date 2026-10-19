@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { Bot, Building2, CalendarDays, Eye, Hash, Headset, IdCard, KeyRound, type LucideIcon, Pencil, Phone, RotateCcw, Tag } from "lucide-react";
+import { Bot, Building2, CalendarDays, Eye, Hash, Headset, Hourglass, IdCard, KeyRound, type LucideIcon, Pencil, Phone, RotateCcw, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Channel } from "@/types/domain";
 import { AgentPicker } from "./agent-picker-dialog";
 import { ChannelDataDialog } from "./channel-data-dialog";
+import { MessageWaitDialog } from "./message-wait-dialog";
 import { ResetKeywordsDialog } from "./reset-keywords-dialog";
 
 interface ConfigTabProps {
@@ -154,6 +155,35 @@ export function ConfigTab({ channel, canWrite, onSaved }: ConfigTabProps) {
               <Button type="button" variant="dashed" className="w-full" disabled={!canWrite}>
                 <Pencil className="size-4" /> Gerenciar palavras-chave
                 {channel.wordsToReset.length > 0 ? ` (${channel.wordsToReset.length})` : ""}
+              </Button>
+            }
+          />
+        </CardContent>
+      </Card>
+
+      <Card className="shadow-xl">
+        <CardHeader>
+          <div className="flex items-start gap-3">
+            <div className="bg-primary/15 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
+              <Hourglass className="size-5" />
+            </div>
+            <div>
+              <CardTitle>Tempo de aguardo de mensagem</CardTitle>
+              <p className="text-muted-foreground mt-1 text-sm">
+                Quanto tempo o agente espera por novas mensagens do contato antes de responder. Mensagens enviadas em
+                sequência dentro desse tempo são respondidas juntas.
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <MessageWaitDialog
+            channel={channel}
+            disabled={!canWrite}
+            onSaved={onSaved}
+            trigger={
+              <Button type="button" variant="dashed" className="w-full" disabled={!canWrite}>
+                <Pencil className="size-4" /> Editar tempo de aguardo ({channel.messageWaitSeconds}s)
               </Button>
             }
           />

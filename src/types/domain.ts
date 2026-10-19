@@ -192,6 +192,9 @@ export interface Channel {
   /// canal. Só avaliado quando useWordsToBlockCampaign=true.
   wordsToBlockCampaign: string[];
   useWordsToBlockCampaign: boolean;
+  /// Tempo (segundos) de aguardo de mensagem: janela que agrupa as mensagens
+  /// seguidas do contato num lote só antes de mandar pro agente.
+  messageWaitSeconds: number;
   createdAt: string;
   updatedAt: string;
   serviceIsland?: ServiceIsland | null;

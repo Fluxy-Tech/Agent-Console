@@ -259,9 +259,9 @@ export function FunctionDialog({
 }
 
 const RGBS_TIMES: { key: "timeSmall" | "timeMedium" | "timeLarge"; label: string; range: string; min: number }[] = [
-  { key: "timeSmall", label: "Mensagem pequena", range: "Até 40 caracteres", min: 5 },
-  { key: "timeMedium", label: "Mensagem média", range: "De 41 a 100 caracteres", min: 10 },
-  { key: "timeLarge", label: "Mensagem grande", range: "Acima de 100 caracteres", min: 15 },
+  { key: "timeSmall", label: "Mensagem pequena", range: "Até 40 caracteres", min: 1 },
+  { key: "timeMedium", label: "Mensagem média", range: "De 41 a 100 caracteres", min: 4 },
+  { key: "timeLarge", label: "Mensagem grande", range: "Acima de 100 caracteres", min: 8 },
 ];
 const RGBS_MAX_SECONDS = 300;
 
@@ -341,7 +341,7 @@ export function RgbsDialog({
                   onChange={(e) => setTimes({ ...times, [t.key]: e.target.value === "" ? Number.NaN : Number(e.target.value) })}
                   aria-invalid={bad}
                 />
-                <p className={bad ? "text-destructive text-xs" : "text-muted-foreground text-xs"}>Mínimo de {t.min} segundos.</p>
+                <p className={bad ? "text-destructive text-xs" : "text-muted-foreground text-xs"}>Mínimo de {t.min} {t.min === 1 ? "segundo" : "segundos"}.</p>
               </div>
             );
           })}
